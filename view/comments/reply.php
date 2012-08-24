@@ -1,0 +1,1 @@
+<?php echo debug($this->vars); ?>
