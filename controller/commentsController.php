@@ -26,7 +26,7 @@
 			);
 
 		$array_session = ($this->session->user())? get_object_vars($this->session->user('obj')) : get_object_vars($this->session->noUserLogged() );
-		$array_get     = get_object_vars($this->request->get());
+		$array_get     = get_object_vars($this->request->get);
 		$params        = array_merge($array_session,$array_get,$params);			
 
 		$d['coms']     = $this->Comments->findComments($params);

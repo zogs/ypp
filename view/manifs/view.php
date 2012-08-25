@@ -744,28 +744,41 @@ $(document).ready(function(){
 
 
 
-
-    //Konami Quoi ?
+    //LOL
      hidden1 = new Konami();
-    hidden1.pattern = "191686578836913";
+    hidden1.pattern = "191686578676913";
     hidden1.code = function() {                       
         document.getElementById('manifflash').HiddenCode1();
         };
     hidden1.load();
 
     hidden2 = new Konami();
-    hidden2.pattern = "191687383677913";
+    hidden2.pattern = "191677976798213";
     hidden2.code = function() {                       
         document.getElementById('manifflash').HiddenCode2();
         };
     hidden2.load();
 
     hidden3 = new Konami();
-    hidden3.pattern = "19179828769767613";          
+    hidden3.pattern = "1916582778913";          
     hidden3.code = function() {              
         document.getElementById('manifflash').HiddenCode3();
         };
     hidden3.load();
+
+    hidden4 = new Konami();
+    hidden4.pattern = "19179766513";          
+    hidden4.code = function() {           
+        document.getElementById('manifflash').HiddenCode4();
+        };
+    hidden4.load();
+
+    hidden5 = new Konami();
+    hidden5.pattern = "1918765866913";          
+    hidden5.code = function() {              
+        document.getElementById('manifflash').HiddenCode5();
+        };
+    hidden5.load();
 
     debug1 = new Konami();
     debug1.pattern = "191677985788413";          
@@ -781,10 +794,6 @@ $(document).ready(function(){
 
 
 
-
-
-
-
 	var ScreenWidth = $(window).width();
 	var ScreenHeight = $(window).height();
 
@@ -792,14 +801,17 @@ $(document).ready(function(){
     {
     	screenWidth:ScreenWidth,
     	screenHeight:500,
-        numerus:'<?php echo $manif->numerus; ?>',
-        nommanif:"<?php echo $manif->nommanif; ?>",
-        manif_id:'<?php echo $manif->id; ?>',
-        pseudo:"Pumtchak",
-        bonhom:'bonhom_2',
-        participe:true,
-        langue:'fr',
-        bkgcolor:"0xEEEEEE"
+        manifNumerus:'<?php echo $manif->numerus; ?>',
+        manifName:"<?php echo $manif->nommanif; ?>",
+        manifId:'<?php echo $manif->id; ?>',
+        manifBackgroundColor:"0xEEEEEE",
+        userLogin:"Pumtchak",
+        userBonhom:'bonhom_2',
+        userLogged:'<?php if($this->session->user()) echo "true"; else echo "false";?>',
+        userParticipe:'<?php if($manif->pid==0) echo "false"; else echo "true";?>',
+        userLang:'fr',
+        onlyBonhom:''
+        
     },
     {
         quality:"best",
@@ -821,9 +833,16 @@ $(document).ready(function(){
 		}
 	}
 
+    
 
 });
 
+
+
+    function addUserFromFlash( ){
+
+        alert('add user please');
+    }
 
 </script>
 

@@ -65,7 +65,7 @@ class Manifs extends Model {
 		     	';	
  		
 
- 		$sql .= " WHERE MD.lang='".$lang."'  AND "; 		 
+ 		$sql .= " WHERE MD.lang='".$lang."' AND "; 		 
 
 
  		//Construction des conditions de la requete sql
@@ -160,7 +160,7 @@ class Manifs extends Model {
  			$sql .= ' '.$req['end'];
  		}
  		
- 		 // debug($sql);
+ 		// debug($sql);
 		$pre = $this->db->prepare($sql);
  		$pre->execute();
  		return $pre->fetchAll(PDO::FETCH_OBJ);

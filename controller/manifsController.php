@@ -25,7 +25,6 @@ class ManifsController extends Controller{
 		if(!$this->CookieRch->read('CC1')){
 						
 			$this->CookieRch->write(array('CC1'=>$this->getCountryCode()) );
-			echo $this->CookieRch->read('CC1');
 		}
 
 		//If search params are send
@@ -56,7 +55,7 @@ class ManifsController extends Controller{
 			"search"=>$this->CookieRch->read('rch'),
 			"user"=>array('statut'=>$this->session->user('statut'),"id"=>$this->session->user_id()),
 			"lang"=>$this->session->getLang(),
-			"location"=>array('CC1'=>$this->request->get('CC1'),
+			"location"=>array(	'CC1'=>$this->CookieRch->read('CC1'),
 								'ADM1'=>$this->CookieRch->read('ADM1'),
 								'ADM2'=>$this->CookieRch->read('ADM2'),
 								'ADM3'=>$this->CookieRch->read('ADM3'),
