@@ -393,7 +393,7 @@ class UsersController extends Controller{
     				if( $t->TYPE == 'PROTEST'){
 
     					$a['OBJ'] = $this->Manifs->findProtesters(array(
-    						'fields'=>array('P.id as pid','U.user_id','U.login','P.date','M.logo','M.id as manif_id','D.nommanif'),
+    						'fields'=>array('P.id as pid','U.user_id','U.login','P.date','M.logo','M.id as manif_id','D.nommanif','D.slug'),
     						'conditions'=>array('P.id'=>$t->id)
     						));
     				}

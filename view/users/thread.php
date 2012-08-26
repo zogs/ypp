@@ -5,15 +5,18 @@
 			<span class='thread-login'><?php echo $user[0]->login;?></span>
 		</div>
 
-		<ul class="thread-user-protests">
-			<?php
-				foreach($protests as $p){
+		<div class="thread-user-protests">
+			<span class="thread-left-title">Protests</span>
+			<ul>
+				<?php
+					foreach($protests as $p){
 
-					echo '<li><a href="'.Router::url("manifs/view/".$p->manif_id).'" >'.$p->nommanif.'</a></li>';
+						echo '<li><a href="'.Router::url("manifs/view/".$p->manif_id).'" >'.$p->nommanif.'</a></li>';
 
-				}
-			?>
-		</ul>
+					}
+				?>
+			</ul>
+		</div>
 
 
 	</div>
@@ -54,9 +57,7 @@
 					if($t['TYPE'] == 'PROTEST'){
 
 						$o = $t['OBJ'][0];
-
-
-						$html = '<div class="thread-protest">You protest <a href="'.Router::url('manifs/view/'.$o->manif_id).'" >'.$o->nommanif.'</a></div>';
+						$html = '<div class="thread-protest">You protest <a href="'.Router::url('manifs/view/'.$o->manif_id.'/'.$o->slug).'" >'.$o->nommanif.'</a></div>';
 
 						echo $html;
 					}

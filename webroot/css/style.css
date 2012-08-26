@@ -76,7 +76,7 @@ div.geo-select .select2-results { max-height:300px; text-align:left; }
 .arianne span a { color:#999; text-transform:capitalize; border-bottom:1px solid #CCC;}
 
 #rightbar { float:right; width:20%; }
-#rightbar ul { list-style-type: none; }
+#rightbar ul { list-style-type: none; margin:0; }
 #rightbar .image { width:100%; height:100px; background:#FFF; margin-bottom:10px;}
 #rightbar .btn-group { margin:15px 0;}
 #rightbar select { width:70px; padding:auto 5px; -webkit-appearance:none; }
@@ -86,12 +86,12 @@ div.geo-select .select2-results { max-height:300px; text-align:left; }
 .nav-timeline-ul { margin:0; }
 .nav-timeline-ul a { font-size:16px }
 .nav-timeline-li { margin:12px 0 0 0px; }
-.nav-timeline-year { color:grey; margin:2px 0; padding:5px 0; padding-left: 10px; border-left:4px solid #AAA; font-size:130%; font-weight:bold;}
-.nav-timeline-month { color:grey; margin:2px 0; padding:5px 0; padding-left: 15px; border-left:4px solid #AAA; }
-.nav-timeline-a:hover { color:#005580; text-decoration:none; font-weight:bold; border-left:6px solid #888;}
+.nav-timeline-year { color:grey; margin:2px 0; padding:5px 0; padding-left: 10px; border-left:6px solid #AAA; font-size:130%; font-weight:bold;}
+.nav-timeline-month { color:grey; margin:2px 0; padding:5px 0; padding-left: 15px; border-left:6px solid #AAA; }
+.nav-timeline-a:hover { color:#005580; text-decoration:none; font-weight:bold; border-left:10px solid #888;}
 
 .listed { width:78%; }
-.manif { float:left; width:94%; margin:10px 0; padding:20px 2% 15px 4%;  position:relative; overflow:hidden; background:rgba(255, 255, 255, 0.4); box-shadow:0 0 20px rgba(0,0,0,0.1)}
+.manif { float:left; width:94%; margin:10px 0; padding:20px 2% 15px 4%;  position:relative; overflow:hidden; background:rgba(255, 255, 255, 0.4); box-shadow:inset 0 -5px 20px rgba(0,0,0,0.1); border:1px solid #CCC;}
 .manif:nth-child(odd) { background: E5E5E5;}
 .manif:nth-child(even) { background: E9E9E9;}
 .manif:hover { background-color: #F5F5F5;}
@@ -263,12 +263,14 @@ Thread
 */
 .thread { margin-top: 20px;}
 .thread .left { width:20%; float:left; }
-.thread .left .thread-user {}
-.thread .left .thread-user img { width: 50px;}
-.thread .left .thread-user .thread-login { font-size: 14px; font-weight: bold; text-transform: uppercase; color: #555;}
-ul.thread-user-protests { margin: 0 ; margin-top: 10px;list-style:none; }
-ul.thread-user-protests li a { color: #AAA; font-weight: bold; font-size: 12px;; }
-ul.thread-user-protests li a:hover { color: #666; text-decoration: none; }
+.thread .left .thread-user { width:100%; float:left;}
+.thread .left .thread-user img { width: 50px; margin-right:5px; float:left;}
+.thread .left .thread-user .thread-login { font-size: 14px; font-weight: bold; text-transform: capitalize; color: #555;}
+.thread-left-title { color:#666; font-weight:bold; text-transform: capitalize; font-size:13px;}
+.thread-user-protests { float:left; margin:30px 0;}
+.thread-user-protests ul { margin: 0 ; list-style:none; }
+.thread-user-protests ul li a { color: #AAA; font-weight: normal; font-size: 12px;; }
+.thread-user-protests ul li a:hover { font-weight:bold; color:#666; text-decoration: none; }
 
 .thread .middle { width:58%; padding: 0 1%; float:left; border-left:1px solid #DDD; }
 .thread .thread-unit { width: 100%; float:left; margin:0px 0; padding: 15px 0;border-bottom:1px solid #DDD;}
