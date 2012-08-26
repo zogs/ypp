@@ -179,8 +179,8 @@
 				 		<div class="action">
 				 			<div class="btn-toolbar">
 				 			<?php if($this->session->user()): ?>
-						      <a class="btn btn-primary btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->id>0) echo 'style="display:none"'; ?>><i class="icon-bullhorn icon-white"></i> Protest ! </a>
-						      <a class="btn btn-cancel" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->id==0) echo 'style="display:none"'; ?>><i class="icon-user"></i> You Protest</a>						      
+						      <a class="btn btn-primary btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-bullhorn icon-white"></i> Protest ! </a>
+						      <a class="btn btn-cancel" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user"></i> You Protest</a>						      
 						    <?php endif; ?>
 						      <a class="btn" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><i class="icon-plus-sign"></i>  En Savoir +</a>	
 				      		<?php if(isset($manif->isadmin)): ?>
