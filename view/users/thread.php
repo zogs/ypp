@@ -1,3 +1,4 @@
+
 <div class="thread">
 	<div class="left">
 		<div class="thread-user">
@@ -75,11 +76,6 @@
 
 	<div class="right">
 
-		<div class="rightbox">
-			<strong>Welcome to your news feed !</strong>
-			<p>You can see last news about the protests your are in, and some others timed information.</p>
-			<p><strong>Stay informed.</strong></p>
-		</div>
 	</div>
 
 

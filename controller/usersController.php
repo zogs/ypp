@@ -6,7 +6,7 @@ class UsersController extends Controller{
 
 	public function login(){
 
-		$this->layout = 'none';
+		$this->layout = 'default';
 		$this->loadModel('Users');
 
 		if($this->request->data){		
@@ -33,7 +33,10 @@ class UsersController extends Controller{
 					$this->user = $user;
 
 					$this->session->write('user', $user);				
-					$this->session->setFlash('Vous êtes maintenant connecté');	
+					$this->session->setFlash('Vous êtes maintenant connecté');
+					$this->reload(); 
+					
+
 				}
 				else {
 					$this->session->setFlash('Mauvais mot de passe','error');
@@ -91,7 +94,7 @@ class UsersController extends Controller{
 		
 		unset($_SESSION['user']);
 		$this->session->setFlash('Vous êtes maintenant déconnecté','info');
-		$this->redirect('/');
+		$this->reload();
 
 
 	}	
@@ -421,6 +424,11 @@ class UsersController extends Controller{
 
     		}
     	}
+    	else {
+    		$this->redirect('/');
+    	}
+
+
 
     	$d['thread'] = $thread;
     	$this->set($d);

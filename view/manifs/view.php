@@ -16,14 +16,14 @@
             <div class="actions">
                 <div class="btn-toolbar">
                     <?php if($this->session->user()): ?>
-                    <a class="btn btn-large btn-inverse btn-protest" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-plus-sign icon-white"></i> <strong>Protest</strong> </a>
-                    <button class="btn btn-large btn-inverse disabled" disabled="disabled" id="btn-joined-<?php echo $manif->id;?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>> <strong>You Protest!</strong> </button>
+                    <a class="btn btn-large btn-inverse btn-protest" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-plus-sign icon-white"></i> <strong>Protest</strong> </a>
+                    <button class="btn btn-large btn-red btn-cancel" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/removeUser');?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>> <strong>You Protest!</strong> </button>
                     <?php else: ?>
                     <a class="btn btn-large btn-inverse callModal" href="<?php echo Router::url('users/login');?>" ><i class="icon-user icon-white"></i> <strong>Connexion</strong> </a>
                     <?php endif; ?>
                     <a class="btn btn-large btn-share"><i class="icon-heart"></i> <strong>Partager</strong></a> 
                     <?php if(isset($manif->isadmin)): ?>
-                      <a class="btn btn-large btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> Admin</a>
+                      <a class="btn btn-large btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
                     <?php endif;?>        
                 </div>
             </div>

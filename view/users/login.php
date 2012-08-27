@@ -1,3 +1,4 @@
+<?php /*
 <div class="modal-header">
     <a class="close" data-dismiss="modal">x</a>
     <h1>Log In</h1>
@@ -6,7 +7,7 @@
 <form class="form-yp" id="form_login" action="<?php echo Router::url('users/login'); ?>" method='post'>
 <div class="modal-body">
 
-		<?php echo $this->session->flash();?>	
+		
 		<?php echo $this->Form->input('login','Identifiant',array('required'=>'required','placeholder'=>'Pseudo ou E-mail','icon'=>'icon-user')); ?>
 		<?php echo $this->Form->input('password','Mot de passe',array('type'=>'password','required'=>'required','placeholder'=>'Mot de passe','icon'=>'icon-lock')); ?>		
 </div>
@@ -45,3 +46,4 @@
 
 	});
 </script>
+*/ ?>

@@ -31,6 +31,7 @@ class Session {
 						</div>';				
 			}
 		}
+
 		$_SESSION['flash'] = array();
 		return $html;
 

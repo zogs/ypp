@@ -179,13 +179,13 @@
 				 		<div class="action">
 				 			<div class="btn-toolbar">
 				 			<?php if($this->session->user()): ?>
-						      <a class="btn btn-primary btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-bullhorn icon-white"></i> Protest ! </a>
-						      <a class="btn btn-cancel" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user"></i> You Protest</a>						      
+						      <a class="btn btn-inverse btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-bullhorn icon-white"></i> <strong>Protest!</strong></a>
+						      <a class="btn btn-cancel btn-red" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> YouProtest</a>						      
 						    <?php endif; ?>
-						      <a class="btn" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><i class="icon-plus-sign"></i>  En Savoir +</a>	
-				      		<?php if(isset($manif->isadmin)): ?>
-						      <a class="btn btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> Admin</a>
+						    <?php if(isset($manif->isadmin)): ?>
+						      <a class="btn btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
 					    	<?php endif;?>
+						      <a class="btn" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><i class="icon-plus-sign"></i>  En Savoir +</a>					      		
 							</div>
 				 		</div>
 				 	</div>
@@ -233,72 +233,7 @@
 		
 
 
-		//Cancel a protest
-		$('.btn-cancel').livequery(function(){
-
-			 $(this).hover(function() {
-			 	$(this).addClass('btn-inverse').html('<i class="icon-remove icon-white"></i> Cancel');
-			 }, function() {
-			 	$(this).removeClass('btn-inverse').html('<i class="icon-user"></i> You Protest');
-			 });
-
-			 $(this).click(function(){
-
-				var btn      = $(this);
-				var url      = btn.attr('href');
-				var manif_id = btn.attr('data-manif_id');
-				var user_id  = $("body").attr('data-user_id');
-
-			 	$.ajax({
-			 		type:'GET',
-			 		url:url,
-			 		data:{ manif_id : manif_id, user_id: user_id},
-			 		success : function(data){
-			 			if(data.success){
-			 				btn.css('display','none');
-				 			$("#btn-protest-"+manif_id).show();
-				 			$('#numerus'+manif_id).text( parseInt( $('#numerus'+manif_id).text() - 1));			 				
-			 			}
-			 			else 
-			 				alert(data.error);
-			 		},
-			 		dataType:'json'
-			 	});
-			 	return false;
-			 });
-		 }, function() {
-		     $(this).unbind('mouseover').unbind('mouseout');
-	 	});
-	 	//-- 
-
-		//Join a protest
-		$(".btn-protest").livequery('click',function(){
-
-
-			var btn      = $(this);
-			var url      = btn.attr('href');
-			var manif_id = btn.attr('data-manif_id');
-			var user_id  = $("body").attr('data-user_id');
-						
-
-			$.ajax({
-				type:'GET',
-				url: url,
-				data: { manif_id : manif_id, user_id:user_id},
-				success : function(data){
-					if( data.success ){
-						btn.css('display','none');
-						$("#btn-cancel-"+manif_id).css('display','inline-block');
-						$('#numerus'+manif_id).text( parseInt( $('#numerus'+manif_id).text() + 1));
-					}
-					else
-						alert( data.error );
-				},
-				dataType: 'json'
-			});
-			return false;
-		});
-		//--
+		
 
 	});
 	

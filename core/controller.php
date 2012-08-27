@@ -13,7 +13,6 @@ class Controller {
 		$this->session = new Session($this);	
 		$this->Form = new Form($this);
 		$this->Date = new Date($this->session);
-		
 
 		if($request){
 			$this->request = $request; //ON stocke la request dans l'instance
@@ -129,6 +128,14 @@ class Controller {
 			header("HTTP/1.1 301 Moved Permanently");
 		}
 		header("Location: ".Router::url($url));
+		exit();
+	}
+
+	public function reload(){
+
+		header("Location: ".$_SERVER['HTTP_REFERER']);
+		exit();
+
 	}
 
 	public function getCountryCode(){

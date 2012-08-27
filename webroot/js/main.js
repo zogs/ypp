@@ -10,8 +10,76 @@ $(document).ready(function(){
 		$(this).tooltip( { placement : 'bottom', delay: { show: 2000, hide: 100 }} );
 	});
 	
+	//==============================================================================================================================
+	//Cancel a protest
+		$('.btn-cancel').livequery(function(){
+
+			 $(this).hover(function() {
+			 	$(this).removeClass('btn-red').addClass('btn-inverse').html('<i class="icon-remove icon-white"></i> Cancel');
+			 }, function() {
+			 	$(this).removeClass('btn-inverse').addClass('btn-red').html('<i class="icon-user icon-white"></i> You Protest');
+			 });
+
+			 $(this).click(function(){
+
+				var btn      = $(this);
+				var url      = btn.attr('href');
+				var manif_id = btn.attr('data-manif_id');
+				var user_id  = $("body").attr('data-user_id');
+
+			 	$.ajax({
+			 		type:'GET',
+			 		url:url,
+			 		data:{ manif_id : manif_id, user_id: user_id},
+			 		success : function(data){
+			 			if(data.success){
+			 				
+			 				btn.css('display','none');
+				 			$("#btn-protest-"+manif_id).show();
+				 			$('#numerus'+manif_id).text( parseInt( $('#numerus'+manif_id).text() ) - 1);			 				
+			 			}
+			 			else 
+			 				alert(data.error);
+			 		},
+			 		dataType:'json'
+			 	});
+			 	return false;
+			 });
+		 }, function() {
+		     $(this).unbind('mouseover').unbind('mouseout');
+	 	});
+	 	//-- 
+
+		//Join a protest
+		$(".btn-protest").livequery('click',function(){
 
 
+			var btn      = $(this);
+			var url      = btn.attr('href');
+			var manif_id = btn.attr('data-manif_id');
+			var user_id  = $("body").attr('data-user_id');
+						
+
+			$.ajax({
+				type:'GET',
+				url: url,
+				data: { manif_id : manif_id, user_id:user_id},
+				success : function(data){
+					if( data.success ){
+						btn.css('display','none');
+						$("#btn-cancel-"+manif_id).css('display','inline-block');
+						$('#numerus'+manif_id).text( parseInt( $('#numerus'+manif_id).text() ) + 1);
+					}
+					else
+						alert( data.error );
+				},
+				dataType: 'json'
+			});
+			return false;
+		});
+		//==============================================================================================================================================
+
+	//Form ajax
 	$('form.form-ajax').livequery('submit',function(){
 
 		var url = $(this).attr('action');

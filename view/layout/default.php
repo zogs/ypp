@@ -33,6 +33,8 @@
 
 				
 			</ul>
+		
+			
 
 			<ul class="nav pull-right">
 				<?php if ($this->session->user('login')): ?>
@@ -53,8 +55,14 @@
 						</ul>
 					</li>
 				<?php else: ?>
-					<li><a class="callModal" href='<?php echo Router::url('users/login');?>' >Connexion</a></li>	
+
+					<form class="loginForm" action="<?php echo Router::url('users/login'); ?>" method='post'>
+						<input type="login" name="login" required="required" placeholder="Login or email" />
+						<input type="password" name="password" required="required" placeholder="Password" />
+						<input type="submit" value="OK" />
+					</form>
 					<li><a class="callModal" href='<?php echo Router::url('users/register');?>' >Inscription</a></li>	
+
 				<?php endif ?>
 
 			</ul>
@@ -62,8 +70,7 @@
 	  </div>
 	</div>
 
-	<div class="container" style="">
-
+	<div class="container" style="">	
 		<?php echo $this->session->flash();?>
 		<?php echo $content_for_layout;?>
 	</div>

@@ -52,12 +52,41 @@ Heading
 /*
 Bootstrap
 */
-.btn-dark { }
+.btn { border-radius: 0; -moz-border-radius:0; -webkit-border-radius:0;}
+.btn-red { 
+color:#FFFFFF;
+border:1px solid #555;
+text-shadow:0 0 0 #000;
+background: #d40000; /* Old browsers */
+background: -moz-linear-gradient(top,  #d40000 0%, #9d0101 8%, #7c0800 96%, #4f0000 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d40000), color-stop(8%,#9d0101), color-stop(96%,#7c0800), color-stop(100%,#4f0000)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #d40000 0%,#9d0101 8%,#7c0800 96%,#4f0000 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #d40000 0%,#9d0101 8%,#7c0800 96%,#4f0000 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #d40000 0%,#9d0101 8%,#7c0800 96%,#4f0000 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #d40000 0%,#9d0101 8%,#7c0800 96%,#4f0000 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d40000', endColorstr='#4f0000',GradientType=0 ); /* IE6-9 */
+}
+.btn-red:hover { color:white; background-position: 0;}
+.btn-red {}
+
+
+/*
+Login
+*/
+form.loginForm { margin:0; padding:5px 0 0 0; display:inline-block; float:right; text-align:right; color:white;}
+form.loginForm input { padding-left: 5px; background:#626262; border:1px solid #151515; }
+form.loginForm input[name=login] { width:100px; }
+form.loginForm input[name=password] { width:70px; }
+form.loginForm input:focus, form.loginForm input:hover {  background-color:#EBEBEB; }
+form.loginForm input[type=submit] { width:auto; padding-left:6px; padding-right:6px; background-color:rgba(255,255,255,0.6); border:1px solid #555 }
+form.loginForm input[type=submit]:hover { background-color:#EBEBEB;}
+
+
+
 
 /*
 Index Manif
 */
-
 #top-toolbar { margin-bottom:0;}
 #search-manif {position:relative; margin:0;}
 #search-manif .btn-group select { text-transform:capitalize; -webkit-appearance:none;}
