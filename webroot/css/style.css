@@ -1,31 +1,31 @@
 @charset "utf-8";
 /* CSS Document */
 @font-face {
-	font-family: 'NewsFlash';
-	src: url('fonts/NewsFlash/NewsflashBB.eot'); /* IE */
-	src: local('Newsflash BB Regular'), local('NewsFlash'), url('fonts/NewsFlash/NewsflashBB.woff') format('woff'), url('fonts/NewsFlash/NewsflashBB.ttf') format('truetype'), url('fonts/NewsFlash/NewsflashBB.svg#NewsflashBB') format('svg');
+    font-family: 'NewsFlash';
+    src: url('fonts/NewsFlash/NewsflashBB.eot'); /* IE */
+    src: local('Newsflash BB Regular'), local('NewsFlash'), url('fonts/NewsFlash/NewsflashBB.woff') format('woff'), url('fonts/NewsFlash/NewsflashBB.ttf') format('truetype'), url('fonts/NewsFlash/NewsflashBB.svg#NewsflashBB') format('svg');
 }
 
 @font-face {
+    font-weight: normal;
+    font-style: normal;
     font-family: 'Alba';
     src: url('fonts/Alba/albas__-webfont.eot');
     src: url('fonts/Alba/albas__-webfont.eot?#iefix') format('embedded-opentype'),
          url('fonts/Alba/albas__-webfont.woff') format('woff'),
          url('fonts/Alba/albas__-webfont.ttf') format('truetype'),
          url('fonts/Alba/albas__-webfont.svg#AlbaSuperRegular') format('svg');
-    font-weight: normal;
-    font-style: normal;
 
 }
 
 /* */
-body { height:100%; background-attachment:fixed !important;
+body { height:100%;
 background: -moz-linear-gradient(top,  rgba(5,1,1,0.14) 0%, rgba(0,0,0,0.07) 38%); /* FF3.6+ */
 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(5,1,1,0.14)), color-stop(38%,rgba(0,0,0,0.07))); /* Chrome,Safari4+ */
 background: -webkit-linear-gradient(top,  rgba(5,1,1,0.14) 0%,rgba(0,0,0,0.07) 38%); /* Chrome10+,Safari5.1+ */
 background: -o-linear-gradient(top,  rgba(5,1,1,0.14) 0%,rgba(0,0,0,0.07) 38%); /* Opera 11.10+ */
 background: -ms-linear-gradient(top,  rgba(5,1,1,0.14) 0%,rgba(0,0,0,0.07) 38%); /* IE10+ */
-background: linear-gradient(top,  rgba(5,1,1,0.14) 0%,rgba(0,0,0,0.07) 38%); /* W3C */
+background: linear-gradient(top,  rgba(5,1,1,0.14) 0%,rgba(0,0,0,0.07) 38%); /* W3C */ background-attachment:fixed !important;
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#24050101', endColorstr='#12000000',GradientType=0 ); /* IE6-9 */
 
 
@@ -39,15 +39,20 @@ Nav bar
 .navbar { position:relative;}
 .nav-logo { height: 30px; }
 .nav-login { text-transform:capitalize; font-weight:bold;}
-.nav-avatar { display:inline; height: 30px; margin-right:5px; margin-top:-6px;}
+.nav-avatar { display:inline; margin-top:-6px; margin-right:5px; height: 30px;}
 .nav-search { width:170px;}
 
 /*
 Heading
 */
 .modal h1 { padding:0; width:100%; color:#303030; text-align:center; font:250% Impact; }
-.modal h1:after { content:" "; display:block; width:100%; height:1px; margin:10px 0; box-shadow:0 0 5px rgba(0,0,0,0.5); }
+.modal h1:after { display:block; margin:10px 0; width:100%; height:1px; box-shadow:0 0 5px rgba(0,0,0,0.5); content:" "; }
 
+
+/*
+Bootstrap
+*/
+.btn-dark { }
 
 /*
 Index Manif
@@ -69,29 +74,29 @@ div.geo-select .select2-choice div { border:0; background:none; background-image
 div.geo-select .select2-choice div b { background-position:0 -2px;}
 div.geo-select .select2-drop { left:0; margin-top: 0; padding:5px 0 2px 5px; width:200px;}
 div.geo-select .select2-results { max-height:300px; text-align:left; }
-#create div.geo-select { box-shadow: 0 0 0 5px #E2E2E2; margin-right:10px;}
+#create div.geo-select { margin-right:10px; box-shadow: 0 0 0 5px #E2E2E2;}
 
 .form-search input[type=text] { float:left; margin-right:2px;}
 .arianne span { margin-left:4px; }
-.arianne span a { color:#999; text-transform:capitalize; border-bottom:1px solid #CCC;}
+.arianne span a { border-bottom:1px solid #CCC; color:#999; text-transform:capitalize;}
 
 #rightbar { float:right; width:20%; }
-#rightbar ul { list-style-type: none; margin:0; }
-#rightbar .image { width:100%; height:100px; background:#FFF; margin-bottom:10px;}
+#rightbar ul { margin:0; list-style-type: none; }
+#rightbar .image { margin-bottom:10px; width:100%; height:100px; background:#FFF;}
 #rightbar .btn-group { margin:15px 0;}
-#rightbar select { width:70px; padding:auto 5px; -webkit-appearance:none; }
+#rightbar select { padding:auto 5px; width:70px; -webkit-appearance:none; }
 
-.tl { display:none; text-align:center; padding: 5px 20px; margin:0 2px; background:#F2F2F2; border:1px solid #DDD; border-radius:5px; }
-.tlyear { width:100% };
+.tl { display:none; margin:0 2px; padding: 5px 20px; border:1px solid #DDD; border-radius:5px; background:#F2F2F2; text-align:center; }
+.tlyear { width:100%; };
 .nav-timeline-ul { margin:0; }
-.nav-timeline-ul a { font-size:16px }
+.nav-timeline-ul a { font-size:16px; }
 .nav-timeline-li { margin:12px 0 0 0px; }
-.nav-timeline-year { color:grey; margin:2px 0; padding:5px 0; padding-left: 10px; border-left:6px solid #AAA; font-size:130%; font-weight:bold;}
-.nav-timeline-month { color:grey; margin:2px 0; padding:5px 0; padding-left: 15px; border-left:6px solid #AAA; }
-.nav-timeline-a:hover { color:#005580; text-decoration:none; font-weight:bold; border-left:10px solid #888;}
+.nav-timeline-year { margin:2px 0; padding:5px 0; padding-left: 10px; border-left:6px solid #AAA; color:grey; font-weight:bold; font-size:130%;}
+.nav-timeline-month { margin:2px 0; padding:5px 0; padding-left: 15px; border-left:6px solid #AAA; color:grey; }
+.nav-timeline-a:hover { border-left:10px solid #888; color:#005580; text-decoration:none; font-weight:bold;}
 
 .listed { width:78%; }
-.manif { float:left; width:94%; margin:10px 0; padding:20px 2% 15px 4%;  position:relative; overflow:hidden; background:rgba(255, 255, 255, 0.4); box-shadow:inset 0 -5px 20px rgba(0,0,0,0.1); border:1px solid #CCC;}
+.manif {  position:relative; float:left; overflow:hidden; margin:10px 0; padding:20px 2% 15px 4%; width:94%; border:1px solid #CCC; background:rgba(255, 255, 255, 0.4); box-shadow:inset 0 -5px 20px rgba(0,0,0,0.1);}
 .manif:nth-child(odd) { background: E5E5E5;}
 .manif:nth-child(even) { background: E9E9E9;}
 .manif:hover { background-color: #F5F5F5;}
@@ -102,23 +107,23 @@ div.geo-select .select2-results { max-height:300px; text-align:left; }
 .manif a.nommanif:visited { color:#434343; }
 .manif a.nommanif:hover { text-decoration:none; }
 .manif a.nommanif:active { color:#434343; }
-.manif .numerus { display:inline; margin:-10px 10px 0 10px; font:20px 'Alba','Arial Black',Arial; line-height:0%; color:#900000;}
+.manif .numerus { display:inline; margin:-10px 10px 0 10px; color:#900000; font:20px 'Alba','Arial Black',Arial; line-height:0%;}
 .manif .label-success {opacity: .6;
 -moz-opacity: .6;
 filter:alpha(opacity=.6);}
-.manif .logo { float:left; width:120px; height:120px; margin-right:20px; overflow:hidden;  }
-.manif .logo .image { width:120px; height:120px; background-color: #FFF; border-radius:3px;  }
-.manif .logo .image-default { max-width:none; position:relative; opacity: 0.9;-moz-opacity: 0.9;filter:alpha(opacity=9); box-shadow:inset 0 0 30px #000; }
-.manif .description { height:40px; margin-top:5px; overflow: hidden; font-size:14px; color:#747474; line-height:1.5em; text-shadow:0 1px 0 #FFF;}
+.manif .logo { float:left; overflow:hidden; margin-right:20px; width:120px; height:120px;  }
+.manif .logo .image { width:120px; height:120px; border-radius:3px; background-color: #FFF;  }
+.manif .logo .image-default { position:relative; max-width:none; box-shadow:inset 0 0 30px #000; opacity: 0.9;-moz-opacity: 0.9;filter:alpha(opacity=9); }
+.manif .description { overflow: hidden; margin-top:5px; height:40px; color:#747474; text-shadow:0 1px 0 #FFF; font-size:14px; line-height:1.5em;}
 .manif .description p:first-child { margin-top:0;}
 .mainf .description:after { content:'...';}
 .manif .action { visibility: hidden;}
 .manif .action .btn-toolbar { margin-bottom:0;}
-.manif .action .btn-protest { font-weight:bold; padding-right:15px;}
-.zeroresult { width:90%; margin:10px 0; padding:50px 5%; text-align:center; line-height:1.5em; color:#DDD; font:70px 'NewsFlash',Impact; background:#f2f2f2; box-shadow:0 0 20px rgba(0,0,0,0.1)}
-.zeroresult a { padding:10px 30px; font-family:Arial; text-shadow:0 0 0 #FFF; }
-.zeroresult:before { display:block; content:" "; position:relative; top:10%; left:25%; width:50%; border-bottom:1px solid #DDD;}
-.zeroresult:after { display:block; content:" "; position:relative; top:70%; left:0; width:100%; border-bottom:1px solid #DDD;}
+.manif .action .btn-protest { padding-right:15px; font-weight:bold;}
+.zeroresult { margin:10px 0; padding:50px 5%; width:90%; background:#f2f2f2; box-shadow:0 0 20px rgba(0,0,0,0.1); color:#DDD; text-align:center; font:70px 'NewsFlash',Impact; line-height:1.5em;}
+.zeroresult a { padding:10px 30px; text-shadow:0 0 0 #FFF; font-family:Arial; }
+.zeroresult:before { position:relative; top:10%; left:25%; display:block; width:50%; border-bottom:1px solid #DDD; content:" ";}
+.zeroresult:after { position:relative; top:70%; left:0; display:block; width:100%; border-bottom:1px solid #DDD; content:" ";}
 
 
 .pagination ul li a { margin:0 4px; box-shadow:inset 0 0 15px #E1E1E1, 0 0 2px rgba(0,0,0,0.2);}
@@ -127,41 +132,41 @@ filter:alpha(opacity=.6);}
 View Manif
 */
 #manif {margin-top:500px;}
-#manif .info {width:100%; margin:0 0 10px 0; overflow: hidden;}
+#manif .info { overflow: hidden; margin:0 0 10px 0;width:100%;}
 #manif .info .logo { float:left; margin-right:10px; height:150px; }
 #manif .info .logo img { width:150px; height:150px; }
-#manif .info .logo .nologo { height:100%; width:20px; background-color:rgba(0,0,0,0.1);}
+#manif .info .logo .nologo { width:20px; height:100%; background-color:rgba(0,0,0,0.1);}
 #manif .info .meta { float:left; width:80%; }
-#manif .info .meta h1 { font-size:500%; font-weight:700; text-align:left; text-transform:uppercase; line-height:1em; color:#2B2B2B; font-family:'Oswald',sans-serif;}
-#manif .info .meta .by { color:#AAA; font:140% Arial, Helvetica, sans-serif; margin:5px 0 0 5px; }
+#manif .info .meta h1 { color:#2B2B2B; text-align:left; text-transform:uppercase; font-weight:700; font-size:500%; font-family:'Oswald',sans-serif; line-height:1em;}
+#manif .info .meta .by { margin:5px 0 0 5px; color:#AAA; font:140% Arial, Helvetica, sans-serif; }
 #manif .info .meta .by .user { font-weight:bold; }
 #manif .info .meta .by .date { font-size:12px; }
 #manif .info .actions { float:left; width:75%; }
 
 #manifeste { padding:15px; }
-#manifeste #description { height:100%; overflow: hidden; font-size:16px; background-image: -webkit-linear-gradient(top, #EFEFEF, #EEE 90%, #FFF 100%); background-size:1.5em 1.5em; background-position: 0 -5px;}
+#manifeste #description { overflow: hidden; height:100%; background-image: -webkit-linear-gradient(top, #EFEFEF, #EEE 90%, #FFF 100%); background-position: 0 -5px; background-size:1.5em 1.5em; font-size:16px;}
 #manifeste #description p { margin:0 0 1.5em 0; color:#555; font-size:16px; line-height:1.50em;  }
 
 
-#manif .wall .onglets { float:left; width:70%; overflow: hidden;}
+#manif .wall .onglets { float:left; overflow: hidden; width:70%;}
 #ypTab { margin-top:07px; }
 #commentaires { margin-top:20px;}
 
-.form_toggle {width:100%; float:left; padding:15px 0; display:none;}
+.form_toggle { float:left; display:none; padding:15px 0;width:100%;}
 .form_toggle textarea {float:left; }
 .form_toggle input#slogan {float:left; width:60%; text-transform:uppercase; font-weight:bold;}
-.form_toggle #slogans_avatar { float:left; width:100%; margin:0 0 15px 0; text-align:center; overflow:hidden;}
-.form_toggle .slogan_avatar { display:inline; float:left; margin:0 15px; text-align:center; cursor: pointer;}
+.form_toggle #slogans_avatar { float:left; overflow:hidden; margin:0 0 15px 0; width:100%; text-align:center;}
+.form_toggle .slogan_avatar { float:left; display:inline; margin:0 15px; text-align:center; cursor: pointer;}
 .form_toggle .slogan_avatar input[type=radio] { margin-right:-15px;}
 .form_toggle button {float:left;clear:both; margin-top:5px; padding:5px 25px;}
-#protestname { width:90%; margin:50px 5% 0 5%;  text-align:center; text-transform:uppercase; line-height:1; color:#2B2B2B; font-weight:400; font-family:'Oswald','Squada One','Passion One',Impact,Arial Black; }
+#protestname { margin:50px 5% 0 5%; width:90%; color:#2B2B2B;  text-align:center; text-transform:uppercase; font-weight:400; font-family:'Oswald','Squada One','Passion One',Impact,Arial Black; line-height:1; }
 
 ul#nav_manif { margin-top: 8px;}
 ul#nav_manif li a { padding:10px 20px; }
 div.btn-group[data-toogle=buttons-radio] {margin:100px;}
 .dropdown_active { background-color:#DDD; }
 /*SlabText PLugin*/
-.slabtexted .slabtext{display:-moz-inline-box;display:inline-block;white-space:nowrap}.slabtextinactive .slabtext{display:inline;white-space:normal;font-size:1em !important;letter-spacing:inherit !important;word-spacing:inherit !important;*letter-spacing:0 !important;*word-spacing:0 !important;}.slabtextdone .slabtext{display:block}
+.slabtexted .slabtext{display:-moz-inline-box;display:inline-block;white-space:nowrap;}.slabtextinactive .slabtext{display:inline;white-space:normal;word-spacing:inherit !important;letter-spacing:inherit !important;font-size:1em !important;*letter-spacing:0 !important;*word-spacing:0 !important;}.slabtextdone .slabtext{display:block;}
 /*end*/
 
 
@@ -171,62 +176,62 @@ div.btn-group[data-toogle=buttons-radio] {margin:100px;}
 Commentaires
 */
 .no_comment { float:left; width:100%; color:#888; text-align:center; font-weight:bold;}
-.comment { float:left; width:100%; position:relative; margin:5px 0; padding:0;  }
-.bulle { float:left; width:70%; padding:20px 5% 10px 5%; color:#5a5a5a; background-color: #e7e7e7; border:1px solid #fffbfb; border-radius:2px; box-shadow:inset 0 0 0 #e4e2e2; }
-.replies { float:left; width:96%; margin-left:1%; padding-left:2%; position:relative; margin-bottom:20px; }
+.comment { position:relative; float:left; margin:5px 0; padding:0; width:100%;  }
+.bulle { float:left; padding:20px 5% 10px 5%; width:70%; border:1px solid #fffbfb; border-radius:2px; background-color: #e7e7e7; box-shadow:inset 0 0 0 #e4e2e2; color:#5a5a5a; }
+.replies { position:relative; float:left; margin-bottom:20px; margin-left:1%; padding-left:2%; width:96%; }
 
 .bulle_news { background-color: #fdfdfd; }
 .news-date { width:100%; font-size:80%; }
-.news-head { width:100%; font-weight:bold; font-size:120%; color: #555;}
+.news-head { width:100%; color: #555; font-weight:bold; font-size:120%;}
 
 
 .type_slogan {text-align:center;}
-.type_slogan div { position:relative; float:left; width:80%; padding:25px 5%; margin:10px 5%; text-transform:uppercase; font-size:22px; font-weight:bold; line-height:25px; background:#FFF; border-radius:15px; box-shadow:0 0 10px rgba(0,0,0,0.4); }
-.type_slogan div:after { display:block; position:absolute; content:url('../img/slogan_arrow.png');  top:99%; left:100px; }							
-.type_slogan img { float:left; clear:both; margin-left:50px; margin-top:20px; }
+.type_slogan div { position:relative; float:left; margin:10px 5%; padding:25px 5%; width:80%; border-radius:15px; background:#FFF; box-shadow:0 0 10px rgba(0,0,0,0.4); text-transform:uppercase; font-weight:bold; font-size:22px; line-height:25px; }
+.type_slogan div:after { position:absolute;  top:99%; left:100px; display:block; content:url('../img/slogan_arrow.png'); }                          
+.type_slogan img { float:left; clear:both; margin-top:20px; margin-left:50px; }
 
-.comment .actions { float:left; width:100%; margin-top:10px; visibility: hidden;}
+.comment .actions { float:left; visibility: hidden; margin-top:10px; width:100%;}
 
-.comment_info { float:right; position:relative; width:18%; text-align:center;}
+.comment_info { position:relative; float:right; width:18%; text-align:center;}
 .comment_info img.avatar { height:50px; }
-.comment_info .login { font-weight:bold; text-transform:capitalize;}
+.comment_info .login { text-transform:capitalize; font-weight:bold;}
 .comment_info .date { color:grey;}
-.comment_info .actions { margin-top: 10px; text-align:center; margin-right:15px; }
+.comment_info .actions { margin-top: 10px; margin-right:15px; text-align:center; }
 
-.comment { width:96%; padding:2%; background-color:rgba(255,255,255,0.5); box-shadow:0 2px 5px rgba(0, 0, 0, 0.1);}
-.comment_avatar { width:40px; float:left;}
-.comment_content { float:left; width:90%; padding-left:10px; }
-.comment_user { display:inline; font-size:110%; font-weight:bold; color:#4F88CC; text-transform:capitalize; }
+.comment { padding:2%; width:96%; background-color:rgba(255,255,255,0.5); box-shadow:0 2px 5px rgba(0, 0, 0, 0.1);}
+.comment_avatar { float:left; width:40px;}
+.comment_content { float:left; padding-left:10px; width:90%; }
+.comment_user { display:inline; color:#4F88CC; text-transform:capitalize; font-weight:bold; font-size:110%; }
 .comment_date { color:grey; font-size:80%; }
-.comment_txt {}
-.replies { float:right; width:90%; margin-left:1%; padding-left:2%; position:relative; margin-bottom:3px; }
-.replies:before { content:" "; display:block; z-index:-10; position:absolute; border-left:1px solid #CCC; height:100%; top:0px; left:0; }
-.reply .comment_content:before { content:" "; display:block; z-index:-2; position:absolute; top:50%; left:-10px; width:10px; border-top:1px solid #CCC; }
+.comment_txt { }
+.replies { position:relative; float:right; margin-bottom:3px; margin-left:1%; padding-left:2%; width:90%; }
+.replies:before { position:absolute; top:0px; left:0; z-index:-10; display:block; height:100%; border-left:1px solid #CCC; content:" "; }
+.reply .comment_content:before { position:absolute; top:50%; left:-10px; z-index:-2; display:block; width:10px; border-top:1px solid #CCC; content:" "; }
 .replies:before { }
 
-#smartForm { width:100%; margin:0;}
-#smartTextarea { float:left; height:20px; width:82%;}
+#smartForm { margin:0; width:100%;}
+#smartTextarea { float:left; width:82%; height:20px;}
 #smartForm input[name=head] {width:70%; }
 #smartSubmitGroup { float: left;  margin-left:5px; }
 #commentaires .btn-toolbar { margin:0;}
-.previewMedia { float:left; width:80%; margin:10px 6%; padding:20px 5%; overflow: hidden; border:1px solid #EEEEEE; background-color:#FEFEFE;}
+.previewMedia { float:left; overflow: hidden; margin:10px 6%; padding:20px 5%; width:80%; border:1px solid #EEEEEE; background-color:#FEFEFE;}
 #commentSmartPreview { width:80%; }
 .previewMedia-img { float:left; width:50%; text-align:right; }
 .previewMedia-img img { max-width:100%; cursor:pointer;}
-.previewMedia-totalImage { width:100%; text-align:center; color:#5a5a5a; }
-.previewMedia-info { float:right; width:40%; padding:0 5%; text-align:left; overflow:hidden;  }
-.previewMedia-close { width:100%; text-align:right; font-weight:bold; color:grey;}
-.previewMedia-close:hover { cursor:pointer; text-decoration:underline;}
+.previewMedia-totalImage { width:100%; color:#5a5a5a; text-align:center; }
+.previewMedia-info { float:right; overflow:hidden; padding:0 5%; width:40%; text-align:left;  }
+.previewMedia-close { width:100%; color:grey; text-align:right; font-weight:bold;}
+.previewMedia-close:hover { text-decoration:underline; cursor:pointer;}
 .previewMedia-title { width:100%; color:black; font-weight:bold;}
-.previewMedia-desc { width:100%; max-height:250px; overflow:hidden; }
+.previewMedia-desc { overflow:hidden; width:100%; max-height:250px; }
 
-.formReply { float:left; width:70%; padding:10px 3% 0 3%; margin-left:5%;}
+.formReply { float:left; margin-left:5%; padding:10px 3% 0 3%; width:70%;}
 .formReply textarea { float:left; width:100%; height:100px; }
 .formReply input[type=submit] { float:left; display:block;}
 #reply2Comment form { display:none;}
 
 
-#bottomComments { float:left; width:100%; margin-top:20px; padding:15px 0; text-align:center; font-size:15px; font-weight:bold; color:#656363; background-color: #292929; box-shadow:0 -3px 8px rgba(0,0,0,0.5); }
+#bottomComments { float:left; margin-top:20px; padding:15px 0; width:100%; background-color: #292929; box-shadow:0 -3px 8px rgba(0,0,0,0.5); color:#656363; text-align:center; font-weight:bold; font-size:15px; }
 
 .arrow_box {
     position: relative;
@@ -234,26 +239,26 @@ Commentaires
     border: 1px solid #fffbfb;
 }
 .arrow_box:after, .arrow_box:before {
+    position: absolute;
     left: 100%;
+    width: 0;
+    height: 0;
     border: solid transparent;
     content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
     pointer-events: none;
 }
 
 .arrow_box:after {
-    border-left-color: #e7e7e7;
-    border-width: 20px;
     top: 40px;
     margin-top: -20px;
+    border-width: 20px;
+    border-left-color: #e7e7e7;
 }
 .arrow_box:before {
-    border-left-color: #fffbfb;
-    border-width: 21px;
     top: 40px;
     margin-top: -21px;
+    border-width: 21px;
+    border-left-color: #fffbfb;
 }
 
 
@@ -262,24 +267,24 @@ Commentaires
 Thread
 */
 .thread { margin-top: 20px;}
-.thread .left { width:20%; float:left; }
-.thread .left .thread-user { width:100%; float:left;}
-.thread .left .thread-user img { width: 50px; margin-right:5px; float:left;}
-.thread .left .thread-user .thread-login { font-size: 14px; font-weight: bold; text-transform: capitalize; color: #555;}
-.thread-left-title { color:#666; font-weight:bold; text-transform: capitalize; font-size:13px;}
+.thread .left { float:left; width:20%; }
+.thread .left .thread-user { float:left; width:100%;}
+.thread .left .thread-user img { float:left; margin-right:5px; width: 50px;}
+.thread .left .thread-user .thread-login { color: #555; text-transform: capitalize; font-weight: bold; font-size: 14px;}
+.thread-left-title { color:#666; text-transform: capitalize; font-weight:bold; font-size:13px;}
 .thread-user-protests { float:left; margin:30px 0;}
 .thread-user-protests ul { margin: 0 ; list-style:none; }
-.thread-user-protests ul li a { color: #AAA; font-weight: normal; font-size: 12px;; }
-.thread-user-protests ul li a:hover { font-weight:bold; color:#666; text-decoration: none; }
+.thread-user-protests ul li a { color: #AAA; font-weight: normal; font-size: 12px; }
+.thread-user-protests ul li a:hover { color:#666; text-decoration: none; font-weight:bold; }
 
-.thread .middle { width:58%; padding: 0 1%; float:left; border-left:1px solid #DDD; }
-.thread .thread-unit { width: 100%; float:left; margin:0px 0; padding: 15px 0;border-bottom:1px solid #DDD;}
-.thread .thread-date { width: 100%; float:left; font-weight:bold; font-size: 12px; color:#AAA; text-align: right;}
-.thread .thread-logo { width:40px; float:left;}
-.thread .thread-content { width:90%; float: left; margin-left:5px}
-.thread .middle .thread-header { color: #AAA; font-size: 12px; text-align: left;}
-.thread .middle .thread-content .comment { padding: 0; margin: 0; background-color: transparent; box-shadow:0 0 0 #000; }
-.thread .middle .thread-content .comment_content { padding: 0; margin: 0;}
+.thread .middle { float:left; padding: 0 1%; width:58%; border-left:1px solid #DDD; }
+.thread .thread-unit { float:left; margin:0px 0; padding: 15px 0; width: 100%;border-bottom:1px solid #DDD;}
+.thread .thread-date { float:left; width: 100%; color:#AAA; text-align: right; font-weight:bold; font-size: 12px;}
+.thread .thread-logo { float:left; width:40px;}
+.thread .thread-content { float: left; margin-left:5px; width:90%;}
+.thread .middle .thread-header { color: #AAA; text-align: left; font-size: 12px;}
+.thread .middle .thread-content .comment { margin: 0; padding: 0; background-color: transparent; box-shadow:0 0 0 #000; }
+.thread .middle .thread-content .comment_content { margin: 0; padding: 0;}
 .thread .middle .thread-content .thread-protest { color: #555; }
 .thread .middle .comment .comment_date { display:none;}
 .thread .middle .comment .comment_avatar { display:none;}
@@ -294,31 +299,31 @@ Thread
 /*
 Inscription
 */
-.register { width:300px;  margin:0 auto; padding:30px 50px 0 50px; border:1px solid #DDDDDD; border-radius:3px; overflow: hidden;}
-.register p {width:100%; overflow:hidden;}
-.form-yp .control-group { width:100%; float:left; margin-bottom:5px;}
+.register { overflow: hidden;  margin:0 auto; padding:30px 50px 0 50px; width:300px; border:1px solid #DDDDDD; border-radius:3px;}
+.register p { overflow:hidden;width:100%;}
+.form-yp .control-group { float:left; margin-bottom:5px; width:100%;}
 .form-yp .control-group .control-label { color:#999; font-weight:bold; font-size:110%;}
-.form-yp .control-group .controls i.icon-form { display:block; position:absolute; margin-top:7px; margin-left:7px;}
-.form-yp .control-group .controls input,select { width:87%; padding-left:30px;}
-.form-yp .label_bonhom { width:50px; margin:0 5px; float:left; cursor:pointer; text-align:center;}
+.form-yp .control-group .controls i.icon-form { position:absolute; display:block; margin-top:7px; margin-left:7px;}
+.form-yp .control-group .controls input,select { padding-left:30px; width:87%;}
+.form-yp .label_bonhom { float:left; margin:0 5px; width:50px; text-align:center; cursor:pointer;}
 .form-yp .label_bonhom img { width:50px; border:1px solid #BBB;}
 .form-yp .label_bonhom input[type=radio] { display:inline;}
-.register #click_me { display:block;  display:none; width:100%; float:left; margin-top:10px; padding:5px 0; text-align:center; font-weight:bold; color:#444; }
+.register #click_me { float:left; display:block;  display:none; margin-top:10px; padding:5px 0; width:100%; color:#444; text-align:center; font-weight:bold; }
 .register #click_me:hover { color:rgb(153,0,0); text-decoration:none; cursor:pointer;}
 .register #show_me { display:none; }
-.register .actions { float:left; width:100%; margin:10px 0; text-align:right;}
-.register .actions p { margin:10px 0; text-align:right; font-size:10px; color:#AAA; font-weight:bold;}
+.register .actions { float:left; margin:10px 0; width:100%; text-align:right;}
+.register .actions p { margin:10px 0; color:#AAA; text-align:right; font-weight:bold; font-size:10px;}
 
 /*
 Account
 */
 #account { overflow:hidden; margin-top:20px;}
-#account .account-block { margin:5px 20px 25px 20px; padding:20px 50px; background:#F2F2F2; box-shadow:0 0 4px 4px rgba(100,100,100,0.1); border:1px solid #CCC; }
+#account .account-block { margin:5px 20px 25px 20px; padding:20px 50px; border:1px solid #CCC; background:#F2F2F2; box-shadow:0 0 4px 4px rgba(100,100,100,0.1); }
 #myaccount { float:left; width: 400px; height:600px;}
 #changeavatar { float:left; width:230px; }
-#changeavatar .avatar { width:100%; text-align:left; margin-bottom:10px;}
+#changeavatar .avatar { margin-bottom:10px; width:100%; text-align:left;}
 #changeavatar .avatar img { width:120px; height:120px; }
-#changeavatar input[type=file] { overflow:hidden; background:#FFF; border:1px solid #CCC; box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075); }
+#changeavatar input[type=file] { overflow:hidden; border:1px solid #CCC; background:#FFF; box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.075); }
 #changepassword { float:left; width:230px; }
 #delete { float:left; width:230px; }
 
@@ -326,18 +331,18 @@ Account
 /**
 * Create
 */
-#create #formulaire { width:70%; margin:10px auto 0 auto; margin-bottom:100px;}
-#create #formulaire .parts { margin-top:10px; margin-bottom:20px; padding:20px 50px; background:#F2F2F2; box-shadow:0 0 4px 4px rgba(100,100,100,0.1); border:1px solid #CCC;}
-#create #formulaire .control-group { float:left; width:100%; margin:10px 0;}
-#create #formulaire .control-label { display:inline; position:relative; font:bold 150% Arial, Helvetica, sans-serif; color:#777; }
-#create #formulaire .label-helper { display:inline; color:#AAA; text-align:left; margin-left:5px;}
+#create #formulaire { margin:10px auto 0 auto; margin-bottom:100px; width:70%;}
+#create #formulaire .parts { margin-top:10px; margin-bottom:20px; padding:20px 50px; border:1px solid #CCC; background:#F2F2F2; box-shadow:0 0 4px 4px rgba(100,100,100,0.1);}
+#create #formulaire .control-group { float:left; margin:10px 0; width:100%;}
+#create #formulaire .control-label { position:relative; display:inline; color:#777; font:bold 150% Arial, Helvetica, sans-serif; }
+#create #formulaire .label-helper { display:inline; margin-left:5px; color:#AAA; text-align:left;}
 #create #formulaire .controls { margin:10px 0;}
-#create #formulaire .helper { width:100%; padding:0; text-align:left; color:#AAA;}
+#create #formulaire .helper { padding:0; width:100%; color:#AAA; text-align:left;}
 #create #formulaire input[type=text], #create #formulaire textarea { width:100%; }
 #create #formulaire input[type=text], #create #formulaire textarea, #create #formulaire select, #create #formulaire input[type=file] {  padding:5px 5px; box-shadow:0 0 0 5px #E2E2E2; }
-#create #formulaire input[type=submit] { width:auto; padding:10px 25px; }
+#create #formulaire input[type=submit] { padding:10px 25px; width:auto; }
 #create #formulaire select { width:130px; -webkit-appearance:none;}
-#create #formulaire .submit .helper { padding-left:15px; display:inline; text-align:left; color:#AAA; }
+#create #formulaire .submit .helper { display:inline; padding-left:15px; color:#AAA; text-align:left; }
 
 /*
 Boite Modal
@@ -350,14 +355,14 @@ top: 40%;
 }
 
 /*===============
-	ERROR
+    ERROR
 ================*/
-.error_page { width:100%; margin:60px 0%; height:400px;}
-.bubble { position:relative; margin-top:-300px; margin-left:350px; width:400px; padding:50px 50px; background:#FFF; border-radius:15px; border:2px solid #AAA; text-align:center; color:#AAA; font-size:26px; line-height:1.5em; font-weight:bold; }!DOCTYPE
-.sign { margin:0 auto; width:400px; position:absolute;}
-.oups { margin:0 auto; width:250px; height:150px; position:relative; margin-bottom:-155px; margin-left:55px; }
+.error_page { margin:60px 0%; width:100%; height:400px;}
+.bubble { position:relative; margin-top:-300px; margin-left:350px; padding:50px 50px; width:400px; border:2px solid #AAA; border-radius:15px; background:#FFF; color:#AAA; text-align:center; font-weight:bold; font-size:26px; line-height:1.5em; }!DOCTYPE
+.sign { position:absolute; margin:0 auto; width:400px;}
+.oups { position:relative; margin:0 auto; margin-bottom:-155px; margin-left:55px; width:250px; height:150px; }
 .oups table { width:100%; height:100%; }
-.oups table tr td { font:350% Impact,'Arial Black'; text-align:center; vertical-align: middle; }
+.oups table tr td { vertical-align: middle; text-align:center; font:350% Impact,'Arial Black'; }
 
 
 /*==============
@@ -365,257 +370,257 @@ top: 40%;
     // code from flag-sprites.com modified to fit database country id... dont change !!
 ===============*/
 .flag {
+    margin-right:3px;
     width: 16px;
     height: 11px;
-    margin-right:3px;
-    background:url(../img/flags/flags.png) no-repeat
+    background:url(../img/flags/flags.png) no-repeat;
 }
-.flag.flag-ad {background-position: -16px 0}
-.flag.flag-ae {background-position: -32px 0}
-.flag.flag-af {background-position: -48px 0}
-.flag.flag-ag {background-position: -64px 0}
-.flag.flag-av {background-position: -80px 0}
-.flag.flag-al {background-position: -96px 0}
-.flag.flag-am {background-position: -112px 0}
-.flag.flag-nt {background-position: -128px 0}
-.flag.flag-ao {background-position: -144px 0}
-.flag.flag-ar {background-position: -160px 0}
-.flag.flag-aq {background-position: -176px 0}
-.flag.flag-at {background-position: -192px 0}
-.flag.flag-au {background-position: -208px 0}
-.flag.flag-aa {background-position: -224px 0}
-.flag.flag-aj {background-position: -240px 0}
-.flag.flag-bk {background-position: 0 -11px}
-.flag.flag-ac {background-position: -16px -11px}
-.flag.flag-bd {background-position: -32px -11px}
-.flag.flag-be {background-position: -48px -11px}
-.flag.flag-uv {background-position: -64px -11px}
-.flag.flag-bu {background-position: -80px -11px}
-.flag.flag-bh {background-position: -96px -11px}
-.flag.flag-bi {background-position: -112px -11px}
-.flag.flag-bj {background-position: -128px -11px}
-.flag.flag-bm {background-position: -144px -11px}
-.flag.flag-bx {background-position: -160px -11px}
-.flag.flag-bl {background-position: -176px -11px}
-.flag.flag-br {background-position: -192px -11px}
-.flag.flag-bs {background-position: -208px -11px}
-.flag.flag-bt {background-position: -224px -11px}
-.flag.flag-bv {background-position: -240px -11px}
-.flag.flag-bc {background-position: 0 -22px}
-.flag.flag-by {background-position: -16px -22px}
-.flag.flag-bz {background-position: -32px -22px}
-.flag.flag-ca {background-position: -48px -22px}
-.flag.flag-catalonia {background-position: -64px -22px}
-.flag.flag-cg {background-position: -80px -22px}
-.flag.flag-ct {background-position: -96px -22px}
-.flag.flag-cf {background-position: -112px -22px}
-.flag.flag-sz {background-position: -128px -22px}
-.flag.flag-iv {background-position: -144px -22px}
-.flag.flag-ck {background-position: -160px -22px}
-.flag.flag-cl {background-position: -176px -22px}
-.flag.flag-cm {background-position: -192px -22px}
-.flag.flag-cn {background-position: -208px -22px}
-.flag.flag-co {background-position: -224px -22px}
-.flag.flag-cs {background-position: -240px -22px}
-.flag.flag-cu {background-position: 0 -33px}
-.flag.flag-cv {background-position: -16px -33px}
-.flag.flag-cw {background-position: -32px -33px}
-.flag.flag-cy {background-position: -48px -33px}
-.flag.flag-ez {background-position: -64px -33px}
-.flag.flag-de {background-position: -80px -33px}
-.flag.flag-dj {background-position: -96px -33px}
-.flag.flag-da {background-position: -112px -33px}
-.flag.flag-dm {background-position: -128px -33px}
-.flag.flag-dr {background-position: -144px -33px}
-.flag.flag-dz {background-position: -160px -33px}
-.flag.flag-ec {background-position: -176px -33px}
-.flag.flag-en {background-position: -192px -33px}
-.flag.flag-eg {background-position: -208px -33px}
-.flag.flag-eh {background-position: -224px -33px}
-.flag.flag-england {background-position: -240px -33px}
-.flag.flag-er {background-position: 0 -44px}
-.flag.flag-sp {background-position: -16px -44px}
-.flag.flag-et {background-position: -32px -44px}
-.flag.flag-eu {background-position: -48px -44px}
-.flag.flag-fi {background-position: -64px -44px}
-.flag.flag-fj {background-position: -80px -44px}
-.flag.flag-fk {background-position: -96px -44px}
-.flag.flag-fm {background-position: -112px -44px}
-.flag.flag-fo {background-position: -128px -44px}
-.flag.flag-fr {background-position: -144px -44px}
-.flag.flag-gb {background-position: -160px -44px}
-.flag.flag-gj {background-position: -192px -44px}
-.flag.flag-gg {background-position: -208px -44px}
-.flag.flag-fg {background-position: -224px -44px}
-.flag.flag-gk {background-position: -240px -44px}
-.flag.flag-gh {background-position: 0 -55px}
-.flag.flag-gi {background-position: -16px -55px}
-.flag.flag-gl {background-position: -32px -55px}
-.flag.flag-gm {background-position: -48px -55px}
-.flag.flag-gv {background-position: -64px -55px}
-.flag.flag-gp {background-position: -80px -55px}
-.flag.flag-ek {background-position: -96px -55px}
-.flag.flag-gr {background-position: -112px -55px}
-.flag.flag-gs {background-position: -128px -55px}
-.flag.flag-gt {background-position: -144px -55px}
-.flag.flag-gq {background-position: -160px -55px}
-.flag.flag-pu {background-position: -176px -55px}
-.flag.flag-gy {background-position: -192px -55px}
-.flag.flag-hk {background-position: -208px -55px}
-.flag.flag-hm {background-position: -224px -55px}
-.flag.flag-ho {background-position: -240px -55px}
-.flag.flag-hr {background-position: 0 -66px}
-.flag.flag-ha {background-position: -16px -66px}
-.flag.flag-hu {background-position: -32px -66px}
-.flag.flag-id {background-position: -48px -66px}
-.flag.flag-ei {background-position: -64px -66px}
-.flag.flag-is {background-position: -80px -66px}
-.flag.flag-im {background-position: -96px -66px}
-.flag.flag-in {background-position: -112px -66px}
-.flag.flag-io {background-position: -128px -66px}
-.flag.flag-iz {background-position: -144px -66px}
-.flag.flag-ir {background-position: -160px -66px}
-.flag.flag-ic {background-position: -176px -66px}
-.flag.flag-it {background-position: -192px -66px}
-.flag.flag-je {background-position: -208px -66px}
-.flag.flag-jm {background-position: -224px -66px}
-.flag.flag-jo {background-position: -240px -66px}
-.flag.flag-ja {background-position: 0 -77px}
-.flag.flag-ke {background-position: -16px -77px}
-.flag.flag-kg {background-position: -32px -77px}
-.flag.flag-cb {background-position: -48px -77px}
-.flag.flag-ki {background-position: -64px -77px}
-.flag.flag-km {background-position: -80px -77px}
-.flag.flag-sc {background-position: -96px -77px}
-.flag.flag-ks {background-position: -112px -77px}
-.flag.flag-kr {background-position: -128px -77px}
-.flag.flag-kurdistan {background-position: -144px -77px}
-.flag.flag-ku {background-position: -160px -77px}
-.flag.flag-cj {background-position: -176px -77px}
-.flag.flag-kz {background-position: -192px -77px}
-.flag.flag-la {background-position: -208px -77px}
-.flag.flag-le {background-position: -224px -77px}
-.flag.flag-st {background-position: -240px -77px}
-.flag.flag-li {background-position: 0 -88px}
-.flag.flag-ce {background-position: -16px -88px}
-.flag.flag-lr {background-position: -32px -88px}
-.flag.flag-ls {background-position: -48px -88px}
-.flag.flag-lh {background-position: -64px -88px}
-.flag.flag-lu {background-position: -80px -88px}
-.flag.flag-lg {background-position: -96px -88px}
-.flag.flag-ly {background-position: -112px -88px}
-.flag.flag-ma {background-position: -128px -88px}
-.flag.flag-mc {background-position: -144px -88px}
-.flag.flag-md {background-position: -160px -88px}
-.flag.flag-mj {background-position: -176px -88px}
-.flag.flag-mg {background-position: -192px -88px}
-.flag.flag-rm {background-position: -208px -88px}
-.flag.flag-mk {background-position: -224px -88px}
-.flag.flag-ml {background-position: -240px -88px}
-.flag.flag-mm {background-position: 0 -99px}
-.flag.flag-mn {background-position: -16px -99px}
-.flag.flag-mo {background-position: -32px -99px}
-.flag.flag-cq {background-position: -48px -99px}
-.flag.flag-mb {background-position: -64px -99px}
-.flag.flag-mr {background-position: -80px -99px}
-.flag.flag-mh {background-position: -96px -99px}
-.flag.flag-mt {background-position: -112px -99px}
-.flag.flag-mu {background-position: -128px -99px}
-.flag.flag-mv {background-position: -144px -99px}
-.flag.flag-mi {background-position: -160px -99px}
-.flag.flag-mx {background-position: -176px -99px}
-.flag.flag-my {background-position: -192px -99px}
-.flag.flag-mz {background-position: -208px -99px}
-.flag.flag-wa {background-position: -224px -99px}
-.flag.flag-nc {background-position: -240px -99px}
-.flag.flag-ne {background-position: 0 -110px}
-.flag.flag-nf {background-position: -16px -110px}
-.flag.flag-ng {background-position: -32px -110px}
-.flag.flag-ni {background-position: -48px -110px}
-.flag.flag-nl {background-position: -64px -110px}
-.flag.flag-no {background-position: -80px -110px}
-.flag.flag-np {background-position: -96px -110px}
-.flag.flag-nr {background-position: -112px -110px}
-.flag.flag-nu {background-position: -128px -110px}
-.flag.flag-nz {background-position: -144px -110px}
-.flag.flag-om {background-position: -160px -110px}
-.flag.flag-pa {background-position: -176px -110px}
-.flag.flag-pe {background-position: -192px -110px}
-.flag.flag-fp {background-position: -208px -110px}
-.flag.flag-pp {background-position: -224px -110px}
-.flag.flag-rp {background-position: -240px -110px}
-.flag.flag-pk {background-position: 0 -121px}
-.flag.flag-pl {background-position: -16px -121px}
-.flag.flag-bp {background-position: -32px -121px}
-.flag.flag-pc {background-position: -48px -121px}
-.flag.flag-rq {background-position: -64px -121px}
-.flag.flag-ps {background-position: -80px -121px}
-.flag.flag-po {background-position: -96px -121px}
-.flag.flag-lq {background-position: -112px -121px}
-.flag.flag-py {background-position: -128px -121px}
-.flag.flag-qa {background-position: -144px -121px}
-.flag.flag-re {background-position: -160px -121px}
-.flag.flag-ro {background-position: -176px -121px}
-.flag.flag-rb {background-position: -192px -121px}
-.flag.flag-rs {background-position: -208px -121px}
-.flag.flag-rw {background-position: -224px -121px}
-.flag.flag-sa {background-position: -240px -121px}
-.flag.flag-sb {background-position: 0 -132px}
-.flag.flag-se {background-position: -16px -132px}
-.flag.flag-scotland {background-position: -32px -132px}
-.flag.flag-su {background-position: -48px -132px}
-.flag.flag-sw {background-position: -64px -132px}
-.flag.flag-sg {background-position: -80px -132px}
-.flag.flag-sh {background-position: -96px -132px}
-.flag.flag-si {background-position: -112px -132px}
-.flag.flag-lo {background-position: -128px -132px}
-.flag.flag-sl {background-position: -144px -132px}
-.flag.flag-sm {background-position: -160px -132px}
-.flag.flag-sn {background-position: -176px -132px}
-.flag.flag-so {background-position: -192px -132px}
-.flag.flag-somaliland {background-position: -208px -132px}
-.flag.flag-ns {background-position: -224px -132px}
-.flag.flag-ss {background-position: -240px -132px}
-.flag.flag-tp {background-position: 0 -143px}
-.flag.flag-sv {background-position: -16px -143px}
-.flag.flag-sy {background-position: -32px -143px}
-.flag.flag-wz {background-position: -48px -143px}
-.flag.flag-tc {background-position: -64px -143px}
-.flag.flag-td {background-position: -80px -143px}
-.flag.flag-tf {background-position: -96px -143px}
-.flag.flag-to {background-position: -112px -143px}
-.flag.flag-th {background-position: -128px -143px}
-.flag.flag-ti {background-position: -144px -143px}
-.flag.flag-tk {background-position: -160px -143px}
-.flag.flag-tl {background-position: -176px -143px}
-.flag.flag-tx {background-position: -192px -143px}
-.flag.flag-ts {background-position: -208px -143px}
-.flag.flag-tn {background-position: -224px -143px}
-.flag.flag-tu {background-position: -240px -143px}
-.flag.flag-tt {background-position: 0 -154px}
-.flag.flag-tv {background-position: -16px -154px}
-.flag.flag-tw {background-position: -32px -154px}
-.flag.flag-tz {background-position: -48px -154px}
-.flag.flag-up {background-position: -64px -154px}
-.flag.flag-ug {background-position: -80px -154px}
-.flag.flag-um {background-position: -96px -154px}
-.flag.flag-us {background-position: -112px -154px}
-.flag.flag-uk {background-position: -176px -44px}
-.flag.flag-uy {background-position: -128px -154px}
-.flag.flag-uz {background-position: -144px -154px}
-.flag.flag-vt {background-position: -160px -154px}
-.flag.flag-vc {background-position: -176px -154px}
-.flag.flag-ve {background-position: -192px -154px}
-.flag.flag-vg {background-position: -208px -154px}
-.flag.flag-vi {background-position: -224px -154px}
-.flag.flag-vm {background-position: -240px -154px}
-.flag.flag-nh {background-position: 0 -165px}
-.flag.flag-wales {background-position: -16px -165px}
-.flag.flag-wf {background-position: -32px -165px}
-.flag.flag-ws {background-position: -48px -165px}
-.flag.flag-ym {background-position: -64px -165px}
-.flag.flag-mf {background-position: -80px -165px}
-.flag.flag-sf {background-position: -96px -165px}
-.flag.flag-zanzibar {background-position: -112px -165px}
-.flag.flag-za {background-position: -128px -165px}
-.flag.flag-zi {background-position: -144px -165px}
+.flag.flag-ad {background-position: -16px 0;}
+.flag.flag-ae {background-position: -32px 0;}
+.flag.flag-af {background-position: -48px 0;}
+.flag.flag-ag {background-position: -64px 0;}
+.flag.flag-av {background-position: -80px 0;}
+.flag.flag-al {background-position: -96px 0;}
+.flag.flag-am {background-position: -112px 0;}
+.flag.flag-nt {background-position: -128px 0;}
+.flag.flag-ao {background-position: -144px 0;}
+.flag.flag-ar {background-position: -160px 0;}
+.flag.flag-aq {background-position: -176px 0;}
+.flag.flag-at {background-position: -192px 0;}
+.flag.flag-au {background-position: -208px 0;}
+.flag.flag-aa {background-position: -224px 0;}
+.flag.flag-aj {background-position: -240px 0;}
+.flag.flag-bk {background-position: 0 -11px;}
+.flag.flag-ac {background-position: -16px -11px;}
+.flag.flag-bd {background-position: -32px -11px;}
+.flag.flag-be {background-position: -48px -11px;}
+.flag.flag-uv {background-position: -64px -11px;}
+.flag.flag-bu {background-position: -80px -11px;}
+.flag.flag-bh {background-position: -96px -11px;}
+.flag.flag-bi {background-position: -112px -11px;}
+.flag.flag-bj {background-position: -128px -11px;}
+.flag.flag-bm {background-position: -144px -11px;}
+.flag.flag-bx {background-position: -160px -11px;}
+.flag.flag-bl {background-position: -176px -11px;}
+.flag.flag-br {background-position: -192px -11px;}
+.flag.flag-bs {background-position: -208px -11px;}
+.flag.flag-bt {background-position: -224px -11px;}
+.flag.flag-bv {background-position: -240px -11px;}
+.flag.flag-bc {background-position: 0 -22px;}
+.flag.flag-by {background-position: -16px -22px;}
+.flag.flag-bz {background-position: -32px -22px;}
+.flag.flag-ca {background-position: -48px -22px;}
+.flag.flag-catalonia {background-position: -64px -22px;}
+.flag.flag-cg {background-position: -80px -22px;}
+.flag.flag-ct {background-position: -96px -22px;}
+.flag.flag-cf {background-position: -112px -22px;}
+.flag.flag-sz {background-position: -128px -22px;}
+.flag.flag-iv {background-position: -144px -22px;}
+.flag.flag-ck {background-position: -160px -22px;}
+.flag.flag-cl {background-position: -176px -22px;}
+.flag.flag-cm {background-position: -192px -22px;}
+.flag.flag-cn {background-position: -208px -22px;}
+.flag.flag-co {background-position: -224px -22px;}
+.flag.flag-cs {background-position: -240px -22px;}
+.flag.flag-cu {background-position: 0 -33px;}
+.flag.flag-cv {background-position: -16px -33px;}
+.flag.flag-cw {background-position: -32px -33px;}
+.flag.flag-cy {background-position: -48px -33px;}
+.flag.flag-ez {background-position: -64px -33px;}
+.flag.flag-de {background-position: -80px -33px;}
+.flag.flag-dj {background-position: -96px -33px;}
+.flag.flag-da {background-position: -112px -33px;}
+.flag.flag-dm {background-position: -128px -33px;}
+.flag.flag-dr {background-position: -144px -33px;}
+.flag.flag-dz {background-position: -160px -33px;}
+.flag.flag-ec {background-position: -176px -33px;}
+.flag.flag-en {background-position: -192px -33px;}
+.flag.flag-eg {background-position: -208px -33px;}
+.flag.flag-eh {background-position: -224px -33px;}
+.flag.flag-england {background-position: -240px -33px;}
+.flag.flag-er {background-position: 0 -44px;}
+.flag.flag-sp {background-position: -16px -44px;}
+.flag.flag-et {background-position: -32px -44px;}
+.flag.flag-eu {background-position: -48px -44px;}
+.flag.flag-fi {background-position: -64px -44px;}
+.flag.flag-fj {background-position: -80px -44px;}
+.flag.flag-fk {background-position: -96px -44px;}
+.flag.flag-fm {background-position: -112px -44px;}
+.flag.flag-fo {background-position: -128px -44px;}
+.flag.flag-fr {background-position: -144px -44px;}
+.flag.flag-gb {background-position: -160px -44px;}
+.flag.flag-gj {background-position: -192px -44px;}
+.flag.flag-gg {background-position: -208px -44px;}
+.flag.flag-fg {background-position: -224px -44px;}
+.flag.flag-gk {background-position: -240px -44px;}
+.flag.flag-gh {background-position: 0 -55px;}
+.flag.flag-gi {background-position: -16px -55px;}
+.flag.flag-gl {background-position: -32px -55px;}
+.flag.flag-gm {background-position: -48px -55px;}
+.flag.flag-gv {background-position: -64px -55px;}
+.flag.flag-gp {background-position: -80px -55px;}
+.flag.flag-ek {background-position: -96px -55px;}
+.flag.flag-gr {background-position: -112px -55px;}
+.flag.flag-gs {background-position: -128px -55px;}
+.flag.flag-gt {background-position: -144px -55px;}
+.flag.flag-gq {background-position: -160px -55px;}
+.flag.flag-pu {background-position: -176px -55px;}
+.flag.flag-gy {background-position: -192px -55px;}
+.flag.flag-hk {background-position: -208px -55px;}
+.flag.flag-hm {background-position: -224px -55px;}
+.flag.flag-ho {background-position: -240px -55px;}
+.flag.flag-hr {background-position: 0 -66px;}
+.flag.flag-ha {background-position: -16px -66px;}
+.flag.flag-hu {background-position: -32px -66px;}
+.flag.flag-id {background-position: -48px -66px;}
+.flag.flag-ei {background-position: -64px -66px;}
+.flag.flag-is {background-position: -80px -66px;}
+.flag.flag-im {background-position: -96px -66px;}
+.flag.flag-in {background-position: -112px -66px;}
+.flag.flag-io {background-position: -128px -66px;}
+.flag.flag-iz {background-position: -144px -66px;}
+.flag.flag-ir {background-position: -160px -66px;}
+.flag.flag-ic {background-position: -176px -66px;}
+.flag.flag-it {background-position: -192px -66px;}
+.flag.flag-je {background-position: -208px -66px;}
+.flag.flag-jm {background-position: -224px -66px;}
+.flag.flag-jo {background-position: -240px -66px;}
+.flag.flag-ja {background-position: 0 -77px;}
+.flag.flag-ke {background-position: -16px -77px;}
+.flag.flag-kg {background-position: -32px -77px;}
+.flag.flag-cb {background-position: -48px -77px;}
+.flag.flag-ki {background-position: -64px -77px;}
+.flag.flag-km {background-position: -80px -77px;}
+.flag.flag-sc {background-position: -96px -77px;}
+.flag.flag-ks {background-position: -112px -77px;}
+.flag.flag-kr {background-position: -128px -77px;}
+.flag.flag-kurdistan {background-position: -144px -77px;}
+.flag.flag-ku {background-position: -160px -77px;}
+.flag.flag-cj {background-position: -176px -77px;}
+.flag.flag-kz {background-position: -192px -77px;}
+.flag.flag-la {background-position: -208px -77px;}
+.flag.flag-le {background-position: -224px -77px;}
+.flag.flag-st {background-position: -240px -77px;}
+.flag.flag-li {background-position: 0 -88px;}
+.flag.flag-ce {background-position: -16px -88px;}
+.flag.flag-lr {background-position: -32px -88px;}
+.flag.flag-ls {background-position: -48px -88px;}
+.flag.flag-lh {background-position: -64px -88px;}
+.flag.flag-lu {background-position: -80px -88px;}
+.flag.flag-lg {background-position: -96px -88px;}
+.flag.flag-ly {background-position: -112px -88px;}
+.flag.flag-ma {background-position: -128px -88px;}
+.flag.flag-mc {background-position: -144px -88px;}
+.flag.flag-md {background-position: -160px -88px;}
+.flag.flag-mj {background-position: -176px -88px;}
+.flag.flag-mg {background-position: -192px -88px;}
+.flag.flag-rm {background-position: -208px -88px;}
+.flag.flag-mk {background-position: -224px -88px;}
+.flag.flag-ml {background-position: -240px -88px;}
+.flag.flag-mm {background-position: 0 -99px;}
+.flag.flag-mn {background-position: -16px -99px;}
+.flag.flag-mo {background-position: -32px -99px;}
+.flag.flag-cq {background-position: -48px -99px;}
+.flag.flag-mb {background-position: -64px -99px;}
+.flag.flag-mr {background-position: -80px -99px;}
+.flag.flag-mh {background-position: -96px -99px;}
+.flag.flag-mt {background-position: -112px -99px;}
+.flag.flag-mu {background-position: -128px -99px;}
+.flag.flag-mv {background-position: -144px -99px;}
+.flag.flag-mi {background-position: -160px -99px;}
+.flag.flag-mx {background-position: -176px -99px;}
+.flag.flag-my {background-position: -192px -99px;}
+.flag.flag-mz {background-position: -208px -99px;}
+.flag.flag-wa {background-position: -224px -99px;}
+.flag.flag-nc {background-position: -240px -99px;}
+.flag.flag-ne {background-position: 0 -110px;}
+.flag.flag-nf {background-position: -16px -110px;}
+.flag.flag-ng {background-position: -32px -110px;}
+.flag.flag-ni {background-position: -48px -110px;}
+.flag.flag-nl {background-position: -64px -110px;}
+.flag.flag-no {background-position: -80px -110px;}
+.flag.flag-np {background-position: -96px -110px;}
+.flag.flag-nr {background-position: -112px -110px;}
+.flag.flag-nu {background-position: -128px -110px;}
+.flag.flag-nz {background-position: -144px -110px;}
+.flag.flag-om {background-position: -160px -110px;}
+.flag.flag-pa {background-position: -176px -110px;}
+.flag.flag-pe {background-position: -192px -110px;}
+.flag.flag-fp {background-position: -208px -110px;}
+.flag.flag-pp {background-position: -224px -110px;}
+.flag.flag-rp {background-position: -240px -110px;}
+.flag.flag-pk {background-position: 0 -121px;}
+.flag.flag-pl {background-position: -16px -121px;}
+.flag.flag-bp {background-position: -32px -121px;}
+.flag.flag-pc {background-position: -48px -121px;}
+.flag.flag-rq {background-position: -64px -121px;}
+.flag.flag-ps {background-position: -80px -121px;}
+.flag.flag-po {background-position: -96px -121px;}
+.flag.flag-lq {background-position: -112px -121px;}
+.flag.flag-py {background-position: -128px -121px;}
+.flag.flag-qa {background-position: -144px -121px;}
+.flag.flag-re {background-position: -160px -121px;}
+.flag.flag-ro {background-position: -176px -121px;}
+.flag.flag-rb {background-position: -192px -121px;}
+.flag.flag-rs {background-position: -208px -121px;}
+.flag.flag-rw {background-position: -224px -121px;}
+.flag.flag-sa {background-position: -240px -121px;}
+.flag.flag-sb {background-position: 0 -132px;}
+.flag.flag-se {background-position: -16px -132px;}
+.flag.flag-scotland {background-position: -32px -132px;}
+.flag.flag-su {background-position: -48px -132px;}
+.flag.flag-sw {background-position: -64px -132px;}
+.flag.flag-sg {background-position: -80px -132px;}
+.flag.flag-sh {background-position: -96px -132px;}
+.flag.flag-si {background-position: -112px -132px;}
+.flag.flag-lo {background-position: -128px -132px;}
+.flag.flag-sl {background-position: -144px -132px;}
+.flag.flag-sm {background-position: -160px -132px;}
+.flag.flag-sn {background-position: -176px -132px;}
+.flag.flag-so {background-position: -192px -132px;}
+.flag.flag-somaliland {background-position: -208px -132px;}
+.flag.flag-ns {background-position: -224px -132px;}
+.flag.flag-ss {background-position: -240px -132px;}
+.flag.flag-tp {background-position: 0 -143px;}
+.flag.flag-sv {background-position: -16px -143px;}
+.flag.flag-sy {background-position: -32px -143px;}
+.flag.flag-wz {background-position: -48px -143px;}
+.flag.flag-tc {background-position: -64px -143px;}
+.flag.flag-td {background-position: -80px -143px;}
+.flag.flag-tf {background-position: -96px -143px;}
+.flag.flag-to {background-position: -112px -143px;}
+.flag.flag-th {background-position: -128px -143px;}
+.flag.flag-ti {background-position: -144px -143px;}
+.flag.flag-tk {background-position: -160px -143px;}
+.flag.flag-tl {background-position: -176px -143px;}
+.flag.flag-tx {background-position: -192px -143px;}
+.flag.flag-ts {background-position: -208px -143px;}
+.flag.flag-tn {background-position: -224px -143px;}
+.flag.flag-tu {background-position: -240px -143px;}
+.flag.flag-tt {background-position: 0 -154px;}
+.flag.flag-tv {background-position: -16px -154px;}
+.flag.flag-tw {background-position: -32px -154px;}
+.flag.flag-tz {background-position: -48px -154px;}
+.flag.flag-up {background-position: -64px -154px;}
+.flag.flag-ug {background-position: -80px -154px;}
+.flag.flag-um {background-position: -96px -154px;}
+.flag.flag-us {background-position: -112px -154px;}
+.flag.flag-uk {background-position: -176px -44px;}
+.flag.flag-uy {background-position: -128px -154px;}
+.flag.flag-uz {background-position: -144px -154px;}
+.flag.flag-vt {background-position: -160px -154px;}
+.flag.flag-vc {background-position: -176px -154px;}
+.flag.flag-ve {background-position: -192px -154px;}
+.flag.flag-vg {background-position: -208px -154px;}
+.flag.flag-vi {background-position: -224px -154px;}
+.flag.flag-vm {background-position: -240px -154px;}
+.flag.flag-nh {background-position: 0 -165px;}
+.flag.flag-wales {background-position: -16px -165px;}
+.flag.flag-wf {background-position: -32px -165px;}
+.flag.flag-ws {background-position: -48px -165px;}
+.flag.flag-ym {background-position: -64px -165px;}
+.flag.flag-mf {background-position: -80px -165px;}
+.flag.flag-sf {background-position: -96px -165px;}
+.flag.flag-zanzibar {background-position: -112px -165px;}
+.flag.flag-za {background-position: -128px -165px;}
+.flag.flag-zi {background-position: -144px -165px;}
