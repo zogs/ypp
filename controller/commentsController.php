@@ -197,9 +197,9 @@
  		$vars = array();
 
 
-		if($this->request->get){
+		if($this->request->get() ){
 
-			if($this->request->get->url){
+			if($this->request->get('url')) {
 
 
 				$url = trim($this->request->get('url'));								
@@ -252,7 +252,7 @@
 
 							$video_id = getDMid($url);
 							
-							$html                          = file_get_contents_curl($url);
+							$html = file_get_contents_curl($url);
 
 							if($html){
 

@@ -14,8 +14,6 @@ class Comments extends Model
 			$$k = $v;
 		}
 
-		if(!isset($user_id)) $user_id = 0;
-
 		if(isset($order)){
 
         	if ($order == "datedesc" || $order == '' || $order == '0')
@@ -124,8 +122,10 @@ class Comments extends Model
 				
 			}
 
-			return $array;
+			
 		}
+
+		return $array;
 
 	}
 
