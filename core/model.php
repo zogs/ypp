@@ -388,5 +388,52 @@
  		return $pre->fetch(PDO::FETCH_OBJ);
 
  	}
+
+ 	public function sqlFields($fields){
+
+ 		$f = '';
+		if($fields && !empty($fields))
+			if(is_array($fields))
+ 				$f .= implode(', ',$fields); 			
+ 			else
+ 				$f .= $fields; 			 		
+ 		else
+ 			$f .= '*';
+ 		return $f; 	
+ 	}
+
+ 	public function JOIN_INFO($table,$fields,$data,$key){
+
+	 	$array = array();
+
+	 	$fields = $this->sqlFields($fields);
+
+		$sql = "SELECT ".$fields." FROM ".$table." WHERE ".$key." = :".$key;
+		$pre = $this->db->prepare($sql);
+
+		foreach ($data as $obj) {
+
+			if(is_object($obj)){
+
+				$pre -> bindValue(":".$key, $obj->$key);
+				$pre -> execute();
+				$res = $pre->fetch(PDO::FETCH_OBJ);
+				foreach ($res as $k => $value) {
+				
+					$obj->$k = $value;
+				}
+				$array[] = $obj;
+			}
+			elseif(is_array($obj)){
+
+				$obj = $this->JOIN_INFO($table,$fields,$obj,$key);
+			}
+		}
+
+		return $array;
+
+	}
 }
+
+
  	?>

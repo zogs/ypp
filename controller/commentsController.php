@@ -15,7 +15,7 @@
 
  		$this->loadModel('Comments');
  		
- 		$perPage = 4;
+ 		$perPage = 10;
 		$params = array(	
 						
 			"pays"       =>$this->session->getPays(),

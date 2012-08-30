@@ -16,14 +16,14 @@
             <div class="actions">
                 <div class="btn-toolbar">
                     <?php if($this->session->user()): ?>
-                    <a class="btn btn-large btn-inverse btn-protest" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-plus-sign icon-white"></i> <strong>Protest</strong> </a>
-                    <button class="btn btn-large btn-red btn-cancel" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/removeUser');?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>> <strong>You Protest!</strong> </button>
+                    <a class="btn btn-large btn-inverse btn-protest" id="btn-protest-<?php echo $manif->manif_id;?>" data-manif_id="<?php echo $manif->manif_id; ?>" href="<?php echo Router::url('manifs/addUser');?>" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-plus-sign icon-white"></i> <strong>Protest</strong> </a>
+                    <button class="btn btn-large btn-red btn-cancel" id="btn-cancel-<?php echo $manif->manif_id;?>" data-manif_id="<?php echo $manif->manif_id; ?>" href="<?php echo Router::url('manifs/removeUser');?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>> <strong>You Protest!</strong> </button>
                     <?php else: ?>
                     <a class="btn btn-large btn-inverse callModal" href="<?php echo Router::url('users/login');?>" ><i class="icon-user icon-white"></i> <strong>Connexion</strong> </a>
                     <?php endif; ?>
                     <a class="btn btn-large btn-share"><i class="icon-heart"></i> <strong>Partager</strong></a> 
                     <?php if(isset($manif->isadmin)): ?>
-                      <a class="btn btn-large btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
+                      <a class="btn btn-large btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->manif_id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
                     <?php endif;?>        
                 </div>
             </div>
@@ -64,7 +64,7 @@
                         <input type="text" name="head" id="head" placeholder="Enter a title to your news" />
                         <?php endif; ?>
                         <textarea name="content" id="smartTextarea" data-url-preview="<?php echo Router::url('comments/preview'); ?>" placeholder="Type text / Paste a link here"></textarea>
-                        <input type="hidden" name="manif_id" value="<?php echo $manif->id; ?>" />
+                        <input type="hidden" name="manif_id" value="<?php echo $manif->manif_id; ?>" />
                         <input type="hidden" name="type" id="type" value='com' />            
                         <input type="hidden" name="media" id="media" value='' /> 
                         <input type="hidden" name="media_url" id="media_url" value='' /> 
@@ -87,7 +87,7 @@
 
                         <form id="form_slogan" class="form_toggle" data-url="<?php echo Router::url('comments/add'); ?>" method="POST" >
                             <input type="hidden" name="type" value="slogan"/>
-                            <input type="hidden" name="manif_id" value="<?php echo $manif->id; ?>"/>
+                            <input type="hidden" name="manif_id" value="<?php echo $manif->manif_id; ?>"/>
                             <div id="slogans_avatar">
                                 <div class="slogan_avatar">
                                     <label>
@@ -157,7 +157,7 @@
                             </ul>
                         </div>  
                         <div class="btn-group pull-right">
-                            <a class="btn btn-small bubble-top" title="Display new comments" href="<?php echo Router::url('comments/view/'.$manif->id); ?>" id="refresh_com" data-url-count-com="<?php echo Router::url('comments/tcheck/'.$manif->id.'/'); ?>">
+                            <a class="btn btn-small bubble-top" title="Display new comments" href="<?php echo Router::url('comments/view/'.$manif->manif_id); ?>" id="refresh_com" data-url-count-com="<?php echo Router::url('comments/tcheck/'.$manif->manif_id.'/'); ?>">
                                 <i class="icon-repeat"></i>  Actualiser <span class="badge badge-inverse hide" id="badge"></span>
                             </a>
                             <a class="btn  btn-small dropdown-toggle" data-toggle="dropdown" href="#">              
@@ -178,7 +178,7 @@
                     <div id="reply2Comment">
                         <form id="formReply" class="formReply" action="<?php echo Router::url('comments/reply'); ?>" method="POST">                
                             <textarea name="content" placeholder="Reply here"></textarea>                
-                            <input type="hidden" name="manif_id" value="<?php echo $manif->id; ?>"/>
+                            <input type="hidden" name="manif_id" value="<?php echo $manif->manif_id; ?>"/>
                             <input type="hidden" name="type" value="com" />
                             <input type="hidden" name="reply_to" />
                             <input class="btn btn-small" type="submit" name="" value="Répondre">
@@ -803,7 +803,7 @@ $(document).ready(function(){
     	screenHeight:500,
         manifNumerus:'<?php echo $manif->numerus; ?>',
         manifName:"<?php echo $manif->nommanif; ?>",
-        manifId:'<?php echo $manif->id; ?>',
+        manifId:'<?php echo $manif->manif_id; ?>',
         manifBackgroundColor:"0xEEEEEE",
         userLogin:"Pumtchak",
         userBonhom:'bonhom_2',

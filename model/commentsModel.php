@@ -8,7 +8,7 @@ class Comments extends Model
 
 	public function findComments($req){
 
-
+		//$timestart=microtime(true);
 		foreach ($req as $k => $v) {
 			
 			$$k = $v;
@@ -46,7 +46,7 @@ class Comments extends Model
 		$q = " SELECT C.*, U.user_id, U.login, U.avatar, V.id as voted, I.logo 
 				FROM manif_comment as C
 				LEFT JOIN users as U ON U.user_id = C.user_id
-				LEFT JOIN manif_info as I ON I.id = C.manif_id
+				LEFT JOIN manif_info as I ON I.manif_id = C.manif_id
 				LEFT JOIN manif_comment_voted as V ON (V.comment_id = C.id AND V.user_id = ".$user_id." )
 				WHERE ";
 				if(isset($comment_id)) {
@@ -89,10 +89,106 @@ class Comments extends Model
 
 			
 		}
- 		
+ 		//$timeend=microtime(true);
+		//$time=$timeend-$timestart;
+		//debug('temps d\'execution avec les JOIN:'.$time);
 		return $array;
 	}
+	/*
+	public function findCommentsWithoutJOIN($req){
 
+		$timestart=microtime(true);
+
+		foreach ($req as $k => $v) {
+			
+			$$k = $v;
+		}
+
+		if(isset($order)){
+
+        	if ($order == "datedesc" || $order == '' || $order == '0')
+            	$order=" date DESC ";
+	        elseif ($order == "dateasc")
+	            $order=" date ASC ";
+	        elseif ($order == "noteasc")
+	            $order=" note ASC ";
+	        elseif ($order == "notedesc")
+            	$order=" note DESC ";
+        }
+        else {
+        	$order= " date DESC ";
+        }
+
+		if(isset($limit) && !empty($limit)){
+			
+			 $limit = (($page-1)*$limit).','.$limit;
+
+		}
+		else $limit = 165131654;
+        
+        if (isset($rch) && $rch != "0") {
+        	if( trim( $rch != "" ) ) {
+        		$rch =" ( U.login LIKE '%" . $rch . "%' OR X.content LIKE '%" . $rch . "%' )";
+        	}           
+        }
+
+
+		$q = " SELECT C.*, V.id as voted
+				FROM manif_comment as C
+				LEFT JOIN manif_comment_voted as V ON (V.comment_id = C.id AND V.user_id = ".$user_id." )
+				WHERE ";
+				if(isset($comment_id)) {
+								$q .= "
+								C.id=".$comment_id." ";	
+				} else {
+								$q .= "
+								C.manif_id=".$manif_id." AND C.reply_to=0 ";
+				}			
+				if (isset($type) && $type != "all" && $type != "0" )
+								$q .='
+								AND C.type="'.$type.'"';
+				if (isset($start) && $start!="0")
+								$q .='
+								AND C.id <= "'.$start.'"';
+				if( isset($newer) && $newer!="0")
+								$q .='
+								AND C.id > "'.$newer.'"';
+				$q.=" 
+				ORDER BY ".$order."
+				LIMIT ".$limit."
+			";
+
+		
+		$res = $this->db->prepare($q);
+		$res->execute();
+		$coms = $res->fetchAll(PDO::FETCH_OBJ);		
+
+
+		$array = array();
+		foreach($coms as $com){
+				
+			$array[] = $com;
+
+			if($com->replies > 0){
+
+				$array[] = $this->findReplies($com->id);
+
+			}
+
+			
+		}
+
+		$array = $this->JOIN_INFO('users',array('user_id','login','avatar'),$array,'user_id');
+		$array = $this->JOIN_INFO('manif_info',array('logo'),$array,'manif_id');
+ 		
+ 		$timeend=microtime(true);
+		$time=$timeend-$timestart;
+
+		debug('temps d\'execution sans les JOIN:'.$time);
+
+		return $array;
+	}
+	*/
 	public function findReplies($comment_id){
 
 		$array = array();

@@ -171,21 +171,21 @@
 				 		<?php endif; ?>
 
 				 		<div class="title">
-				 			<a class="nommanif" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><?php echo $manif->nommanif; ?></a>
-							<span class="numerus" id="numerus<?php echo $manif->id;?>" ><?php echo $manif->numerus; ?></span>
+				 			<a class="nommanif" href="<?php echo Router::url('manifs/view/'.$manif->manif_id.'/'.$manif->slug); ?>" ><?php echo $manif->nommanif; ?></a>
+							<span class="numerus" id="numerus<?php echo $manif->manif_id;?>" ><?php echo $manif->numerus; ?></span>
 							<?php echo ($manif->pid>0)? '<span class="label label-success">You Protest</span>' : '';?>							
 				 		</div>	
 				 		<div class="description"><?php echo $manif->description; ?></div>			 					 	
 				 		<div class="action">
 				 			<div class="btn-toolbar">
 				 			<?php if($this->session->user()): ?>
-						      <a class="btn btn-inverse btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-bullhorn icon-white"></i> <strong>Protest!</strong></a>
-						      <a class="btn btn-cancel btn-red" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> YouProtest</a>						      
+						      <a class="btn btn-inverse btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->manif_id;?>" data-manif_id="<?php echo $manif->manif_id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-bullhorn icon-white"></i> <strong>Protest!</strong></a>
+						      <a class="btn btn-cancel btn-red" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->manif_id;?>" data-manif_id="<?php echo $manif->manif_id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> YouProtest</a>						      
 						    <?php endif; ?>
 						    <?php if(isset($manif->isadmin)): ?>
-						      <a class="btn btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
+						      <a class="btn btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->manif_id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
 					    	<?php endif;?>
-						      <a class="btn" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><i class="icon-plus-sign"></i>  En Savoir +</a>					      		
+						      <a class="btn" href="<?php echo Router::url('manifs/view/'.$manif->manif_id.'/'.$manif->slug); ?>" ><i class="icon-plus-sign"></i>  En Savoir +</a>					      		
 							</div>
 				 		</div>
 				 	</div>

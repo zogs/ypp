@@ -2,6 +2,7 @@
 class Manifs extends Model {
 
 	public $table = 'manif_info';
+	public $primaryKey = 'manif_id';
 	public $validates = array(
 
 			'nommanif' => array(
@@ -47,12 +48,12 @@ class Manifs extends Model {
  		}
 
  		$sql .= ' FROM manif_info as D 
- 				JOIN manif_descr as MD ON MD.manif_id=D.id AND MD.lang="'.$lang.'"
+ 				JOIN manif_descr as MD ON MD.manif_id=D.manif_id AND MD.lang="'.$lang.'"
  				LEFT JOIN users as U ON U.user_id=id_createur
  				LEFT JOIN config_category as C ON ( C.id = D.cat2 OR C.id = D.cat3)   
-			    LEFT JOIN manif_tag as TM ON TM.manif_id = D.id
+			    LEFT JOIN manif_tag as TM ON TM.manif_id = D.manif_id
 			    LEFT JOIN manif_tags as T ON TM.tag_id = T.tag_id
-			    LEFT JOIN manif_admin as AD ON AD.manif_id=D.id AND AD.user_id ='.$req['user']['id'].'
+			    LEFT JOIN manif_admin as AD ON AD.manif_id=D.manif_id AND AD.user_id ='.$req['user']['id'].'
 			    LEFT JOIN association_admin as MA ON MA.user_id=U.user_id AND MA.creator=1
 			    LEFT JOIN association as A ON MA.asso_id=A.asso_id	
 		        LEFT JOIN world_country as WC ON WC.CC1=D.CC1
@@ -61,7 +62,7 @@ class Manifs extends Model {
 					      SELECT P.id, P.user_id, P.manif_id, P.date
 					      FROM manif_participation as P
 					      WHERE P.user_id ='. $req['user']['id'] .'
-					      ) AS P ON P.manif_id = D.id
+					      ) AS P ON P.manif_id = D.manif_id
 		     	';	
  		
 
@@ -132,7 +133,7 @@ class Manifs extends Model {
  		}
 
 
- 		$sql .= " GROUP BY D.id";
+ 		$sql .= " GROUP BY D.manif_id";
 
 
 
@@ -160,7 +161,7 @@ class Manifs extends Model {
  			$sql .= ' '.$req['end'];
  		}
  		
- 		// debug($sql);
+ 		//debug($sql);
 		$pre = $this->db->prepare($sql);
  		$pre->execute();
  		return $pre->fetchAll(PDO::FETCH_OBJ);
@@ -329,7 +330,7 @@ class Manifs extends Model {
 
  		$sql .= " FROM users as U 
  					JOIN manif_participation as P ON P.user_id=U.user_id 
- 					LEFT JOIN manif_info as M ON M.id = P.manif_id
+ 					LEFT JOIN manif_info as M ON M.manif_id = P.manif_id
  					LEFT JOIN manif_descr as D ON D.manif_id = P.manif_id AND D.lang='".$this->session->user('lang')."' 					
  					WHERE ";
 

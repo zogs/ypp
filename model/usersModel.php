@@ -160,7 +160,7 @@ class Users extends Model{
 		$results = array();
 
 		$sql = "SELECT $fields FROM manif_participation as P 
-				LEFT JOIN manif_info as M ON M.id = P.manif_id
+				LEFT JOIN manif_info as M ON M.manif_id = P.manif_id
 				LEFT JOIN manif_descr as D ON D.manif_id = P.manif_id AND D.lang='".$this->session->user('lang')."'
 				WHERE user_id = :user_id";
 
@@ -190,7 +190,7 @@ class Users extends Model{
 
         		FROM manif_participation as P
         		LEFT JOIN manif_descr as D ON D.manif_id=P.manif_id AND D.lang='".$this->session->user('lang')."'	
-        		LEFT JOIN manif_info as I ON I.id=P.manif_id
+        		LEFT JOIN manif_info as I ON I.manif_id=P.manif_id
            		WHERE P.user_id = $user_id
       		UNION
         --   	SELECT `id`,
@@ -209,7 +209,7 @@ class Users extends Model{
               	FROM manif_comment AS C
               	LEFT JOIN manif_participation AS P ON P.user_id = $user_id
               	LEFT JOIN manif_descr as D ON D.manif_id=P.manif_id AND D.lang='".$this->session->user('lang')."'
-              	LEFT JOIN manif_info as I ON I.id=P.manif_id	
+              	LEFT JOIN manif_info as I ON I.manif_did=P.manif_id	
              	WHERE C.manif_id = P.manif_id AND C.type='news'
 			ORDER BY date DESC
 			";

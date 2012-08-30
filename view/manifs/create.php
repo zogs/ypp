@@ -4,7 +4,7 @@
 
 		<?php echo $this->session->flash(); ?>
 
-		<form id="create-manif" class="" action="<?php echo Router::url('manifs/create/id:'.$manif->id.'/slug:'.$manif->slug); ?>" method="POST" enctype="multipart/form-data">
+		<form id="create-manif" class="" action="<?php echo Router::url('manifs/create/id:'.$manif->manif_did.'/slug:'.$manif->slug); ?>" method="POST" enctype="multipart/form-data">
 
 			<div class="parts">
 
