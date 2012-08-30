@@ -33,7 +33,6 @@ class Controller {
 
 		//On extrait les variables de la méthode appelée
 		extract($this->vars);
-
 		
 		//Si la vue par default
 		if( $this->view == 'default') {
