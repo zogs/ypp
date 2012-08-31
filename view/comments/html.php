@@ -66,16 +66,16 @@
                                          <i class="icon-thumbs-up"></i>                          
                                 </a>
                                 <?php if($com->reply_to==0): ?>
-                                <a class="btn btn-small btn-repondre bubbtop" title="Reply to this comment" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id; ?>" >Reply</a>
+                                <a class="btn btn-small btn-comment-reply bubbtop" title="Reply to this comment" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id; ?>" >Reply</a>
                                 <?php else: ?>
-                                <a class="btn btn-small btn-repondre bubbtop" title="Reply to this discussion" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->reply_to; ?>" >Reply</a>
+                                <a class="btn btn-small btn-comment-reply bubbtop" title="Reply to this discussion" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->reply_to; ?>" >Reply</a>
                                 <?php endif; ?>
                                 <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
                                     <span class="caret"></span>
                                 </a>
                                 <ul class="dropdown-menu"> 
                                     <?php if($com->reply_to!=0): ?> 
-                                    <li><a class="btn-repondre" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id;?>">Reply to this comment</a></li>
+                                    <li><a class="btn-comment-reply" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id;?>">Reply to this comment</a></li>
                                     <?php endif; ?>
                                     <li><a href="">Share</a></li>
                                     <li><a href="">Alert</a></li>

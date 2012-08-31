@@ -49,6 +49,7 @@ class Controller {
 
 		
 		//Recuperation des données du viewer
+
 		ob_start();
 		require $view;
 		$content_for_layout = ob_get_clean();
@@ -65,6 +66,7 @@ class Controller {
 	//@params $value : valeur de la variable
 
 	public function set($key,$value=null){
+
 		if(is_array($key)) {
 			$this->vars += $key;
 		}
@@ -76,10 +78,13 @@ class Controller {
 
 	//Permet de charger un model
 	public function loadModel($name){
- 
+ 	
 		$file = ROOT.DS.'model'.DS.$name.'Model.php';
+		
 		require_once($file);
+		
 		if(!isset($this->$name)) {
+				
 			$this->$name = new $name();
 
 			if(isset($this->Form)){
@@ -93,6 +98,7 @@ class Controller {
 		else {
 			//echo 'Model '.$name.' deja chargé';
 		}
+		
 		
 	}
 

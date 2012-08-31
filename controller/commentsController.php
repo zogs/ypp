@@ -10,35 +10,45 @@
  	public $layout = 'none';
  	public $table = 'manif_comment';
 
- 	public function view($manif_id , $comment_id = null){
+ 	public function index($context, $context_id){
 
+
+		
+
+
+		$context = (strlen($context)<=5)? $context : exit('wrong url context parameter');
+		$context_id = (is_numeric($context_id))? $context_id : exit('wrong url id parameter');
 
  		$this->loadModel('Comments');
- 		
- 		$perPage = 10;
+			
+			
+ 		$perPage = 4;
 		$params = array(	
-						
+									
+			"context" 	=>$context,
+			"context_id" =>$context_id,
+			'limit'      =>$perPage,
 			"pays"       =>$this->session->getPays(),
-			"lang"       =>$this->session->getLang(),
-			"comment_id" =>$comment_id,
-			"manif_id"   =>$manif_id,
-			'limit'      =>$perPage
+			"lang"       =>$this->session->getLang()
 			);
 
 		$array_session = ($this->session->user())? get_object_vars($this->session->user('obj')) : get_object_vars($this->session->noUserLogged() );
 		$array_get     = get_object_vars($this->request->get);
 		$params        = array_merge($array_session,$array_get,$params);			
 
+		
 		$d['coms']     = $this->Comments->findComments($params);
-		$d['total']    = $this->Comments->totalComments($manif_id);
+		$d['total']    = $this->Comments->totalComments($context,$context_id);
+		
 
 		$d['count']    = count($d['coms']);	
-		$d['manif_id'] = $manif_id;		
+		$d['context']  = $context;
+		$d['context_id'] = $context_id;
 		$d['remain']   = $d['total'] - ($perPage*$this->request->get->page);
 		$d['nbpage']   = ceil($d['total']/$perPage);
 
 		$this->set($d);
-			
+
 
  	}
 

@@ -157,7 +157,7 @@
                             </ul>
                         </div>  
                         <div class="btn-group pull-right">
-                            <a class="btn btn-small bubble-top" title="Display new comments" href="<?php echo Router::url('comments/view/'.$manif->manif_id); ?>" id="refresh_com" data-url-count-com="<?php echo Router::url('comments/tcheck/'.$manif->manif_id.'/'); ?>">
+                            <a class="btn btn-small bubble-top" title="Display new comments" href="<?php echo Router::url('comments/index/manif/'.$manif->manif_id); ?>" id="refresh_com" data-url-count-com="<?php echo Router::url('comments/tcheck/'.$manif->manif_id.'/'); ?>">
                                 <i class="icon-repeat"></i>  Actualiser <span class="badge badge-inverse hide" id="badge"></span>
                             </a>
                             <a class="btn  btn-small dropdown-toggle" data-toggle="dropdown" href="#">              
@@ -176,7 +176,7 @@
                         <!-- Requete Ajax -->
                     </div>
                     <div id="reply2Comment">
-                        <form id="formReply" class="formReply" action="<?php echo Router::url('comments/reply'); ?>" method="POST">                
+                        <form id="formCommentReply" class="formCommentReply" action="<?php echo Router::url('comments/reply'); ?>" method="POST">                
                             <textarea name="content" placeholder="Reply here"></textarea>                
                             <input type="hidden" name="manif_id" value="<?php echo $manif->manif_id; ?>"/>
                             <input type="hidden" name="type" value="com" />
@@ -225,7 +225,7 @@ $(document).ready(function(){
         intervalRoutine = false;
 
 
-        $('.btn-share').toggle(function(){
+        $('.btn-share').toggle(function(){            
             intervalRoutine = setInterval(addBonhom,Math.floor(Math.random()*1000));
         },
         function(){
@@ -286,9 +286,9 @@ $(document).ready(function(){
   
 
 
-        /*
-        *   Hover comments
-        */
+        /* ==================================
+        *   On hover a comment SHOW ACTION
+         ====================================*/
 
         $(".comment").livequery(function(){ 
             $(this) 
@@ -303,9 +303,12 @@ $(document).ready(function(){
                     .unbind('mouseout'); 
         }); 
 
-        $(".btn-repondre").livequery('click',function(){
+        /* ==================================
+        *   On click "Reply" SHOW COMMENT FORM
+         ====================================*/
+        $(".btn-comment-reply").livequery('click',function(){
 
-            var form = $('#formReply');
+            var form = $('#formCommentReply');
             var url = form.attr('data-url');
             var reply_to = $(this).attr('href');
             var comment_id = $(this).attr('data-comid');
@@ -313,9 +316,13 @@ $(document).ready(function(){
             form.appendTo($("#com"+comment_id));      
 
             return false;
-        });        
+        });
 
-        $(".formReply").livequery('submit',function(){
+        /* ==================================
+        *   On submit 'formCommentReply' SEND AJAX REQUEST & SHOW COMMENT
+         ====================================*/        
+
+        $(".formCommentReply").livequery('submit',function(){
 
             var url = $(this).attr('action');
             var datas = $(this).serialize();
@@ -329,7 +336,7 @@ $(document).ready(function(){
 
                    if(!com.fail){
                     
-                    $("#formReply").appendTo("#reply2Comment");
+                    $("#formCommentReply").appendTo("#reply2Comment");
                     var html = $('<div />').html(com.content).text(); //Jquery trick to decode html entities
                     $("#com"+parent_id).next('.replies').remove();
                     $("#com"+parent_id).replaceWith(html);
@@ -349,27 +356,29 @@ $(document).ready(function(){
 
 
         //Variable globale
-		comments_url ='';
-		comments_params = {};
-        comments_refresh_interval = false;
-        comments_tcheck_interval = 60;
-        comments_tcheck_offset = 0;
-        tcheck = setInterval(tcheckcomments,comments_tcheck_interval*1000);
-        refresh = false;
-        loading_comment = false;        
-        page_comments = 1;
-        top_id = 0;
+		Global_showComments_url ='';
+		Global_showComments_params = {};
+        Global_refreshComments = false;
+        Global_refreshComments_interval = false;
+        Global_tcheckComments_interval = 60;
+        Global_tcheckComments_offset = 0;
+        Global_tcheckComments = setInterval(tcheckcomments,Global_tcheckComments_interval*1000);
+        Global_loadingComments = false;        
+        Global_pageComments = 1;
+        Global_newerCommentId = 0;
 
 
 
         //Interactions
         $(window).bind('load',function(){
-            comments_url = $("#refresh_com").attr('href');    
-            show_comments('clear');            
+            if($("a#refresh_com")){
+                Global_showComments_url = $("#refresh_com").attr('href');    
+                show_comments('clear'); 
+            }           
         });
         $("a#refresh_com").on('click',function(){            
             clean_params('page','order','type','newer','bottom');
-            page_comments = 1;
+            Global_pageComments = 1;
             show_comments('clear');
             return false;
         });
@@ -379,7 +388,7 @@ $(document).ready(function(){
             var param = $(this).attr('href');            
             construct_params(param);
             construct_params('?page=1');
-            page_comments=1;
+            Global_pageComments=1;
             show_comments('clear');
             return false;            
         });
@@ -392,7 +401,7 @@ $(document).ready(function(){
         });
 
         //Affiche les commentaires
-        //utilise les parametres contenus dans comments_params[]
+        //utilise les parametres contenus dans Global_showComments_params[]
         //@arg[0] string clear/newer/bottom  
 		function show_comments(){
 
@@ -401,19 +410,19 @@ $(document).ready(function(){
             clean_params('newer','start'); 
 
             if(arg=='new')
-                 construct_params("?newer="+top_id);
+                 construct_params("?newer="+Global_newerCommentId);
             if(arg=='bottom')
-                construct_params("?start="+top_id);    
+                construct_params("?start="+Global_newerCommentId);    
 
 			$.ajax({
 			  type: 'GET',
-			  url: comments_url,
-			  data: arrayParams2string(comments_params),
+			  url: Global_showComments_url,
+			  data: arrayParams2string(Global_showComments_params),
 			  success: function( coms ) 
               {
-                console.log( 'count:'+coms.count+'   remain:'+coms.remain+'   total:'+coms.total+'   nbpage:'+coms.nbpage);
+                //console.log( 'count:'+coms.count+'   remain:'+coms.remain+'   total:'+coms.total+'   nbpage:'+coms.nbpage);
                 //Set id of the top comment
-                if(top_id==0) top_id = coms.first_id;
+                if(Global_newerCommentId==0) Global_newerCommentId = coms.first_id;
 
                 //Jquery trick to decode html entities
                 var html = $('<div />').html(coms.content).text(); 
@@ -426,7 +435,7 @@ $(document).ready(function(){
                 if(arg=='new') {
                     $("#badge").empty().hide();
                     $('#comments').prepend(html);
-                    comments_tcheck_offset = 0;
+                    Global_tcheckComments_offset = 0;
                 }                        
                 else if(arg=='bottom') {                           
                     $('#comments').append(html);                       
@@ -434,11 +443,11 @@ $(document).ready(function(){
                 else if(!arg || arg=='clear'){
                     $("#badge").empty().hide();                        
                     $('#comments').empty().append(html);
-                    comments_tcheck_offset = 0;  
+                    Global_tcheckComments_offset = 0;  
                 }
 
 
-                loading_comment = false;
+                Global_loadingComments = false;
                 infiniteComment();
                 
                 if(coms.remain<=0)
@@ -469,12 +478,12 @@ $(document).ready(function(){
             $(window).scroll(function(){
                 
                 var ylastCom = $("#loadingComments").offset();                 
-                if( (ylastCom.top <= parseInt($(window).scrollTop()+$(window).height())  ) && loading_comment===false && $("#numCommentsLeft").html()  > 0 ) 
+                if( (ylastCom.top <= parseInt($(window).scrollTop()+$(window).height())  ) && Global_loadingComments===false && $("#numCommentsLeft").html()  > 0 ) 
                 {   
 
-                    loading_comment = true;
-                    new_page        = page_comments+1;
-                    page_comments   = new_page;
+                    Global_loadingComments = true;
+                    new_page        = Global_pageComments+1;
+                    Global_pageComments   = new_page;
                     construct_params("?page="+new_page);                    
                     show_comments('bottom'); 
                 }
@@ -490,7 +499,7 @@ $(document).ready(function(){
 				if(strpos(param,'?',0)==0){
 					param = str_replace('?','',param);
 					p = explode('=',param);
-					comments_params[p[0]] = p[1];	
+					Global_showComments_params[p[0]] = p[1];	
 				}
 				else alert('href doit commencer par ?');                
 				return param;
@@ -500,10 +509,10 @@ $(document).ready(function(){
         
         function clean_params(){
             for(var key in arguments) {   
-                for(var cle in comments_params){                    
-                    //console.debug(' key:'+arguments[key]+'    cle:'+cle+'   value:'+comments_params[cle]);
+                for(var cle in Global_showComments_params){                    
+                    //console.debug(' key:'+arguments[key]+'    cle:'+cle+'   value:'+Global_showComments_params[cle]);
                     if(arguments[key]==cle){
-                        comments_params[cle] = 0;
+                        Global_showComments_params[cle] = 0;
                     }                    
                 }
             }                         
@@ -523,14 +532,14 @@ $(document).ready(function(){
 
         function setIntervalRefresh(second){
 
-            if(refresh!=false) clearInterval(refresh);            
-            refresh = setInterval( function() { show_comments('new');} ,second*1000);        
+            if(Global_refreshComments!=false) clearInterval(Global_refreshComments);            
+            Global_refreshComments = setInterval( function() { show_comments('new');} ,second*1000);        
         }
 
         function setIntervalTcheck(second){
 
-            if(tcheck!=undefined) clearInterval(tcheck);            
-            tcheck = setInterval(tcheckcomments,second*1000);        
+            if(Global_tcheckComments!=undefined) clearInterval(Global_tcheckComments);            
+            Global_tcheckComments = setInterval(tcheckcomments,second*1000);        
         }
         function tcheckcomments(){
 
@@ -538,8 +547,8 @@ $(document).ready(function(){
             var obj = $('#refresh_com');
             var badge = obj.find('#badge');
             var url = obj.attr('data-url-count-com');
-            comments_tcheck_offset = Number(comments_tcheck_offset) + Number(comments_tcheck_interval);
-            var second = comments_tcheck_offset;
+            Global_tcheckComments_offset = Number(Global_tcheckComments_offset) + Number(Global_tcheckComments_interval);
+            var second = Global_tcheckComments_offset;
 
             url += second;
 
@@ -589,7 +598,7 @@ $(document).ready(function(){
 
 
     //===================================================================
-    //Soumission du commentaire avec systeme de preview des media
+    // Soumission du commentaire avec systeme de preview des media
     //===================================================================
 
     $("#smartSubmit").on('click',function(){

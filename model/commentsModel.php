@@ -8,7 +8,6 @@ class Comments extends Model
 
 	public function findComments($req){
 
-		//$timestart=microtime(true);
 		foreach ($req as $k => $v) {
 			
 			$$k = $v;
@@ -46,15 +45,19 @@ class Comments extends Model
 		$q = " SELECT C.*, U.user_id, U.login, U.avatar, V.id as voted, I.logo 
 				FROM manif_comment as C
 				LEFT JOIN users as U ON U.user_id = C.user_id
-				LEFT JOIN manif_info as I ON I.manif_id = C.manif_id
+				LEFT JOIN manif_info as I ON I.manif_id = C.context_id
 				LEFT JOIN manif_comment_voted as V ON (V.comment_id = C.id AND V.user_id = ".$user_id." )
 				WHERE ";
 				if(isset($comment_id)) {
-								$q .= "
+							$q .= "
 								C.id=".$comment_id." ";	
 				} else {
-								$q .= "
-								C.manif_id=".$manif_id." AND C.reply_to=0 ";
+							$q .= "
+								C.context='".$context."'
+								AND
+								C.context_id=".$context_id." 
+								AND 
+								C.reply_to=0 ";
 				}			
 				if (isset($type) && $type != "all" && $type != "0" )
 								$q .='
@@ -70,7 +73,7 @@ class Comments extends Model
 				LIMIT ".$limit."
 			";
 
-		
+		//debug($q);
 		$res = $this->db->prepare($q);
 		$res->execute();
 		$coms = $res->fetchAll(PDO::FETCH_OBJ);
@@ -89,9 +92,7 @@ class Comments extends Model
 
 			
 		}
- 		//$timeend=microtime(true);
-		//$time=$timeend-$timestart;
-		//debug('temps d\'execution avec les JOIN:'.$time);
+
 		return $array;
 	}
 	/*
@@ -225,9 +226,9 @@ class Comments extends Model
 
 	}
 
-	public function totalComments($manif_id){
+	public function totalComments($context,$context_id){
 
-		$sql = ' SELECT COUNT(id) as count FROM manif_comment WHERE manif_id='.$manif_id.' AND reply_to=0';
+		$sql = "SELECT COUNT(id) as count FROM manif_comment WHERE context='$context' AND context_id=$context_id AND reply_to=0";
 		$pre = $this->db->prepare($sql);
 		$pre->execute();
 		return $pre->fetchColumn();
@@ -243,7 +244,7 @@ class Comments extends Model
 
 	public function userTotalManifsComments($user_id,$manif_id){
 
-		$sql = 'SELECT COUNT(id) as count FROM manif_comment WHERE user_id='.$user_id.' AND manif_id='.$manif_id;
+		$sql = 'SELECT COUNT(id) as count FROM manif_comment WHERE user_id='.$user_id.' AND context="manif" AND context_id='.$manif_id;
 		$res = $this->db->prepare($sql);
 		$res->execute();
 		return $res->fetchColumn();

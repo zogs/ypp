@@ -49,7 +49,6 @@
     echo json_encode($array);
 
 
-
 ?>
 
 

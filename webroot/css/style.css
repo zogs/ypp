@@ -254,9 +254,9 @@ Commentaires
 .previewMedia-title { width:100%; color:black; font-weight:bold;}
 .previewMedia-desc { overflow:hidden; width:100%; max-height:250px; }
 
-.formReply { float:left; margin-left:5%; padding:10px 3% 0 3%; width:70%;}
-.formReply textarea { float:left; width:100%; height:100px; }
-.formReply input[type=submit] { float:left; display:block;}
+.formCommentReply { float:left; margin-left:5%; padding:10px 3% 0 3%; width:70%;}
+.formCommentReply textarea { float:left; width:100%; height:100px; }
+.formCommentReply input[type=submit] { float:left; display:block;}
 #reply2Comment form { display:none;}
 
 
