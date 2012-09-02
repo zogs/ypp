@@ -1,9 +1,9 @@
 <div id="groups">
-	<div class="groupBanner"></div>
+	<div class="groupBanner"><?php if(isset($group->banner) && !empty($group->banner)) echo '<img src="'.Router::webroot('media/group/banner/'.$group->banner).'" />'; ?></div>
 	<div class="groupHead">
 		
 		<div class="groupName">
-			30 Millions d'Amis
+			<?php echo $group->name; ?>
 			<div class="groupMeta">
 				<ul>
 					<li>France</li>
@@ -16,11 +16,17 @@
 			Facebook - Twitter
 		</div> 
 	</div>
-	<div class="groupLogo"><img src="<?php echo Router::webroot('media/manif/logo/m2.png');?>" /></div>
+	<div class="groupLogo"><img src="<?php echo Router::webroot('media/group/logo/'.$group->logo);?>" /></div>
 	<div class="leftColomn">
-		<div class="groupDescription">
-			La Quadrature du Net est une organisation de défense des droits et libertés des citoyens sur Internet. Elle promeut une adaptation de la législation française et européenne qui soit fidèle aux valeurs qui ont présidé au développement d'Internet, notamment la libre circulation de la connaissance.
-			<strong>Lire la suite</strong>
+		<div class="groupDescription expandable" data-maxlength="500" data-expandtext=" read more..." data-collapsetext=" reduce">
+			<?php echo $group->description; ?>
+
+		</div>
+
+		<div>
+
+
+			<?php $this->request('comments','show',$group); ?>
 		</div>
 		
 	</div>

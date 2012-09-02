@@ -10,6 +10,7 @@
 	<script type="text/javascript" src="<?php echo Router::webroot('js/phpfunctions.js');?>"></script>
 	<script type="text/javascript" src="<?php echo Router::webroot('js/jquery/select2-2.1/select2.min.js') ?>"></script>
 	<link rel="stylesheet" style="text/css" href="<?php echo Router::webroot('js/jquery/select2-2.1/select2.css');?>" />
+	<script type="text/javascript" src="<?php echo Router::webroot('js/jquery/jquery.expander.min.js');?>"></script>
 	<script type="text/javascript" src="<?php echo Router::webroot('js/main.js'); ?>"></script>
 	<title><?php echo isset($title_for_layout)?$title_for_layout : 'Ypp';?></title>
 	

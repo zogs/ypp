@@ -47,7 +47,7 @@ class ManifsController extends Controller{
 		//get protests
 		$perPage = 10;
 		$params = array(
-			"fields"=>array('D.manif_id','D.numerus','D.date_creation','D.logo','D.cat2','D.cat3','MD.nommanif','MD.description','MD.slug','P.id as pid','AD.user_id as isadmin'),
+			"fields"=>array('D.manif_id as id','D.numerus','D.date_creation','D.logo','D.cat2','D.cat3','MD.nommanif','MD.description','MD.slug','P.id as pid','AD.user_id as isadmin'),
 			"conditions"=>array('D.online'=>1),
 			"cat2"=>$this->CookieRch->read('cat2'),
 			"cat3"=>$this->CookieRch->read('cat3'),
@@ -139,7 +139,7 @@ class ManifsController extends Controller{
 		$this->loadModel('Manifs');
 
 		$params = array(
-			'fields' => array('D.manif_id','D.numerus','D.logo','D.date_creation','MD.nommanif','MD.slug','U.login as user','P.id as pid','MD.description','AD.user_id as isadmin'),
+			'fields' => array('D.manif_id as id','D.numerus','D.logo','D.date_creation','MD.nommanif','MD.slug','U.login as user','P.id as pid','MD.description','AD.user_id as isadmin'),
 			'conditions' => array('D.manif_id'=>$id,'online'=>1),
 			"user"=>array('statut'=>$this->session->user('statut'),"id"=>$this->session->user_id()),
 			"lang"=>$this->session->getLang(),
@@ -147,6 +147,8 @@ class ManifsController extends Controller{
 			);
 
 		$d['manif'] = $this->Manifs->findFirstManif($params);
+		$d['manif']->context = 'manif';
+		$d['manif']->context_id = $id;
 
 		if(empty($d['manif'])){
 			$this->e404('Manif introuvable');

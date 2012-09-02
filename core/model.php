@@ -402,6 +402,28 @@
  		return $f; 	
  	}
 
+ 	public function sqlConditions($conditions){
+
+ 		$c='';
+ 		if($conditions && !empty($array)){
+	 		if(is_array($conditions)){
+	 			$cond = array();
+	 			foreach ($conditions as $k => $v) {
+	 				if(!is_numeric($v))
+	 					$v = '"'.mysql_escape_string($v).'"';
+	 				$cond[] = "$k=$v";
+	 			}
+	 			$c .= implode(' AND ',$cond);
+	 		}
+	 		else
+	 			$c .= $conditions;
+	 	}
+	 	else
+	 		$c .= '1=1';
+	 	return $c;
+ 	}
+
+
  	public function JOIN_INFO($table,$fields,$data,$key){
 
 	 	$array = array();

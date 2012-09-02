@@ -10,10 +10,21 @@
  	public $layout = 'none';
  	public $table = 'manif_comment';
 
- 	public function index($context, $context_id){
+
+ 	public function show( $obj ){
 
 
-		
+ 		$d['context'] = $obj->context;
+ 		$d['context_id'] = $obj->context_id;
+ 		$d['isadmin'] = $obj->isadmin;
+
+
+ 		$this->set($d);
+ 		$this->view = 'comments/show';
+ 		$this->render();
+
+ 	}
+ 	public function index($context, $context_id, $comment_id = null){
 
 
 		$context = (strlen($context)<=5)? $context : exit('wrong url context parameter');
@@ -27,6 +38,7 @@
 									
 			"context" 	=>$context,
 			"context_id" =>$context_id,
+			"comment_id" =>$comment_id,
 			'limit'      =>$perPage,
 			"pays"       =>$this->session->getPays(),
 			"lang"       =>$this->session->getLang()
@@ -49,7 +61,13 @@
 
 		$this->set($d);
 
+ 	}
 
+ 	public function view($comment_id){
+
+ 		$this->view = 'comments/index';
+		$this->index('com','1',$comment_id);
+		
  	}
 
  	public function tcheck($manif_id,$second){
@@ -83,10 +101,12 @@
  			//New Objet
  			$newComment = new stdClass();
  			//Values
+ 			$newComment->context = $this->request->data->context;
  			$newComment->user_id = $this->session->user('user_id');
  			$newComment->lang = $this->session->getLang();
- 			$newComment->manif_id = $this->request->data->manif_id;
+ 			$newComment->context_id = $this->request->data->context_id;
  			$newComment->type = $this->request->data->type;
+
  			//Content treatment
  			//If there is a media content
  			if(isset($this->request->data->media) && $this->request->data->media !=''){
@@ -123,41 +143,48 @@
  	public function reply(){
 
  		$this->loadModel('Comments');
- 		$this->view = 'comments/view';
+ 		$this->view = 'comments/index';
  		$this->layout = 'none';
 
- 		if( $this->request->post('reply_to') ){
+ 		if($this->request->post('content')!=''){
 
- 			if($this->session->isLogged()){
+	 		if( $this->request->post('reply_to') ){
 
- 			//On incremente le nombre de réponse du commentaire
- 			$this->Comments->increment(array('field'=>'replies','id'=>$this->request->data->reply_to));
+	 			if($this->session->isLogged()){
 
- 			//On rajoute les params nécessaires
- 			$this->request->data->user_id = $this->session->user('user_id');
- 			$this->request->data->lang = $this->session->getLang();
+	 			//On incremente le nombre de réponse du commentaire
+	 			$this->Comments->increment(array('field'=>'replies','id'=>$this->request->data->reply_to));
 
- 			//On sauvegarde la reponse dans la base
- 			$this->Comments->save($this->request->data);
+	 			//On rajoute les params nécessaires
+	 			$this->request->data->user_id = $this->session->user('user_id');
+	 			$this->request->data->lang = $this->session->getLang();
 
- 			//Récupération de l'id du commentaire
- 			$comment_id = $this->request->data->reply_to;
+	 			//On sauvegarde la reponse dans la base
+	 			$this->Comments->save($this->request->data);
 
- 			//Enfin , on renvoi la vue du commentaire
- 			$this->view($this->request->data->manif_id,$comment_id);
+	 			//Récupération de l'id du commentaire
+	 			$comment_id = $this->request->data->reply_to;
 
+	 			//Enfin , on renvoi la vue du commentaire
+	 			$this->index($this->request->data->context,$this->request->data->context_id,$comment_id);
+
+		 		}
+		 		else {
+
+		 			$d['fail'] = 'You should log in first..';
+		 			$this->set($d);
+		 		}
 	 		}
 	 		else {
 
-	 			$d['fail'] = 'You should log in first..';
+	 			$d['fail'] = '[Error] Reply_to is missing [Action] Post a reply ';
 	 			$this->set($d);
 	 		}
- 		}
- 		else {
-
- 			$d['fail'] = '[Error] Post Data missing [Action] Post a reply ';
- 			$this->set($d);
- 		}
+	 	}
+	 	else {
+	 		$d['fail'] = 'This is empty you know...';
+	 		$this->set($d);
+	 	}
  	
 
  	}

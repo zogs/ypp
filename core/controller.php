@@ -26,7 +26,7 @@ class Controller {
 	// Permet de rendre le resultat du controller
 	// @params view : la page a rendre
 
-	public function render($view){
+	public function render($view = null){
 		
 		//Si la page a deja ete rendu on stop la function
 		if($this->rendered) return false;
@@ -119,12 +119,12 @@ class Controller {
 	// @params 
 	// $controller prefixe du Controller .ex: users
 	// $action action à appeler
-	public function request($controller,$action){
+	public function request($controller,$action, $params = null){
 
 		$controller .= 'Controller';
 		require_once ROOT.DS.'controller'.DS.$controller.'.php';
 		$c = new $controller;
-		return $c->$action();
+		return $c->$action( $params );
 	}
 
 	public function redirect($url,$code = null){
