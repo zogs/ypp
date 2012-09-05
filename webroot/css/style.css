@@ -253,7 +253,7 @@ Commentaires
 .previewMedia-close:hover { text-decoration:underline; cursor:pointer;}
 .previewMedia-title { width:100%; color:black; font-weight:bold;}
 .previewMedia-desc { overflow:hidden; width:100%; max-height:250px; }
-
+.userAvatarCommentForm { float:left; height: 30px; margin:0 5px 0 0;}
 .formCommentReply { float:left; margin-left:5%; padding:10px 3% 0 3%; width:70%;}
 .formCommentReply textarea { float:left; width:100%; height:100px; }
 .formCommentReply input[type=submit] { float:left; display:block;}
@@ -378,18 +378,23 @@ Group View
 */
 
 #groups .groupBanner { min-height:30px;}
-#groups .groupHead { width: 100%; height: 100px; background: #292929; color: #FFF; border:1px solid rgba(0,0,0,0.1); box-shadow:inset 0 -5px 20px rgba(0,0,0,0.2);}
+#groups .groupHead { width: 100%; height: 100px; background: #025362; color: #FFF; border:1px solid rgba(0,0,0,0.1); box-shadow:inset 0 -20px 100px rgba(0, 0, 0, 0.2);}
 #groups .groupLogo { position:relative; top:0; margin:-125px 15px -25px 20px; }
 #groups .groupLogo img { background: #FFF; width: 160px; height: 150px; border: 1px solid rgba(0,0,0,0.2);}
-#groups .groupName { float:left; display:inline-block; margin:15px 50px 0 200px; font-size: 18px; font-weight: bold;}
+#groups .groupName { float:left; display:inline-block; margin:15px 50px 0 200px; font-size: 20px; font-weight: bold;}
 #groups .groupMeta {font-size: 12px; font-weight: normal;}
+#groups .groupMeta ul { list-style-type: none; margin:5px 0 0 0;}
 #groups .groupSocial { display:inline-block; margin:15px 0 0 0; font-size: 12px;}
-#groups .leftColomn { float:left; width:65%; }
+#groups .leftColomn { float:left; width:63%; padding:30px 1% 20px 1%; }
 #groups .rightColomn {float:right; width:35%; margin-top:-50px}
-#groups .groupDescription { font-size: 12px; padding:30px 10px 20px 10px; color:#444343; }
+#groups .groupDescription { font-size: 12px; color:#444343; margin-bottom:20px; }
 #groups .rightBlock { float:left; width: 85%; padding:5px 5%; margin: 0 0 15px 0;background: #f6f6f6; border:1px solid #bebdbd;}
-#groups .rightBlock h1 {width: 90%; padding:0px 5%; text-align:left; font-size: 14px; text-transform: uppercase; font-weight: bold; background:#292929; color:white;  }
+#groups .rightBlock h1 {width: 90%; padding:0px 5%; text-align:left; font-size: 14px; text-transform: uppercase; font-weight: bold; background:#025362; color:white;  }
 #groups .rightBlock .cont { width: 90%; padding:2px 5%; color:#898989; font-size: 12px;}
+
+
+.uppercase { text-transform: uppercase; }
+
 
 /*
 Boite Modal

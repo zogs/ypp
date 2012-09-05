@@ -209,8 +209,8 @@ class Users extends Model{
               	FROM manif_comment AS C
               	LEFT JOIN manif_participation AS P ON P.user_id = $user_id
               	LEFT JOIN manif_descr as D ON D.manif_id=P.manif_id AND D.lang='".$this->session->user('lang')."'
-              	LEFT JOIN manif_info as I ON I.manif_did=P.manif_id	
-             	WHERE C.manif_id = P.manif_id AND C.type='news'
+              	LEFT JOIN manif_info as I ON I.manif_id=P.manif_id	
+             	WHERE C.context_id = P.manif_id AND C.context='manif' AND C.type='news'
 			ORDER BY date DESC
 			";
 

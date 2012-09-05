@@ -16,7 +16,12 @@
 
  		$d['context'] = $obj->context;
  		$d['context_id'] = $obj->context_id;
- 		$d['isadmin'] = $obj->isadmin;
+
+ 		$d['isadmin'] = false;
+ 		$d['commentsAllow'] = true;
+
+ 		$d['flash'] = array('message'=>'You could spread a News to all your Protest(s) by filling the Title form',
+ 							'type'=>'warning');
 
 
  		$this->set($d);

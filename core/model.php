@@ -405,7 +405,7 @@
  	public function sqlConditions($conditions){
 
  		$c='';
- 		if($conditions && !empty($array)){
+ 		if($conditions && !empty($conditions)){
 	 		if(is_array($conditions)){
 	 			$cond = array();
 	 			foreach ($conditions as $k => $v) {
@@ -424,35 +424,42 @@
  	}
 
 
- 	public function JOIN_INFO($table,$fields,$data,$key){
+ 	public function JOIN($table,$obj,$fields,$conds){
 
 	 	$array = array();
 
 	 	$fields = $this->sqlFields($fields);
 
-		$sql = "SELECT ".$fields." FROM ".$table." WHERE ".$key." = :".$key;
+		$sql = "SELECT ".$fields." FROM ".$table." WHERE ".$this->sqlConditions($conds);
 		$pre = $this->db->prepare($sql);
 
-		foreach ($data as $obj) {
+		if(is_object($obj)){
 
-			if(is_object($obj)){
+			//$pre -> bindValue(":".$key,$obj->$key);
+			$pre -> execute();
+			$res = $pre->fetch(PDO::FETCH_OBJ);
+			if(!empty($res)){
+				foreach ($res as $k=>$v) {
+					
+					$obj->$k = $v;
 
-				$pre -> bindValue(":".$key, $obj->$key);
-				$pre -> execute();
-				$res = $pre->fetch(PDO::FETCH_OBJ);
-				foreach ($res as $k => $value) {
-				
-					$obj->$k = $value;
 				}
-				$array[] = $obj;
 			}
-			elseif(is_array($obj)){
 
-				$obj = $this->JOIN_INFO($table,$fields,$obj,$key);
-			}
+			return $obj;
+
 		}
+		elseif( is_array($obj)){
 
-		return $array;
+			foreach ($obj as $row) {
+
+				$array[] = $this->JOIN_INFO($table,$fields,$row,$key);
+				
+			}
+
+			return $array;
+		}
+		
 
 	}
 }

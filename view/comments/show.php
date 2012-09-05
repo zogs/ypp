@@ -1,16 +1,31 @@
 <?php
 
-                    if(isset($isadmin)){
-                        $this->session->setFlash('Your are <strong>creator</strong> of this protest. You could <strong>spread a News</strong> by filling the title form.','warning');
+                    if(!empty($isadmin)){
+                        $this->session->setFlash($flash['message'],$flash['type']);
                         echo $this->session->flash();
                     }
                     ?>
 
                     <?php if ($this->session->user()): ?>
                     <form id="smartForm" class="form-ajax" action="<?php echo Router::url('comments/add'); ?>" method="POST">
-                        <?php if(isset($isadmin) && !empty($isadmin)): ?>
+                        <?php 
+                        //Si c'est l'admin
+                        if(!empty($isadmin)):
+
+                        ?>
                         <input type="text" name="head" id="head" placeholder="Enter a title to your news" />
                         <?php endif; ?>
+
+                        <?php 
+
+                        //Si les commentaires sont authorisé OU si c'est l'admin
+                        if(
+                            !empty($commentsAllow) 
+                            ||
+                            !empty($isadmin)
+                        ): ?>
+
+                        <img class="userAvatarCommentForm" src="<?php echo Router::url($this->session->user('avatar')); ?>" />
                         <textarea name="content" id="smartTextarea" data-url-preview="<?php echo Router::url('comments/preview'); ?>" placeholder="Type text / Paste a link here"></textarea>
                         <input type="hidden" name="context" value="<?php echo $context; ?>" />
                         <input type="hidden" name="context_id" value="<?php echo $context_id; ?>" />                        
@@ -30,6 +45,7 @@
                             </ul>
                         </div>           
                         <div id="commentSmartPreview"></div>
+                        <?php endif; ?>
                     </form>
                     
                     <div class="btn-toolbar" style="margin-top:0">  
@@ -131,6 +147,7 @@
                             <input type="hidden" name="context_id" value="<?php echo $context_id; ?>"/>
                             <input type="hidden" name="type" value="com" />
                             <input type="hidden" name="reply_to" />
+                            <img class="userAvatarCommentForm" src="<?php echo Router::url($this->session->user('avatar')); ?>" />
                             <input class="btn btn-small" type="submit" name="" value="Répondre">
                         </form>
                     </div>

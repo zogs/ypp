@@ -8,6 +8,7 @@ class Comments extends Model
 
 	public function findComments($req){
 
+		debug($req);
 		foreach ($req as $k => $v) {
 			
 			$$k = $v;
