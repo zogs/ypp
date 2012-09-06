@@ -54,7 +54,7 @@
  		$this->loadModel('Comments');
 			
 			
- 		$perPage = 4;
+ 		$perPage = 10;
 		$params = array(	
 									
 			"context" 	=>$context,
@@ -70,7 +70,7 @@
 		$params        = array_merge($array_get,$params);			
 
 		
-		$d['coms']     = $this->Comments->findComments($params);
+		//$d['coms']     = $this->Comments->findComments($params);
 		$d['coms']     = $this->Comments->findCommentsWithoutJOIN($params);
 		$d['total']    = $this->Comments->totalComments($context,$context_id);
 		
@@ -87,8 +87,13 @@
 
  	public function view($comment_id){
 
- 		$this->view = 'comments/index';
-		$this->index('com','1',$comment_id);
+ 		$this->layout = 'default';
+ 		$this->loadModel('Comments');
+
+ 		$d['coms'] = $this->Comments->getComments($comment_id);
+
+ 		$this->set($d);
+
 		
  	}
 

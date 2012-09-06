@@ -81,27 +81,15 @@ class Comments extends Model
 		$res->execute();
 		$coms = $res->fetchAll(PDO::FETCH_OBJ);
 
-		
-		$array = array();
-		foreach($coms as $com){
-				
-			$array[] = $com;
+		$coms = $this->findReplies($coms);
 
-			if($com->replies > 0){
-
-				$array[] = $this->findReplies($com->id);
-
-			}
-
-			
-		}
 		// debug($array);
-		return $array;
+		return $coms;
 	}
 	
 	public function findCommentsWithoutJOIN($req){
 
-		$timestart=microtime(true);
+		//$timestart=microtime(true);
 
 		foreach ($req as $k => $v) {
 			
@@ -138,15 +126,15 @@ class Comments extends Model
 
         $user_id = $this->session->user('user_id');
 
-		$q = " SELECT C.*
+		$sql = " SELECT C.*
 				FROM manif_comment as C
 				
 				WHERE ";
 				if(isset($comment_id)) {
-							$q .= "
+							$sql .= "
 								C.id=".$comment_id." ";	
 				} else {
-							$q .= "
+							$sql .= "
 								C.context='".$context."'
 								AND
 								C.context_id=".$context_id." 
@@ -154,49 +142,30 @@ class Comments extends Model
 								C.reply_to=0 ";
 				}			
 				if (isset($type) && $type != "all" && $type != "0" )
-								$q .='
+								$sql .='
 								AND C.type="'.$type.'"';
 				if (isset($start) && $start!="0")
-								$q .='
+								$sql .='
 								AND C.id <= "'.$start.'"';
 				if( isset($newer) && $newer!="0")
-								$q .='
+								$sql .='
 								AND C.id > "'.$newer.'"';
-				$q.="  
+				$sql.="  
 				ORDER BY ".$order."
 				LIMIT ".$limit."
 			";
 
 		
-		$res = $this->db->prepare($q);
+		$res = $this->db->prepare($sql);
 		$res->execute();
 		$coms = $res->fetchAll(PDO::FETCH_OBJ);		
 
-
+		$coms = $this->findReplies($coms);		
 		
-
-		//add the replies
-		$all = array();
-		foreach($coms as $com){
-				
-			$all[] = $com;
-
-			if($com->replies > 0){
-
-				$all[] = $this->findReplies($com->id);
-
-			}
-
-			
-		}
 
 		//Join informations to each comments
-		$all = $this->JOIN('users',$all,array('user_id','login','avatar'),array('user_id'=>':user_id'));
-		$all = $this->JOIN('manif_comment_voted',$all,'id as voted',array('comment_id'=>':id','user_id'=>$user_id));
+		$coms = $this->joinUserData($coms);
 
-
-		debug($all);
-		
 		/*
 		$final = array();
 		foreach ($all as $com) {
@@ -213,44 +182,108 @@ class Comments extends Model
 		debug($final);
 		//$array = $this->JOIN('manif_info',$array,array('logo'),array('manif_id'=>);
  		*/
- 		$timeend=microtime(true);
-		$time=$timeend-$timestart;
+ 		//$timeend=microtime(true);
+		//$time=$timeend-$timestart;
+		//debug('temps d\'execution sans les JOIN:'.$time);
 
-		debug('temps d\'execution sans les JOIN:'.$time);
-
-		return $all;
+		return $coms;
 	}
-	
-	public function findReplies($comment_id){
+
+	/*
+	Associe les réponses aux commentaires
+	@param array/objet of comments
+	@return array of comments
+	**/
+	public function findReplies($comments){
 
 		$array = array();
 
+		if(is_object($comments)) $comments = array($comments);
 
-		$q = "SELECT C.* FROM manif_comment as C WHERE C.reply_to =".$comment_id." ORDER BY C.date ASC";
+		foreach ($comments as $com) {
+	
+			
 
-		$res = $this->db->prepare($q);
-		$res->execute();
+			if($com->replies > 0){				 
 
-		if($res->rowCount() != 0) {
+				$q = "SELECT C.* FROM manif_comment as C WHERE C.reply_to =".$com->id." ORDER BY C.date ASC";
+				$res = $this->db->prepare($q);
+				$res->execute();
 
-			$replies = $res->fetchAll(PDO::FETCH_OBJ);
+				if($res->rowCount() != 0) {
 
-			foreach ($replies as $reply) {
+					$replies = $res->fetchAll(PDO::FETCH_OBJ);
 
-				$array[] = $reply;
+					$tab = array();
 
-				if($reply->replies > 0 ){
+					foreach ($replies as $reply) {
 
-					$array[] = $this->findReplies($reply->id);	
+						$tab[] = $reply;
+
+						if($reply->replies > 0 ){
+							
+							$tab[] = $this->findReplies($reply);	
+						}
+						
+					}
+
+					$array[] = $tab;
+					
 				}
-				
-			}
 
+			}
+			else 
+				$array[] = $com; 
 			
 		}
 
 		return $array;
 
+	}
+
+	public function getComments($comments_id){
+
+		$sql = 'SELECT * FROM manif_comment WHERE id = :comment_id';
+		$pre = $this->db->prepare($sql);
+		
+		if(is_array($comments_id)){
+
+			$array = array();
+
+			foreach($comments_id as $comment_id){
+
+				$pre->bindValue(':comment_id',$comments_id);
+				$pre->execute();
+				$res = $pre->fetch(PDO::FETCH_OBJ);
+				$array[] = $res;
+
+			}
+
+			$array = $this->joinUserData($array);
+
+			return $array;
+		}
+
+		elseif(is_numeric($comments_id)){
+
+			$pre->bindValue(':comment_id',$comments_id);
+			$pre->execute();
+			$res = $pre->fetch(PDO::FETCH_OBJ);
+
+			$res = $this->joinUserData($res);
+
+			return array($res);
+		}
+
+	}
+
+
+	public function joinUserData($data){
+
+		$data = $this->JOIN('users',$data,array('user_id','login','avatar'),array('user_id'=>':user_id'));
+		$data = $this->JOIN('manif_comment_voted',$data,'id as voted',array('comment_id'=>':id','user_id'=>$this->session->user('user_id')));
+
+		return $data;
 	}
 
 	public function totalComments($context,$context_id){
