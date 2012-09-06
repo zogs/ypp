@@ -13,12 +13,28 @@
 
  	public function show( $obj ){
 
-
+ 	
  		$d['context'] = $obj->context;
  		$d['context_id'] = $obj->context_id;
 
- 		$d['isadmin'] = false;
- 		$d['commentsAllow'] = true;
+ 		if($d['context'] == 'manif'){
+
+ 			$d['isadmin'] = false;
+ 			$d['commentsAllow'] = true;
+
+ 		}
+ 		elseif($d['context'] == 'group'){
+
+ 			$d['isadmin'] = true;
+ 			$d['commentsAllow'] = false;
+
+ 		}
+ 		elseif($d['context'] == 'userThread'){
+
+	 		$d['isadmin'] = false;
+ 			$d['commentsAllow'] = false;
+ 		}
+
 
  		$d['flash'] = array('message'=>'You could spread a News to all your Protest(s) by filling the Title form',
  							'type'=>'warning');
@@ -49,12 +65,13 @@
 			"lang"       =>$this->session->getLang()
 			);
 
-		$array_session = ($this->session->user())? get_object_vars($this->session->user('obj')) : get_object_vars($this->session->noUserLogged() );
+		
 		$array_get     = get_object_vars($this->request->get);
-		$params        = array_merge($array_session,$array_get,$params);			
+		$params        = array_merge($array_get,$params);			
 
 		
 		$d['coms']     = $this->Comments->findComments($params);
+		$d['coms']     = $this->Comments->findCommentsWithoutJOIN($params);
 		$d['total']    = $this->Comments->totalComments($context,$context_id);
 		
 
@@ -197,7 +214,8 @@
  	public function vote($id){
 
  		$this->loadModel('Comments');
- 		$this->layout = 'none'; 		
+ 		$this->layout = 'none'; 
+ 		$this->view ='json';		
 
  		if(is_numeric($id)){
 

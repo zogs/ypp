@@ -8,7 +8,7 @@ class Comments extends Model
 
 	public function findComments($req){
 
-		debug($req);
+
 		foreach ($req as $k => $v) {
 			
 			$$k = $v;
@@ -42,6 +42,8 @@ class Comments extends Model
         	}           
         }
 
+        $user_id = $this->session->user('user_id');
+        
 
 		$q = " SELECT C.*, U.user_id, U.login, U.avatar, V.id as voted, I.logo 
 				FROM manif_comment as C
@@ -79,7 +81,7 @@ class Comments extends Model
 		$res->execute();
 		$coms = $res->fetchAll(PDO::FETCH_OBJ);
 
-
+		
 		$array = array();
 		foreach($coms as $com){
 				
@@ -93,10 +95,10 @@ class Comments extends Model
 
 			
 		}
-
+		// debug($array);
 		return $array;
 	}
-	/*
+	
 	public function findCommentsWithoutJOIN($req){
 
 		$timestart=microtime(true);
@@ -134,17 +136,22 @@ class Comments extends Model
         	}           
         }
 
+        $user_id = $this->session->user('user_id');
 
-		$q = " SELECT C.*, V.id as voted
+		$q = " SELECT C.*
 				FROM manif_comment as C
-				LEFT JOIN manif_comment_voted as V ON (V.comment_id = C.id AND V.user_id = ".$user_id." )
+				
 				WHERE ";
 				if(isset($comment_id)) {
-								$q .= "
+							$q .= "
 								C.id=".$comment_id." ";	
 				} else {
-								$q .= "
-								C.manif_id=".$manif_id." AND C.reply_to=0 ";
+							$q .= "
+								C.context='".$context."'
+								AND
+								C.context_id=".$context_id." 
+								AND 
+								C.reply_to=0 ";
 				}			
 				if (isset($type) && $type != "all" && $type != "0" )
 								$q .='
@@ -155,7 +162,7 @@ class Comments extends Model
 				if( isset($newer) && $newer!="0")
 								$q .='
 								AND C.id > "'.$newer.'"';
-				$q.=" 
+				$q.="  
 				ORDER BY ".$order."
 				LIMIT ".$limit."
 			";
@@ -166,41 +173,60 @@ class Comments extends Model
 		$coms = $res->fetchAll(PDO::FETCH_OBJ);		
 
 
-		$array = array();
+		
+
+		//add the replies
+		$all = array();
 		foreach($coms as $com){
 				
-			$array[] = $com;
+			$all[] = $com;
 
 			if($com->replies > 0){
 
-				$array[] = $this->findReplies($com->id);
+				$all[] = $this->findReplies($com->id);
 
 			}
 
 			
 		}
 
-		$array = $this->JOIN_INFO('users',array('user_id','login','avatar'),$array,'user_id');
-		$array = $this->JOIN_INFO('manif_info',array('logo'),$array,'manif_id');
- 		
+		//Join informations to each comments
+		$all = $this->JOIN('users',$all,array('user_id','login','avatar'),array('user_id'=>':user_id'));
+		$all = $this->JOIN('manif_comment_voted',$all,'id as voted',array('comment_id'=>':id','user_id'=>$user_id));
+
+
+		debug($all);
+		
+		/*
+		$final = array();
+		foreach ($all as $com) {
+			
+
+			//Join user information
+			$com = $this->JOIN('users',$com,array('user_id','login','avatar'),array('user_id'=>$com->user_id));
+			//Join user vote information
+			//$com = $this->JOIN('manif_comment_voted',$com,'id as voted',array('comment_id'=>$com->id,'user_id'=>$user_id));
+			$final[] = $com;
+		}
+		
+
+		debug($final);
+		//$array = $this->JOIN('manif_info',$array,array('logo'),array('manif_id'=>);
+ 		*/
  		$timeend=microtime(true);
 		$time=$timeend-$timestart;
 
 		debug('temps d\'execution sans les JOIN:'.$time);
 
-		return $array;
+		return $all;
 	}
-	*/
+	
 	public function findReplies($comment_id){
 
 		$array = array();
 
 
-		$q = "SELECT C.*, U.user_id, U.login, U.avatar, V.id as voted 
-				FROM manif_comment as C 
-				LEFT JOIN users as U ON U.user_id = C.user_id
-				LEFT JOIN manif_comment_voted as V ON (V.comment_id = C.id AND V.user_id = ".$this->session->user('user_id')." )
-				WHERE C.reply_to =".$comment_id." ORDER BY C.date ASC";
+		$q = "SELECT C.* FROM manif_comment as C WHERE C.reply_to =".$comment_id." ORDER BY C.date ASC";
 
 		$res = $this->db->prepare($q);
 		$res->execute();

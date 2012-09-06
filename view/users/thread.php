@@ -2,8 +2,8 @@
 <div class="thread">
 	<div class="left">
 		<div class="thread-user">
-			<img src="<?php echo Router::webroot($user[0]->avatar);?>" alt="Avatar" />
-			<span class='thread-login'><?php echo $user[0]->login;?></span>
+			<img src="<?php echo Router::webroot($user->avatar);?>" alt="Avatar" />
+			<span class='thread-login'><?php echo $user->login;?></span>
 		</div>
 
 		<div class="thread-user-protests">
@@ -27,6 +27,11 @@
 		<div class="thread-timeline">
 
 			<?php
+
+			//$this->request('comments','show',$user);
+
+
+			
 				require('/../comments/html.php');
 				foreach ($thread as $t) {
 					
@@ -66,7 +71,7 @@
 					echo '</div>'; //end thread-content
 					echo '</div>'; //end thread-content
 				}
-
+			
 			?>
 
 		</div>

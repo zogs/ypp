@@ -409,7 +409,7 @@
 	 		if(is_array($conditions)){
 	 			$cond = array();
 	 			foreach ($conditions as $k => $v) {
-	 				if(!is_numeric($v))
+	 				if(!is_numeric($v) && strpos($v,':')!=0 )
 	 					$v = '"'.mysql_escape_string($v).'"';
 	 				$cond[] = "$k=$v";
 	 			}
@@ -435,25 +435,33 @@
 
 		if(is_object($obj)){
 
-			//$pre -> bindValue(":".$key,$obj->$key);
+			if(preg_match_all("/:([a-zA-Z\_\-]+)/",$sql,$matches)){
+				unset($matches[0]);
+				foreach ($matches as $key) {
+		
+					$pre->bindValue(":".$key[0],$obj->$key[0]);
+				}
+			}
+			
 			$pre -> execute();
 			$res = $pre->fetch(PDO::FETCH_OBJ);
+
 			if(!empty($res)){
 				foreach ($res as $k=>$v) {
 					
 					$obj->$k = $v;
 
 				}
-			}
+			}			
 
 			return $obj;
 
 		}
 		elseif( is_array($obj)){
-
+			
 			foreach ($obj as $row) {
 
-				$array[] = $this->JOIN_INFO($table,$fields,$row,$key);
+				$array[] = $this->JOIN($table,$row,$fields,$conds);
 				
 			}
 
