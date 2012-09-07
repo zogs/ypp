@@ -409,7 +409,7 @@
 	 		if(is_array($conditions)){
 	 			$cond = array();
 	 			foreach ($conditions as $k => $v) {
-	 				if(!is_numeric($v) && strpos($v,':')!=0 )
+	 				if(!is_numeric($v) && substr($v, 0, 1) != ':' )
 	 					$v = '"'.mysql_escape_string($v).'"';
 	 				$cond[] = "$k=$v";
 	 			}
@@ -424,11 +424,12 @@
  	}
 
 
- 	public function JOIN($table,$obj,$fields,$conds){
+ 	public function JOIN($obj,$table,$fields,$conds){
 
 	 	$array = array();
 
 	 	$fields = $this->sqlFields($fields);
+
 
 		$sql = "SELECT ".$fields." FROM ".$table." WHERE ".$this->sqlConditions($conds);
 		$pre = $this->db->prepare($sql);
@@ -461,7 +462,7 @@
 			
 			foreach ($obj as $row) {
 
-				$array[] = $this->JOIN($table,$row,$fields,$conds);
+				$array[] = $this->JOIN($row,$table,$fields,$conds);
 				
 			}
 

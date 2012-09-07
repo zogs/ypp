@@ -137,7 +137,7 @@ class Worlds extends Model
 
  		if(isset($obj->ADM1)){
 
- 			$obj = $this->JOIN('world_states',$obj,'FULLNAMEND as ADM1',array(
+ 			$obj = $this->JOIN($obj,'world_states','FULLNAMEND as ADM1',array(
 																				'CC1'=>$obj->CC1,
 																				'DSG'=>'ADM1',
 																				'ADM_CODE'=>$obj->ADM1,
@@ -149,7 +149,7 @@ class Worlds extends Model
 
  		if(isset($obj->ADM2)){
 
- 			$obj = $this->JOIN('world_states',$obj,'FULLNAMEND as ADM2',array(
+ 			$obj = $this->JOIN($obj,'world_states','FULLNAMEND as ADM2',array(
 																				'CC1'=>$obj->CC1,
 																				'DSG'=>'ADM2',
 																				'ADM_CODE'=>$obj->ADM2,
@@ -161,7 +161,7 @@ class Worlds extends Model
 
  		if(isset($obj->ADM3)){
 
- 			$obj = $this->JOIN('world_states',$obj,'FULLNAMEND as ADM2',array(
+ 			$obj = $this->JOIN($obj,'world_states','FULLNAMEND as ADM2',array(
 																				'CC1'=>$obj->CC1,
 																				'DSG'=>'ADM3',
 																				'ADM_CODE'=>$obj->ADM3,
@@ -173,7 +173,7 @@ class Worlds extends Model
 
  		if(isset($obj->ADM4)){
 
- 			$obj = $this->JOIN('world_states',$obj,'FULLNAMEND as ADM4',array(
+ 			$obj = $this->JOIN($obj,'world_states','FULLNAMEND as ADM4',array(
 																				'CC1'=>$obj->CC1,
 																				'DSG'=>'ADM4',
 																				'ADM_CODE'=>$obj->ADM4,
@@ -185,11 +185,11 @@ class Worlds extends Model
 
  		if(isset($obj->city) && $obj->city!=0 && !empty($obj->city)){
 
- 			$obj = $this->JOIN('world_cities',$obj,'FULLNAMEND as city',array('UNI'=>$obj->city));
+ 			$obj = $this->JOIN($obj,'world_cities','FULLNAMEND as city',array('UNI'=>$obj->city));
  		}
  		if(isset($obj->CC1)){
 
- 			$obj = $this->JOIN('world_country',$obj,'FULLNAME as CC1',array('CC1'=>$obj->CC1));
+ 			$obj = $this->JOIN($obj,'world_country','FULLNAME as CC1',array('CC1'=>$obj->CC1));
  		}
 
  		return $obj;

@@ -198,44 +198,76 @@ class Comments extends Model
 
 		$array = array();
 
-		if(is_object($comments)) $comments = array($comments);
 
-		foreach ($comments as $com) {
-	
-			
 
-			if($com->replies > 0){				 
+		if(is_object($comments)){
 
-				$q = "SELECT C.* FROM manif_comment as C WHERE C.reply_to =".$com->id." ORDER BY C.date ASC";
+			if($comments->replies > 0){
+
+				$q = "SELECT * FROM manif_comment WHERE reply_to = ".$comments->id." ORDER BY date ASC";
 				$res = $this->db->prepare($q);
 				$res->execute();
-
 				if($res->rowCount() != 0) {
 
 					$replies = $res->fetchAll(PDO::FETCH_OBJ);
 
-					$tab = array();
-
 					foreach ($replies as $reply) {
 
-						$tab[] = $reply;
-
+						$array[] = $reply;
+							
 						if($reply->replies > 0 ){
 							
-							$tab[] = $this->findReplies($reply);	
-						}
+							$array[] = $this->findReplies($reply);	
+						}									
 						
 					}
-
-					$array[] = $tab;
-					
+		
 				}
 
+				return $array;
 			}
-			else 
-				$array[] = $com; 
-			
+			else
+				return $comments;
+
 		}
+		elseif(is_array($comments)) {
+
+			foreach ($comments as $com) {
+	
+				$array[] = $com;
+
+				if($com->replies > 0){				 
+					
+					$q = "SELECT C.* FROM manif_comment as C WHERE C.reply_to =".$com->id." ORDER BY C.date ASC";
+					$res = $this->db->prepare($q);
+					$res->execute();
+
+					if($res->rowCount() != 0) {
+
+						$replies = $res->fetchAll(PDO::FETCH_OBJ);
+
+						$tab = array();
+
+						foreach ($replies as $reply) {
+
+							$tab[] = $reply;
+								
+							if($reply->replies > 0 ){
+								
+								$tab[] = $this->findReplies($reply);	
+							}									
+							
+						}
+
+						$array[] = $tab;
+		
+					}
+				}
+				
+			}
+		} 
+
+		
 
 		return $array;
 
@@ -280,8 +312,12 @@ class Comments extends Model
 
 	public function joinUserData($data){
 
-		$data = $this->JOIN('users',$data,array('user_id','login','avatar'),array('user_id'=>':user_id'));
-		$data = $this->JOIN('manif_comment_voted',$data,'id as voted',array('comment_id'=>':id','user_id'=>$this->session->user('user_id')));
+		$data = $this->JOIN($data,'users',array('user_id','login','avatar'),array('user_id'=>':user_id'));
+		$data = $this->JOIN($data,'manif_comment_voted','id as voted',array('comment_id'=>':id','user_id'=>$this->session->user('user_id')));
+		$data = $this->JOIN($data,'manif_info','logo as logoManif',array('manif_id'=>':context_id'));
+
+		
+		//LEFT JOIN manif_info as I ON I.manif_id = C.context_id
 
 		return $data;
 	}
