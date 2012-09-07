@@ -51,7 +51,7 @@
                 <!-- Mur de discussion -->
                 <div class="tab-pane active" id="commentaires">
 
-                    <?php $this->request('comments','show',$manif); ?>
+                    <?php $this->request('comments','show',array('manif','2')); ?>
                     
                 </div>
 

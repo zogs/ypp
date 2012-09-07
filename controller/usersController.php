@@ -359,7 +359,6 @@ class UsersController extends Controller{
         */ 
     public function thread(){
 
-
     	$this->loadModel('Users');
     	$this->loadModel('Manifs');
     	$this->loadModel('Comments');
@@ -381,7 +380,7 @@ class UsersController extends Controller{
     			//Participations
     			$d['protests'] = $this->Users->findParticipations('P.id,P.manif_id,M.logo,D.nommanif',array($user_id));
 
-    			
+	    		/*	
     			//Timeline
     			$timing = $this->Users->findUserThread($user_id);
     			$thread = array();
@@ -399,7 +398,7 @@ class UsersController extends Controller{
     				if( $t->TYPE == 'PROTEST'){
 
     					$a['OBJ'] = $this->Manifs->findProtesters(array(
-    						'fields'=>array('P.id as pid','U.user_id','U.login','P.date','M.logo','M.manif_id','D.nommanif','D.slug'),
+    						'fields'=>array('P.id as pid','U.user_id','U.login','P.date','M.logo','M.manif_id','D.name','D.slug'),
     						'conditions'=>array('P.id'=>$t->id)
     						));
     				}
@@ -421,7 +420,7 @@ class UsersController extends Controller{
 
     				$thread[] = $a;
     			}
-				
+				*/
 
     			
 
@@ -432,8 +431,6 @@ class UsersController extends Controller{
     	}
 
 
-
-    	$d['thread'] = $thread;
     	$this->set($d);
 
     }  

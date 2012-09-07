@@ -112,7 +112,8 @@ class Comments extends Model
         }
 
 		if(isset($limit) && !empty($limit)){
-			
+
+			if(!isset($page)) $page = 1;
 			 $limit = (($page-1)*$limit).','.$limit;
 
 		}
@@ -304,7 +305,7 @@ class Comments extends Model
 
 			$res = $this->joinUserData($res);
 
-			return array($res);
+			return $res;
 		}
 
 	}
@@ -407,6 +408,71 @@ class Comments extends Model
 		$res = $this->db->prepare($sql);
 		$res->execute();
 		return $res->fetchAll(PDO::FETCH_OBJ);
+	}
+
+	public function threadUser($params){
+
+		$sql = "SELECT 
+					'joinProtest' as thread,
+					manif_id as id,
+					date as date
+				FROM 
+					manif_participation
+				WHERE 
+					user_id = ".$params['context_id']."
+				UNION
+				SELECT 
+					'manifNews' as thread,
+					C.id as id,
+					C.date as date
+				FROM
+					manif_comment as C
+					LEFT JOIN manif_participation AS P ON P.user_id = ".$params['context_id']."
+				WHERE
+					C.context = 'manif' AND C.type='news' AND C.context_id = P.manif_id 
+				ORDER BY date DESC
+
+				";
+
+		$pre = $this->db->prepare($sql);
+		$pre->execute();
+		$res = $pre->fetchAll(PDO::FETCH_OBJ);
+
+
+		$array = array();
+
+		foreach ($res as $thread) {
+			
+			if($thread->thread == 'joinProtest'){
+
+				$sql = "SELECT manif_id, nommanif, slug, logo FROM manif_descr WHERE manif_id=".$thread->id;
+				$pre = $this->db->prepare($sql);
+				$pre->execute();
+				$obj = $pre->fetch(PDO::FETCH_OBJ);
+				$obj->date = $thread->date;
+				$obj->thread = $thread->thread;
+				$array[] = $obj;
+
+			}
+			elseif($thread->thread == 'manifNews'){
+
+				$com = $this->getComments($thread->id);
+				$com = $this->joinUserData($com);
+				$com->thread = $thread->thread;
+				$array[] = $com;
+
+				if($com->replies > 0){
+
+					$replies = $this->findReplies($com);
+					$replies = $this->joinUserData($replies);
+					$array[] = $replies;
+
+				}
+			}
+		}
+
+
+		return $array;
 	}
 
 

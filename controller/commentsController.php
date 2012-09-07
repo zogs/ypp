@@ -11,11 +11,11 @@
  	public $table = 'manif_comment';
 
 
- 	public function show( $obj ){
+ 	public function show( $context, $context_id ){
 
  	
- 		$d['context'] = $obj->context;
- 		$d['context_id'] = $obj->context_id;
+ 		$d['context'] = $context;
+ 		$d['context_id'] = $context_id;
 
  		if($d['context'] == 'manif'){
 
@@ -29,7 +29,7 @@
  			$d['commentsAllow'] = false;
 
  		}
- 		elseif($d['context'] == 'userThread'){
+ 		elseif($d['context'] == 'user'){
 
 	 		$d['isadmin'] = false;
  			$d['commentsAllow'] = false;
@@ -45,13 +45,14 @@
  		$this->render();
 
  	}
- 	public function index($context, $context_id, $comment_id = null){
+ 	public function index($context, $context_id){
 
 
 		$context = (strlen($context)<=5)? $context : exit('wrong url context parameter');
 		$context_id = (is_numeric($context_id))? $context_id : exit('wrong url id parameter');
 
  		$this->loadModel('Comments');
+ 		$this->view = 'comments/index';
 			
 			
  		$perPage = 10;
@@ -59,38 +60,49 @@
 									
 			"context" 	=>$context,
 			"context_id" =>$context_id,
-			"comment_id" =>$comment_id,
 			'limit'      =>$perPage,
 			"pays"       =>$this->session->getPays(),
 			"lang"       =>$this->session->getLang()
 			);
 
-		
-		$array_get     = get_object_vars($this->request->get);
-		$params        = array_merge($array_get,$params);			
+		if(isset($this->request->get)){
+
+			$array_get     = get_object_vars($this->request->get);
+			$params        = array_merge($array_get,$params);					
+		}
 
 		
-		//$d['coms']     = $this->Comments->findComments($params);
-		$d['coms']     = $this->Comments->findCommentsWithoutJOIN($params);
-		$d['total']    = $this->Comments->totalComments($context,$context_id);
-		
+		if($context=='manif' ||$context=='group'){
 
-		$d['count']    = count($d['coms']);	
+			//$d['coms']     = $this->Comments->findComments($params);
+			$d['coms']     = $this->Comments->findCommentsWithoutJOIN($params);
+			$d['total']    = $this->Comments->totalComments($context,$context_id);
+				
+		}
+		elseif($context=='user'){
+
+			$d['coms'] = $this->Comments->threadUser($params);
+
+		}
 		$d['context']  = $context;
 		$d['context_id'] = $context_id;
-		$d['remain']   = $d['total'] - ($perPage*$this->request->get->page);
-		$d['nbpage']   = ceil($d['total']/$perPage);
+
 
 		$this->set($d);
+
+		$this->render();
 
  	}
 
  	public function view($comment_id){
 
  		$this->layout = 'default';
+ 		$this->view = 'comments/show';
  		$this->loadModel('Comments');
 
  		$d['coms'] = $this->Comments->getComments($comment_id);
+ 		$d['coms'] = $this->Comments->findReplies($d['coms']);
+ 		$d['coms'] = $this->Comments->joinUserData($d['coms']);
 
  		$this->set($d);
 

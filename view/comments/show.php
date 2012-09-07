@@ -138,7 +138,8 @@
                     </div>
 
                     <div id="comments" data-start="0" style="float:left;width:100%;margin-top:10px;">
-                        <!-- Requete Ajax -->
+                       
+                       <?php echo $this->request('comments','index',array($context,$context_id)); ?>
                     </div>
                     <div id="hiddenFormReply">
                         <form id="formCommentReply" class="formCommentReply" action="<?php echo Router::url('comments/reply'); ?>" method="POST">                
@@ -153,7 +154,7 @@
                     </div>
                     <div id="bottomComments">
                         <div id="loadingComments">
-                        Wait for <span id="numCommentsLeft"></span> comments more
+                        Loading comments ...
                         </div>
-                        <div id="noMoreComments" class="hide">End of comments</div>
+                        <div id="noMoreComments" class="hide">No more comments</div>
                     </div>

@@ -183,7 +183,7 @@ class Users extends Model{
 		$sql=" SELECT P.id,
 	                 'PROTEST' AS TYPE,
 	                 P.date,	                 
-	                 D.nommanif as relatedName,
+	                 D.name as relatedName,
 	                 D.manif_id as relatedID,
 	                 D.slug     as relatedSlug,
 	                 I.logo     as relatedLogo
@@ -202,7 +202,7 @@ class Users extends Model{
        		SELECT C.id,
                 	'NEWS' AS TYPE,
                   	C.date,
-                  	D.nommanif as relatedName,
+                  	D.name as relatedName,
                   	D.manif_id as relatedID,
                   	D.slug     as relatedSlug,
                   	I.logo     as relatedLogo

@@ -124,7 +124,9 @@ class Controller {
 		$controller .= 'Controller';
 		require_once ROOT.DS.'controller'.DS.$controller.'.php';
 		$c = new $controller;
-		return $c->$action( $params );
+		
+		call_user_func_array(array($c,$action),$params);
+		//return $c->$action();
 	}
 
 	public function redirect($url,$code = null){

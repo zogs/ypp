@@ -28,10 +28,10 @@
 
 			<?php
 
-			//$this->request('comments','show',$user);
+			echo $this->request('comments','show',array('user',$user->user_id));
 
 
-			
+			/*
 				require('/../comments/html.php');
 				foreach ($thread as $t) {
 					
@@ -71,7 +71,7 @@
 					echo '</div>'; //end thread-content
 					echo '</div>'; //end thread-content
 				}
-			
+			*/
 			?>
 
 		</div>

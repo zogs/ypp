@@ -35,7 +35,7 @@
 
 			<?php 
 			// CALL the comment system
-			$this->request('comments','show',$group); 
+			echo $this->request('comments','show',array('group',$group->id)); 
 			//
 			?>
 

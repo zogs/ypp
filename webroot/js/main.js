@@ -131,7 +131,7 @@ $(document).ready(function(){
 		        Global_loadingComments = false;        
 		        Global_pageComments = 1;
 		        Global_newerCommentId = 0;
-		        show_comments('clear');
+		        //show_comments('clear');
 
 
 		        /*===========================================================
@@ -252,19 +252,12 @@ $(document).ready(function(){
 					  type: 'GET',
 					  url: Global_showComments_url,
 					  data: arrayParams2string(Global_showComments_params),
-					  success: function( coms ) 
+					  success: function( html ) 
 		              {
 		                //console.log( 'count:'+coms.count+'   remain:'+coms.remain+'   total:'+coms.total+'   nbpage:'+coms.nbpage);
-		                //Set id of the top comment
-		                if(Global_newerCommentId==0) Global_newerCommentId = coms.first_id;
 
 		                //Jquery trick to decode html entities
-		                var html = $('<div />').html(coms.content).text(); 
-
-		                //Display the number of remaining comments
-		                $("#numCommentsLeft").empty().html(coms.remain);
-
-
+		                //var html = $('<div />').html(coms.content).text();
 		                                                                
 		                if(arg=='new') {
 		                    $("#badge").empty().hide();
@@ -277,14 +270,21 @@ $(document).ready(function(){
 		                else if(!arg || arg=='clear'){
 		                    $("#badge").empty().hide();                        
 		                    $('#comments').empty().append(html);
-		                    Global_tcheckComments_offset = 0;  
+		                    Global_tcheckComments_offset = 0; 
+		                    Global_newerCommentId = 0; 
 		                }
+
+		                //Get id of the first comment
+		                var first_id = $(html).first('.comment').attr('id');
+		                first_id = first_id.replace('com','');
+		                if(Global_newerCommentId==0) Global_newerCommentId = first_id;
+		                	//console.log('first_id='+first_id);
 
 
 		                Global_loadingComments = false;
 		                infiniteComment();
 		                
-		                if(coms.remain<=0)
+		                if(html=='')
 		                {
 		                    console.log('count <= 0');
 		                    $("#loadingComments").hide();
@@ -297,7 +297,7 @@ $(document).ready(function(){
 		                    
 						
 					},
-					  dataType: 'json'
+					  dataType: 'html'
 					});
 					return;
 

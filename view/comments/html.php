@@ -8,9 +8,23 @@
         foreach ($coms as $com)
         {   
             //Si c'est un objet , c'est un commentaire donc on affiche un commentaire
-            if(is_object($com)){
-                                   
-                $html .= html_comment( $com, $user );                                    
+            if(is_object($com)){                                                       
+
+                if(!isset($com->thread)){
+
+                    $html .= html_comment( $com, $user);
+                }
+
+                if(isset($com->thread) && $com->thread == 'manifNews'){
+
+                    $html .= html_comment( $com , $user);
+                }
+
+                if(isset($com->thread) && $com->thread == 'joinProtest'){
+
+                    $html .= html_joinProtest( $com , $user);
+                }
+                   
             }         
             //Si cest un tableau , c'est les réponses a un commentaire , on ouvre une div replies et on affiche les commentaires dedans
             if(is_array($com)){
@@ -24,15 +38,21 @@
     }
 
 
-    //Fonction qui cree le code
-    //function html_comment($id,$type,$txt,$head,$date,$note,$reply_to,$speaker,$user_id,$login,$avatar,$islogged){
+    function html_joinProtest($manif,$cuser){
+
+        return $manif->nommanif;
+    }
+
+    //Renvoi le html d'un commenaitre
+    //@param $com {objet} du com
+    //@param $cuser {objet} de l'user
     function html_comment($com,$cuser){
 
         ob_start();
         ?>
             <div class="comment <?php echo ($com->reply_to!=0)? 'reply':'';?>" id="<?php echo 'com'.$com->id; ?>">  
                 <?php if($com->type=='news'): ?> 
-                <img class="comment_avatar" src="<?php echo Router::webroot($com->logo) ?>" alt="User image avatar" />             
+                <img class="comment_avatar" src="<?php echo Router::webroot($com->logoManif) ?>" alt="User image avatar" />             
                 <?php else: ?>
                 <img class="comment_avatar" src="<?php echo Router::webroot($com->avatar) ?>" alt="User image avatar" />
                 <?php endif; ?>
