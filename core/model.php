@@ -188,8 +188,18 @@
 		return $res;
  	}
 
+
+ 	/*===========================================================	        
+ 	Save informations into sql tables
+ 	@work effectue un insert ou un update si primaryKey est présente dans $data
+ 	@param $data = object of values to insert
+ 	@return true with $this->id as lastInsertId()
+ 	$return false with error in $this->error
+ 	============================================================*/
+ 	
  	public function save($data){
 
+ 		$table = $this->table;
  		$key = $this->primaryKey;
  		$fields = array();
  		$tab = array();
@@ -211,15 +221,15 @@
  		if(isset($data->$key) && !empty($data->$key)){
 
  			$action = 'update';
- 			$sql = 'UPDATE '.$this->table.' SET '.implode(',',$fields).' WHERE '.$key.'=:'.$key;
+ 			$sql = 'UPDATE '.$table.' SET '.implode(',',$fields).' WHERE '.$key.'=:'.$key;
  			
  			$this->id = $data->$key; // retourne l'id de l'update
 
  		} else { //Sinon on fait un inset
  			$action = 'insert';
- 			$sql = 'INSERT INTO '.$this->table.' SET '.implode(',',$fields);
+ 			$sql = 'INSERT INTO '.$table.' SET '.implode(',',$fields);
  		}
- 		//debug($sql);
+
  		$pre = $this->db->prepare($sql); //prepare la requete
  		$pre->execute($tab); //execute la requete grace au tableaux des valeurs ( :name, :contenu, :date, ...)
  		
@@ -227,9 +237,15 @@
  		if($action=='insert'){
  			$this->id = $this->db->lastInsertId();
  		}
- 		
- 		return true;
- 
+
+ 		//Si pas d'error retourne true
+ 		if($pre->errorCode()==0){
+ 			return true;
+ 		}
+ 		else { 			
+ 			$this->error = $pre->errorInfo(); 			
+ 			return false;
+ 		} 
  		
  	}
 
@@ -395,7 +411,7 @@
 		if($fields && !empty($fields))
 			if(is_array($fields))
  				$f .= implode(', ',$fields); 			
- 			else
+ 			elseif(is_string($fields))
  				$f .= $fields; 			 		
  		else
  			$f .= '*';
@@ -424,12 +440,11 @@
  	}
 
 
- 	public function JOIN($obj,$table,$fields,$conds){
+ 	public function JOIN($table,$fields,$conds,$obj){
 
 	 	$array = array();
 
 	 	$fields = $this->sqlFields($fields);
-
 
 		$sql = "SELECT ".$fields." FROM ".$table." WHERE ".$this->sqlConditions($conds);
 		$pre = $this->db->prepare($sql);
@@ -462,7 +477,7 @@
 			
 			foreach ($obj as $row) {
 
-				$array[] = $this->JOIN($row,$table,$fields,$conds);
+				$array[] = $this->JOIN($table,$fields,$conds,$row);
 				
 			}
 

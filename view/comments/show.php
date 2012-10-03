@@ -1,20 +1,13 @@
 <?php
 
-                    if(!empty($isadmin)){
+                    if(!empty($flash)){
                         $this->session->setFlash($flash['message'],$flash['type']);
                         echo $this->session->flash();
                     }
                     ?>
 
                     <?php if ($this->session->user()): ?>
-                    <form id="smartForm" class="form-ajax" action="<?php echo Router::url('comments/add'); ?>" method="POST">
-                        <?php 
-                        //Si c'est l'admin
-                        if(!empty($isadmin)):
-
-                        ?>
-                        <input type="text" name="head" id="head" placeholder="Enter a title to your news" />
-                        <?php endif; ?>
+                    <form id="smartForm" class="form-ajax" action="<?php echo Router::url('comments/add'); ?>" method="POST">                        
 
                         <?php 
 
@@ -26,7 +19,7 @@
                         ): ?>
 
                         <img class="userAvatarCommentForm" src="<?php echo Router::url($this->session->user('avatar')); ?>" />
-                        <textarea name="content" id="smartTextarea" data-url-preview="<?php echo Router::url('comments/preview'); ?>" placeholder="Type text / Paste a link here"></textarea>
+                        <textarea name="content" id="smartTextarea" data-url-preview="<?php echo Router::url('comments/preview'); ?>" placeholder="Express yourself here..."></textarea>
                         <input type="hidden" name="context" value="<?php echo $context; ?>" />
                         <input type="hidden" name="context_id" value="<?php echo $context_id; ?>" />                        
                         <input type="hidden" name="type" id="type" value='com' />            
@@ -43,7 +36,16 @@
                             <li><a href="">Proposer un slogan</a></li>
                             <li><a href="">Créer une nouvelle discussion</a></li>                
                             </ul>
-                        </div>           
+                        </div>  
+                        <?php 
+                        //Si c'est l'admin , il peut mettre un titre a son commentaire
+                        if(!empty($isadmin)):
+                        ?>
+                        <input type="text" name="title" id="title" placeholder="You can put a title to your comment. (will broadcast a NEWS)." />
+                        <?php 
+                        endif; 
+                        ?>
+
                         <div id="commentSmartPreview"></div>
                         <?php endif; ?>
                     </form>
@@ -92,12 +94,12 @@
                     </div>                
                     <?php endif ?>
                     
-                    <div style="float:left;width:100%; height:10px;"></div>  
+                    <div style="float:left;width:100%; height:0px;"></div>  
 
-                    <div class="btn-toolbar">
+                    <div id="tri" class="btn-toolbar">
                                     
                         <div class="btn-group pull-right">
-                            <a class="btn  btn-small dropdown-toggle bubble-top" title="Type of comments" data-toggle="dropdown" href="#">
+                            <a class="btn  btn-mini dropdown-toggle bubble-bottom" title="Type of comments" data-toggle="dropdown" href="#">
                             Type
                             <span class="caret"></span>
                             </a>
@@ -110,7 +112,7 @@
                             </ul>
                         </div>
                         <div class="btn-group pull-right">
-                            <a class="btn btn-small dropdown-toggle bubble-top" title="Ordering comments" data-toggle="dropdown">
+                            <a class="btn btn-mini dropdown-toggle bubble-bottom" title="Ordering comments" data-toggle="dropdown">
                             Ordre
                             <span class="caret"></span>
                             </a>
@@ -122,10 +124,10 @@
                             </ul>
                         </div>  
                         <div class="btn-group pull-right">
-                            <a class="btn btn-small bubble-top" title="Display new comments" href="<?php echo Router::url('comments/index/'.$context.'/'.$context_id); ?>" id="refresh_com" data-url-count-com="<?php echo Router::url('comments/tcheck/'.$context.'/'.$context_id.'/'); ?>">
+                            <a class="btn btn-mini bubble-bottom" title="Display new comments" href="<?php echo Router::url('comments/index/'.$context.'/'.$context_id); ?>" id="refresh_com" data-url-count-com="<?php echo Router::url('comments/tcheck/'.$context.'/'.$context_id.'/'); ?>">
                                 <i class="icon-repeat"></i>  Actualiser <span class="badge badge-inverse hide" id="badge"></span>
                             </a>
-                            <a class="btn  btn-small dropdown-toggle" data-toggle="dropdown" href="#">              
+                            <a class="btn btn-mini dropdown-toggle hide" data-toggle="dropdown" href="#">              
                             <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu">

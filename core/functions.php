@@ -92,29 +92,30 @@ function file_get_contents_curl($url)
 }
 
 
-function getUrlDomain($url,$extension = false){
+function getUrlDomain($_url, $_extension = false, $_scheme = false){
     
-	$url = pathinfo($url,PATHINFO_DIRNAME);
 
-    if(strpos($url,'http://')===0){    
-      $url = substr($url,7); 
-     
-      if(strpos($url,'www.')===0){
-               
-          $url = substr($url,4);
-      }
+	$parsed_url = parse_url($_url);
 
-      $url = str_replace('/'.pathinfo($url,PATHINFO_BASENAME),'', $url); 
-      $url = str_replace('/'.pathinfo($url,PATHINFO_FILENAME),'', $url);        
+	if($_scheme)	
+		$domain = $parsed_url['host'];
+	else
+		$domain = str_replace('www.','',$parsed_url['host']);
 
-      if(!$extension)     
-        $url = str_replace('.'.pathinfo($url,PATHINFO_EXTENSION),'',$url);
-            
-      return $url;
-    }
-    else return 'url must begin with http://';
+	$ext = pathinfo($_url, PATHINFO_EXTENSION);
 
-}
+	$return = '';
+	if($_scheme)
+		$return = $parsed_url['scheme'].'://';
+	
+	$return .= $domain;
+
+	if($_extension)
+		$return .= $ext;
+
+	return $return;
+
+	}
 
 
 

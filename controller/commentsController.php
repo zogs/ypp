@@ -34,10 +34,15 @@
 	 		$d['isadmin'] = false;
  			$d['commentsAllow'] = false;
  		}
+ 		elseif($d['context'] == 'comment'){
+
+ 			$d['isadmin'] = false;
+ 			$d['commentsAllow'] = false;
+ 		}
 
 
- 		$d['flash'] = array('message'=>'You could spread a News to all your Protest(s) by filling the Title form',
- 							'type'=>'warning');
+ 		// $d['flash'] = array('message'=>'You could spread a News to all your Protest(s) by filling the Title form',
+ 		// 					'type'=>'warning');
 
 
  		$this->set($d);
@@ -48,17 +53,22 @@
  	public function index($context, $context_id){
 
 
-		$context = (strlen($context)<=5)? $context : exit('wrong url context parameter');
-		$context_id = (is_numeric($context_id))? $context_id : exit('wrong url id parameter');
+		$context         = (strlen($context)<=10)? $context : exit('wrong url context parameter');
+		$context_id      = (is_numeric($context_id))? $context_id : exit('wrong url id parameter');
+		
+		$d['context']    = $context;
+		$d['context_id'] = $context_id;
+
 
  		$this->loadModel('Comments');
+ 		$this->loadModel('Manifs');
  		$this->view = 'comments/index';
 			
 			
- 		$perPage = 10;
+ 		$perPage = 3;
 		$params = array(	
 									
-			"context" 	=>$context,
+			"context"    =>$context,
 			"context_id" =>$context_id,
 			'limit'      =>$perPage,
 			"pays"       =>$this->session->getPays(),
@@ -75,17 +85,32 @@
 		if($context=='manif' ||$context=='group'){
 
 			//$d['coms']     = $this->Comments->findComments($params);
-			$d['coms']     = $this->Comments->findCommentsWithoutJOIN($params);
-			$d['total']    = $this->Comments->totalComments($context,$context_id);
+			$coms       = $this->Comments->findCommentsWithoutJOIN($params);
+			$coms       = $this->Comments->findReplies($coms);
+			$coms       = $this->Comments->joinUserData($coms);
+			$d['coms']  = $coms;
+			$d['total'] = $this->Comments->totalComments($context,$context_id);
 				
+		}
+		elseif($context=='comment'){
+
+
+			$com_id          = $context_id;
+			$com             = $this->Comments->getComments($com_id);
+			$com             = $this->Comments->findReplies($com);		
+			$com             = $this->Comments->joinUserData($com);	
+			
+			$d['context']    = $com[0]->context;
+			$d['context_id'] = $com[0]->context_id;
+			$d['coms']       = $com;
+
 		}
 		elseif($context=='user'){
 
 			$d['coms'] = $this->Comments->threadUser($params);
 
 		}
-		$d['context']  = $context;
-		$d['context_id'] = $context_id;
+
 
 
 		$this->set($d);
@@ -96,13 +121,27 @@
 
  	public function view($comment_id){
 
- 		$this->layout = 'default';
- 		$this->view = 'comments/show';
- 		$this->loadModel('Comments');
+		$this->layout    = 'default';
+		$this->loadModel('Comments');
+		$this->view      = 'comments/view';
+		
+		$com = $this->Comments->getComments($comment_id);
+		$com = $com[0];
 
- 		$d['coms'] = $this->Comments->getComments($comment_id);
- 		$d['coms'] = $this->Comments->findReplies($d['coms']);
- 		$d['coms'] = $this->Comments->joinUserData($d['coms']);
+		if($com->context == 'manif'){
+
+			$this->loadModel('Manifs');
+			$manif = $this->Manifs->findFirstManif(array(
+													'fields'=>array('MD.nommanif','D.manif_id','MD.slug'),
+													'conditions'=>array('D.manif_id'=>$com->context_id)));			
+			$link = Router::url('manifs/view/'.$manif->manif_id.'/'.$manif->slug);
+			$name = $manif->nommanif;
+
+		}
+			
+		$d['context_name'] = $name;	
+		$d['context_link'] = $link;
+		$d['comment_id'] = $comment_id;
 
  		$this->set($d);
 
@@ -159,8 +198,8 @@
  			//Replace
  			$content = str_replace(array("\\n","\\r"),array("<br />",""),$content);
  			//If NEWS , ifthere is a title then this is a News
- 			if(isset($this->request->data->head) && $this->request->data->head!=''){
- 				$newComment->head = $this->request->data->head;
+ 			if(isset($this->request->data->title) && $this->request->data->title!=''){
+ 				$newComment->title = $this->request->data->title;
  				$newComment->type = 'news';
  			} 			
  			$newComment->content = $content;
@@ -402,14 +441,16 @@
 									foreach ($images as $key => $value) {
 										
 										//we get only images with absolute url
-										if(strpos($value,'http://')===0){
+										if(strpos($value,'http://')===0 || strpos($value,'https://')===0 || strpos($value,'www')===0 ){
 											$thumbnails[] = $value;											
 										}
-										/*
-										else {										
-											$thumbnails[] = pathinfo($url,PATHINFO_DIRNAME).$value;											
+										
+										else {	
+											
+
+											$thumbnails[] = getUrlDomain($url,true,true).$value;											
 										}
-										*/
+										
 									}
 									
 									if(!empty($thumbnails)){

@@ -1,5 +1,4 @@
-                    
-<div style="position:absolute;left:0;width:100%;">
+<div style="position:absolute;left:0;top:40px;width:100%;">
 	<div id="flash"></div>
 </div>
 <div id="manif">
@@ -8,17 +7,17 @@
             <div class="logo"><?php if($manif->logo): ?><img src="<?php echo Router::webroot($manif->logo); ?>" /><?php else: ?><div class="nologo"></div><?php endif; ?></div>
             <div class="meta">
                 <h1><?php echo $manif->nommanif; ?></h1>
-                <div class="by">
-                    by
-                    <a class="user"><?php echo $manif->user; ?></a>
-                    <span class="date"><?php echo $manif->date_creation; ?></span>
+                <div class="by">                    
+                    <span><a class="user"><?php echo $manif->user; ?></a></span>
+                    <span><a class="category"></a></span>
+                    <span class="date">Since <?php echo $manif->date_creation; ?></span>
                 </div>
             </div>
             <div class="actions">
                 <div class="btn-toolbar">
                     <?php if($this->session->user()): ?>
                     <a class="btn btn-large btn-inverse btn-protest" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-plus-sign icon-white"></i> <strong>Protest</strong> </a>
-                    <button class="btn btn-large btn-red btn-cancel" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/removeUser');?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>> <strong>You Protest!</strong> </button>
+                    <button class="btn btn-large btn-red btn-cancel" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/removeUser');?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> <strong>You Protest</strong> </button>
                     <?php else: ?>
                     <a class="btn btn-large btn-inverse callModal" href="<?php echo Router::url('users/login');?>" ><i class="icon-user icon-white"></i> <strong>Connexion</strong> </a>
                     <?php endif; ?>
@@ -51,7 +50,7 @@
                 <!-- Mur de discussion -->
                 <div class="tab-pane active" id="commentaires">
 
-                    <?php $this->request('comments','show',array('manif','2')); ?>
+                    <?php $this->request('comments','show',array('manif',$manif->id)); ?>
                     
                 </div>
 
@@ -77,7 +76,7 @@ $(document).ready(function(){
 
 
 
-        nameProtesters = ['Barry White','Mike Jagger','Elvis Presley','Joe Coker','John Lennon','Johny Cash','Jon Baez','Bob Dylan','Bob Marley','Jimmy Hendrix'];
+        
         intervalRoutine = false;
 
 
@@ -156,7 +155,7 @@ $(document).ready(function(){
     hidden5.load();
 
     debug1 = new Konami();
-    debug1.pattern = "191677985788413";          
+    debug1.pattern = "191677985788413";         
     debug1.code = function() { 
         alert('Kcode');             
         document.getElementById('manifflash').debugBonhomCount();

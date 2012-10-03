@@ -1,5 +1,5 @@
 
-<div class="thread">
+<div id="thread">
 	<div class="left">
 		<div class="thread-user">
 			<img src="<?php echo Router::webroot($user->avatar);?>" alt="Avatar" />

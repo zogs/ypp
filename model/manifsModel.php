@@ -27,11 +27,34 @@ class Manifs extends Model {
 
 
 
+/*===========================================================	        
+ Find all manifs that fit conditions
+ @param fields array||string
+ @param conditions array||string
+ $param cat2, cat3 numeric
+ $param order string(new,old,big,tiny)
+ @param search string
+ @param location array(CC1,ADM1,ADM2,ADM3,ADM4,city)
+ @param limit string('10,100')
+ @throws Some_Exception_Class If something interesting cannot happen
+ @return array of objects
+ ============================================================
+ */
+
 	public function findManifs($req){
 
 
-		$lang = $req['lang'];	
+		//User information		
+		$user_id = $this->session->user('user_id');	
 
+		//Lang
+		if(isset($req['lang']))
+			$lang = $req['lang'];
+		else
+			$lang = $this->session->getLang();
+
+
+		//Query construct
  		$sql = 'SELECT ';
  		
  		if(isset($req['fields'])){
@@ -53,7 +76,7 @@ class Manifs extends Model {
  				LEFT JOIN config_category as C ON ( C.id = D.cat2 OR C.id = D.cat3)   
 			    LEFT JOIN manif_tag as TM ON TM.manif_id = D.manif_id
 			    LEFT JOIN manif_tags as T ON TM.tag_id = T.tag_id
-			    LEFT JOIN manif_admin as AD ON AD.manif_id=D.manif_id AND AD.user_id ='.$req['user']['id'].'
+			    LEFT JOIN manif_admin as AD ON AD.manif_id=D.manif_id AND AD.user_id ='.$user_id.'
 			    LEFT JOIN association_admin as MA ON MA.user_id=U.user_id AND MA.creator=1
 			    LEFT JOIN association as A ON MA.asso_id=A.asso_id	
 		        LEFT JOIN world_country as WC ON WC.CC1=D.CC1
@@ -61,17 +84,18 @@ class Manifs extends Model {
 				LEFT JOIN (  
 					      SELECT P.id, P.user_id, P.manif_id, P.date
 					      FROM manif_participation as P
-					      WHERE P.user_id ='. $req['user']['id'] .'
+					      WHERE P.user_id ='. $user_id .'
 					      ) AS P ON P.manif_id = D.manif_id
 		     	';	
  		
 
- 		$sql .= " WHERE MD.lang='".$lang."' AND "; 		 
+ 		$sql .= " WHERE MD.lang='".$lang."'"; 		 
 
 
  		//Construction des conditions de la requete sql
  		if(isset($req['conditions'])){
 
+ 			$sql.=' AND ';
  			//Si les conditions sont pas un tableau , genre une requete personnelle
  			if(!is_array($req['conditions'])){
  				$sql .= $req['conditions']; 				
@@ -91,6 +115,8 @@ class Manifs extends Model {
 	 			}
 	 			//Enfin on rassemble les conditions et on les ajoute à la requete sql
 	 			$sql .= implode(' AND ',$cond);
+
+
  			}
  			
  		}
@@ -306,8 +332,8 @@ class Manifs extends Model {
  	//========================================================================================
  	// Fonction findProtesters
  	// Renvoi un tableau des objets des users et participation 
- 	// @params fields array()  [ les champs de users et manif_participation]
- 	// @params conditions array()  [ les conditions appliqables]
+ 	// @params fields array() les champs à récupérer de users U et manif_participation P
+ 	// @params conditions array() les conditions applicables
  	// @params order string  ex: "field ASC" ou "field DESC"
  	// @params limit string  ex: "10", "1,10", "10,10"
  	public function findProtesters( $req ) {
@@ -361,12 +387,19 @@ class Manifs extends Model {
 			$sql .= ' LIMIT '.$req['limit'];
  		}
 
- 		  // debug($sql);
+ 		   // debug($sql);
 
  		$pre = $this->db->prepare($sql);
  		$pre->execute();
 
- 		return $pre->fetchAll(PDO::FETCH_OBJ);
+ 		if($pre->rowCount()>1){
+ 			return $pre->fetchAll(PDO::FETCH_OBJ);
+ 		}
+ 		else {
+ 			return $pre->fetch(PDO::FETCH_OBJ);
+ 		}
+
+ 		
 
  	}
 	

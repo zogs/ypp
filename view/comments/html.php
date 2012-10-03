@@ -7,6 +7,7 @@
         $html = '';
         foreach ($coms as $com)
         {   
+
             //Si c'est un objet , c'est un commentaire donc on affiche un commentaire
             if(is_object($com)){                                                       
 
@@ -38,25 +39,43 @@
     }
 
 
-    function html_joinProtest($manif,$cuser){
+    function html_joinProtest($protester,$cuser){
 
-        return $manif->nommanif;
+        ob_start();
+        ?>
+        <div class="thread thread_info">
+            <img class="thread_logo" src="<?php echo Router::webroot($protester->logo)?>" alt="Logo" />
+            <div class="thread_content">
+                <abbr class="comment_date" title="<?php echo $protester->date;?>"><?php echo $protester->date;?></abbr>
+                <div>
+                    <span class="comment_user"><?php echo $protester->login ?> </span>
+                    protest
+                    <a href="<?php echo Router::url('manifs/view/'.$protester->manif_id.'/'.$protester->slug); ?>"><?php echo $protester->nommanif; ?></a>
+                </div>
+            </div>
+        </div>
+        <?php
+
+        $html = ob_get_contents();
+        ob_end_clean();
+
+        return $html; 
     }
 
     //Renvoi le html d'un commenaitre
     //@param $com {objet} du com
     //@param $cuser {objet} de l'user
     function html_comment($com,$cuser){
-
+        
         ob_start();
         ?>
-            <div class="comment <?php echo ($com->reply_to!=0)? 'reply':'';?>" id="<?php echo 'com'.$com->id; ?>">  
+            <div class="thread comment <?php echo ($com->reply_to!=0)? 'reply':'';?>" id="<?php echo 'com'.$com->id; ?>">  
                 <?php if($com->type=='news'): ?> 
-                <img class="comment_avatar" src="<?php echo Router::webroot($com->logoManif) ?>" alt="User image avatar" />             
+                <img class="thread_logo" src="<?php echo Router::webroot($com->logoManif) ?>" alt="image avatar" />             
                 <?php else: ?>
-                <img class="comment_avatar" src="<?php echo Router::webroot($com->avatar) ?>" alt="User image avatar" />
+                <img class="thread_logo" src="<?php echo Router::webroot($com->avatar) ?>" alt="image avatar" />
                 <?php endif; ?>
-                <div class="comment_content">
+                <div class="thread_content">
                     <?php if($com->type!='news'): ?>
                     <h6 class="comment_user"><?php echo $com->login;?></h6>
                     <abbr class="comment_date" title="<?php echo $com->date;?>"><?php echo $com->date;?></abbr>
@@ -81,25 +100,20 @@
                         <?php if ($cuser): ?>
                         <div class="actions">                                 
                             <div class="btn-group pull-left">
-                                <a class="btn btn-small btn-vote bubbtop" title="Like this comment" data-url="<?php echo Router::url('comments/vote/'.$com->id); ?>" >                      
+                                <a class="btn-vote bubbtop" title="Like this comment" data-url="<?php echo Router::url('comments/vote/'.$com->id); ?>" >                      
                                         <span class="badge badge-info" <?php if ($com->note == 0): ?>style="display:none"<?php endif ?>><?php echo $com->note; ?></span>
-                                         <i class="icon-thumbs-up"></i>                          
+                                    Like                         
                                 </a>
                                 <?php if($com->reply_to==0): ?>
-                                <a class="btn btn-small btn-comment-reply bubbtop" title="Reply to this comment" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id; ?>" >Reply</a>
+                                <a class="btn-comment-reply bubbtop" title="Reply to this comment" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id; ?>" >Reply</a>
                                 <?php else: ?>
-                                <a class="btn btn-small btn-comment-reply bubbtop" title="Reply to this discussion" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->reply_to; ?>" >Reply</a>
+                                <a class="btn-comment-reply bubbtop" title="Reply to this discussion" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->reply_to; ?>" >Reply</a>
                                 <?php endif; ?>
-                                <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
-                                    <span class="caret"></span>
-                                </a>
-                                <ul class="dropdown-menu"> 
-                                    <?php if($com->reply_to!=0): ?> 
-                                    <li><a class="btn-comment-reply" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id;?>">Reply to this comment</a></li>
-                                    <?php endif; ?>
-                                    <li><a href="">Share</a></li>
-                                    <li><a href="">Alert</a></li>
-                                </ul>
+                                <?php if($com->reply_to!=0): ?> 
+                                <a class="btn-comment-reply" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id;?>">Reply this comment</a>
+                                <?php endif; ?>
+                                <a href="<?php echo Router::url('comments/view/'.$com->id); ?>" target="_blank">Share</a>
+                                <a href="">Alert</a>
                             </div>                    
                         </div>
                         <?php endif; ?>

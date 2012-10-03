@@ -15,15 +15,16 @@
 			
 			<?php 
 
-			 //debug($states);
-					foreach($states as $key=>$array){
+	 		//debug($states);
+			foreach($states as $key=>$array){
 
-						if($key!='city')							
-							echo $this->Form->generateSelect($key,'btn geo-select',$array,'code','name',$this->CookieRch->read($key),'onchange="showRegion(this.value,\''.$key.'\')"');
-						else
-							echo $this->Form->generateSelect($key,'btn geo-select',$array,'code','name',$this->CookieRch->read($key),'');
-					}
+				if($key!='city')							
+					echo $this->Form->generateSelect($key,'btn geo-select',$array,'code','name',$this->CookieRch->read($key),'onchange="showRegion(this.value,\''.$key.'\')"');
+				else
+					echo $this->Form->generateSelect($key,'btn geo-select',$array,'code','name',$this->CookieRch->read($key),'');
+			}
 			?>
+			
 		<button type="submit" class="btn" id="submit-state" data-url="<?php echo Router::url('world/getStates'); ?>">OK</button>		
 	</div>
 	<div class="btn-group">
@@ -179,8 +180,8 @@
 				 		<div class="action">
 				 			<div class="btn-toolbar">
 				 			<?php if($this->session->user()): ?>
-						      <a class="btn btn-inverse btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-bullhorn icon-white"></i> <strong>Protest!</strong></a>
-						      <a class="btn btn-cancel btn-red" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> YouProtest</a>						      
+						      <a class="btn btn-inverse btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> Protest?</a>
+						      <a class="btn btn-cancel btn-red" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> You Protest</a>						      
 						    <?php endif; ?>
 						    <?php if(isset($manif->isadmin)): ?>
 						      <a class="btn btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>

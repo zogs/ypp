@@ -29,8 +29,8 @@
 			</form>
 
 			<ul class="nav">
-				<li><a href="<?php echo Router::url('manifs/index');?>">Find</a></li>
-				<li><a href="<?php echo Router::url('create');?>">Create</a></li>
+				<li><a href="<?php echo Router::url('manifs/index');?>">Protests.</a></li>
+				<li><a href="<?php echo Router::url('create');?>">Create.</a></li>
 
 				
 			</ul>
@@ -71,7 +71,7 @@
 	  </div>
 	</div>
 
-	<div class="container" style="">	
+	<div class="container" style="margin-top:42px;">	
 		<?php echo $this->session->flash();?>
 		<?php echo $content_for_layout;?>
 	</div>

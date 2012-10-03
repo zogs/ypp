@@ -146,6 +146,8 @@ class ManifsController extends Controller{
 			"pays"=>$this->getCountryCode()
 			);
 
+
+
 		$d['manif'] = $this->Manifs->findFirstManif($params);
 		$d['manif']->context = 'manif';
 		$d['manif']->context_id = $id;
@@ -375,25 +377,36 @@ class ManifsController extends Controller{
 		
 		$this->loadModel('Manifs');
 		$this->Manifs->table = "manif_participation";
-		
-
+		$this->Manifs->primaryKey = "id";
+				
 		$user = $this->Manifs->findFirst(array(
 			'fields'=>'id',
 			'conditions'=>array('manif_id'=>$manif_id,'user_id'=>$user_id))
 		);
-
+		
 		if(empty($user)){
 
-			$user = $this->Manifs->save(array('manif_id'=>$manif_id,'user_id'=>$user_id,'date'=>Date::SQLNow() ));
+			$protester = new stdClass();
+			$protester->manif_id = $manif_id;
+			$protester->user_id = $user_id;
+			$protester->date = Date::SQLNow();
+			$user = $this->Manifs->save( $protester );
 			
-			$this->Manifs->table = "users";
-			$user = $this->Manifs->findFirst(array(
-			'fields'=>'bonhom,login',
-			'conditions'=>array('user_id'=>$user_id))
-			);
-			$d['login'] = $user->login;
-			$d['bonhom'] = $user->bonhom;
-			$d['success'] = "You protest ! ";
+			if($user){
+				$this->Manifs->table = "users";
+				$user = $this->Manifs->findFirst(array(
+				'fields'=>'bonhom,login',
+				'conditions'=>array('user_id'=>$user_id))
+				);
+				
+				$d['login'] = $user->login;
+				$d['bonhom'] = $user->bonhom;
+				$d['success'] = "You protest ! ";
+			}
+			else {
+				$d['error'] = "SQL insertion failed ";
+				//debug($this->Manifs->error);
+			}
 		}
 		else {
 			$d['error'] = "You are already in";
@@ -408,19 +421,19 @@ class ManifsController extends Controller{
 		$this->Manifs->table = "manif_participation";
 		$this->Manifs->primaryKey = "id";
 
-		$user = $this->Manifs->findFirst(array(
-			'fields'=>'manif_id',
-			'conditions'=>array('manif_id'=>$manif_id,'user_id'=>$user_id))
+		$participation = $this->Manifs->findProtesters(array(
+			'fields'=>array('P.id','U.login','U.user_id'),
+			'conditions'=>array('P.manif_id'=>$manif_id,'P.user_id'=>$user_id))
 		);
 
-		if(!empty($user)){
+		if(!empty($participation)){
 
-			if($this->Manifs->delete($user->id)){
+			if($this->Manifs->delete($participation->id)){
 
 				$d['success'] = 'Cancel Ok';
 			}
 			else {
-				$d['error'] = 'Error canceling protester '.$user_id;
+				$d['error'] = 'Error canceling protesting '.$participation->login;
 			}
 
 		}
@@ -520,15 +533,15 @@ class ManifsController extends Controller{
 				if(empty($user)) exit(); // there is no protesters at all !
 			}
 			
-			$user[0]->comment = $this->Comments->findUserComments(array(
+			$user->comment = $this->Comments->findUserComments(array(
 				'fields'=>array('C.id','C.content','C.date','C.note','C.lang'),
-				'conditions'=>array('C.user_id'=>$user[0]->user_id,'C.manif_id'=>$manif_id,'C.type'=>'com','C.reply_to'=>0,'C.online'=>1),
+				'conditions'=>array('C.user_id'=>$user->user_id,'C.context'=>'manif','C.context_id'=>$manif_id,'C.type'=>'com','C.reply_to'=>0,'C.online'=>1),
 				'order'=>'note DESC',
 				'limit'=>1));
 
-			$numComments = $this->Comments->userTotalComments($user[0]->user_id);
+			$numComments = $this->Comments->userTotalComments($user->user_id);
 
-			$user[0]->infoline = "since ".$user[0]->date." - ".$numComments." comments";
+			$user->infoline = "since ".$user->date." - ".$numComments." comments";
 			
 
 			

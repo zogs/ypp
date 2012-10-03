@@ -239,6 +239,8 @@ $(document).ready(function(){
 		        ============================================================*/ 
 				function show_comments(){
 
+					$("#loadingComments").show();
+
 		            var arg = (arguments[0]) ? arguments[0] : 'clear';
 
 		            clean_params('newer','start'); 
@@ -284,16 +286,9 @@ $(document).ready(function(){
 		                Global_loadingComments = false;
 		                infiniteComment();
 		                
-		                if(html=='')
-		                {
-		                    console.log('count <= 0');
-		                    $("#loadingComments").hide();
-		                    $("#noMoreComments").show();                    
-		                }
-		                else {
-		                    $("#loadingComments").show();
-		                    $("#noMoreComments").hide();   
-		                }
+
+	                    $("#loadingComments").hide();                    
+
 		                    
 						
 					},
@@ -650,10 +645,12 @@ $(document).ready(function(){
 /*===========================================================
     ADD a bonhom to the protest
 ============================================================*/
+nameProtesters = ['Barry White','Mike Jagger','Elvis Presley','Joe Coker','John Lennon','Johny Cash','Jon Baez','Bob Dylan','Bob Marley','Jimmy Hendrix'];
 function addBonhomToManif(bonhom,name){
 
     if(bonhom==undefined) bonhom = 'bonhom_'+Math.floor(Math.random()*10);
     if(name==undefined) name = nameProtesters[Math.floor(Math.random()*10)];
+
     document.getElementById('manifflash').addHimToManif(bonhom,name);
 }
 
