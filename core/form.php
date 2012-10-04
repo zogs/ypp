@@ -139,35 +139,35 @@ class Form{
 		else return false;
 	}
 
-/**
-* Genere un code html <select...> avec <option></option...>
-*
-* @param $id l'id du champ select
-* @param $class la class du champ select
-* @param $options tableaux associatifs des options : array('code'=>14,'nom'=>Cal)
-* @param $value nom de la valeur propre au tableau
-* @param $name nom de l'option propre au talbeau
-* @param $selected valeur dont le champ est selected
-* @param $javascript (facultatif)
-* @return $html code html
-*/ 
+	/**
+	* Genere un code html <select...> avec <option></option...>
+	*
+	* @param $id l'id du champ select
+	* @param $class la class du champ select
+	* @param $options tableaux associatifs des options : array('code'=>14,'nom'=>Cal)
+	* @param $value nom de la valeur propre au tableau
+	* @param $name nom de l'option propre au talbeau
+	* @param $selected valeur dont le champ est selected
+	* @param $javascript (facultatif)
+	* @return $html code html
+	*/ 
 	public function generateSelect($id,$class,$options,$value = 'id' ,$name = 'name',$selected = null,$javascript = null){
 
 		if(!empty($options))
 		{
 
 			$html ='<select id="'.$id.'" name="'.$id.'" class="'.$class.'" '.$javascript.' >';
-			$html .= '<option value="NONE">Select</options>';
+			$html .= '<option value=" ">Select</options>';
 
 			if(is_object($options)) $options = get_objet_vars($options);
 
 			foreach ($options as $line) {
 				if(is_object($line)) {				
-					$html .='<option value="'.$line->$value.'" '.($line->$value === $selected ? 'selected="selected"':'').'>'.utf8_encode($line->$name).'</option>';								
+					$html .='<option value="'.$line->$value.'" '.(($line->$value === $selected && $selected!='')? 'selected="selected"':'').'>'.utf8_encode($line->$name).'</option>';								
 				}				
 				elseif(is_array($line))	{
-					if($line[$value] == $selected) $attr='selected="selected';		
-					$html .= '<option value='.$line[$value].' '.($line[$value] === $selected ? 'selected="selected"':'').'>'.utf8_encode($line[$name]).'</option>';
+							
+					$html .= '<option value="'.$line[$value].'" '.(($line[$value] === $selected && $selected!='')? 'selected="selected"':'').'>'.utf8_encode($line[$name]).'</option>';
 				}
 			}
 			$html .='</select>';
@@ -177,6 +177,8 @@ class Form{
 
 
 	}
+
+	
 
 
 }

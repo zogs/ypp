@@ -40,7 +40,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#24050101', e
 /*
 Nav bar
 */
-.navbar { position:fixed;}
+.navbar { position:fixed; visibility: hidden;}
 .nav-logo { height: 30px; }
 .nav-login { text-transform:capitalize; font-weight:bold;}
 .nav-avatar { display:inline; margin-top:-6px; margin-right:5px; height: 30px;}
@@ -56,7 +56,7 @@ Heading
 /*
 Bootstrap
 */
-.btn { border-radius: 0; -moz-border-radius:0; -webkit-border-radius:0;}
+.btn { border-radius: 0; -moz-border-radius:0; -webkit-border-radius:0; }
 .btn-red { 
 color:#FFFFFF;
 font-weight: bold;
@@ -92,7 +92,7 @@ Index Manif
 #search-manif .btn-group input[name=rch] { width:80px; }
 #search-manif .btn-group input[name=rch]:hover { cursor: text;  }
 #search-manif .btn-group .btn { text-align:left;}
-#search-manif .btn-group .btn.geo-select { width:130px;}
+#search-manif .btn-group .btn.geo-select { width:130px; }
 #search-manif .btn-group .btn.cat-select { width:100px;}
 div.geo-select .select2-choice { padding:0; height:auto; outline:none; border:0; border-radius:0; background-color:transparent; background-image:none; text-align:left; line-height:inherit; }
 div.geo-select .select2-choice:focus { outline:none;}
@@ -101,7 +101,7 @@ div.geo-select .select2-choice div { border:0; background:none; background-image
 div.geo-select .select2-choice div b { background-position:0 -2px;}
 div.geo-select .select2-drop { left:0; margin-top: 0; padding:5px 0 2px 5px; width:200px;}
 div.geo-select .select2-results { max-height:300px; text-align:left; }
-#create div.geo-select { margin-right:10px; box-shadow: 0 0 0 5px #E2E2E2;}
+
 
 .form-search input[type=text] { float:left; margin-right:2px;}
 .arianne span { margin-left:4px; }
@@ -123,7 +123,7 @@ div.geo-select .select2-results { max-height:300px; text-align:left; }
 .nav-timeline-a:hover { border-left:6px solid #888; color:#005580; text-decoration:none; font-weight:bold;}
 
 .listed { width:78%; }
-.manif {  position:relative; float:left; overflow:hidden; margin:10px 0; padding:20px 2% 15px 4%; width:94%; border:1px solid #CCC; background:rgba(255, 255, 255, 0.4); box-shadow:0 -2px 10px rgba(0,0,0,0.1);}
+.manif {  position:relative; float:left; overflow:hidden; margin:10px 0; padding:20px 2% 15px 4%; width:94%; border:1px solid #CCC; background:rgba(255, 255, 255, 0.6); box-shadow:0 -2px 10px rgba(0,0,0,0.1); border-radius: 6px;}
 .manif:nth-child(odd) { background: E5E5E5;}
 .manif:nth-child(even) { background: E9E9E9;}
 .manif:hover { background-color: #F5F5F5;}
@@ -359,21 +359,21 @@ Account
 
 
 /**
-* Create
+* Formulaire
 */
-#create #formulaire { margin:10px auto 0 auto; margin-bottom:100px; width:70%;}
-#create #formulaire .parts { margin-top:10px; margin-bottom:20px; padding:20px 50px; border:1px solid #CCC; background:#F2F2F2; box-shadow:0 0 4px 4px rgba(100,100,100,0.1);}
-#create #formulaire .control-group { float:left; margin:10px 0; width:100%;}
-#create #formulaire .control-label { position:relative; display:inline; color:#777; font:bold 150% Arial, Helvetica, sans-serif; }
-#create #formulaire .label-helper { display:inline; margin-left:5px; color:#AAA; text-align:left;}
-#create #formulaire .controls { margin:10px 0;}
-#create #formulaire .helper { padding:0; width:100%; color:#AAA; text-align:left;}
-#create #formulaire input[type=text], #create #formulaire textarea { width:100%; }
-#create #formulaire input[type=text], #create #formulaire textarea, #create #formulaire select, #create #formulaire input[type=file] {  padding:5px 5px; box-shadow:0 0 0 5px #E2E2E2; }
-#create #formulaire input[type=submit] { padding:10px 25px; width:auto; }
-#create #formulaire select { width:130px; -webkit-appearance:none;}
-#create #formulaire .submit .helper { display:inline; padding-left:15px; color:#AAA; text-align:left; }
-
+.formulaire { margin:10px auto 0 auto; margin-bottom:100px; width:70%;}
+.formulaire .form-block { overflow:hidden; margin-top:10px; margin-bottom:20px; padding:20px 50px; border:1px solid #CCC; background:#F2F2F2; box-shadow:0 0 4px 4px rgba(100,100,100,0.1);}
+.formulaire .control-group { float:left; margin:5px 0; width:100%;}
+.formulaire .control-label { position:relative; display:inline; color:#777; font:bold 150% Arial, Helvetica, sans-serif; }
+.formulaire .label-helper { display:inline; margin-left:5px; color:#AAA; text-align:left;}
+.formulaire .controls { margin:10px 0;}
+.formulaire .helper { padding:0; width:100%; color:#AAA; text-align:left;}
+.formulaire input[type=text], .formulaire textarea { width:100%; }
+.formulaire input, .formulaire textarea, .formulaire select {  padding:5px 5px; box-shadow:0 0 0 5px #E2E2E2; }
+.formulaire input[type=submit] { padding:10px 25px; width:auto; }
+.formulaire select { width:130px; -webkit-appearance:none;}
+.formulaire .submit .helper { display:inline; padding-left:15px; color:#AAA; text-align:left; }
+.formulaire div.geo-select { margin-right:10px; box-shadow: 0 0 0 5px #E2E2E2;}
 /*
 Group View
 */

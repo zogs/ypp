@@ -119,7 +119,7 @@ class Controller {
 	// @params 
 	// $controller prefixe du Controller .ex: users
 	// $action action à appeler
-	public function request($controller,$action, $params = null){
+	public function request($controller,$action, $params = array() ){
 
 		$controller .= 'Controller';
 		require_once ROOT.DS.'controller'.DS.$controller.'.php';
@@ -173,6 +173,10 @@ class Controller {
 		}
 	}
 
+	public function has($property){
 
+		if(isset($this->$property)) return $this->$property;
+		else return false;
+	}
 }
 ?>

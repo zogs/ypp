@@ -99,45 +99,63 @@ class UsersController extends Controller{
 
 	}	
 
-	public function register(){
+	/*===========================================================	        
+	Register
+	@param object of a user
+	============================================================*/
+	public function register( $params = null){
 
 		$this->loadModel('Users');
 		$this->layout = 'none';
 		$d = array();		
 
-		if($this->request->data){
-			if($this->Users->validates($this->request->data,'register')){
+		
+		if(isset($params) && is_object($params)){
+			$data = $params;
+		}
+		elseif($this->request->data){
+			$data = $this->request->data;
+		}
 
-				//Password hash & salt
-				$this->request->data->salt = randomString(10);
-				$this->request->data->hash = md5($this->request->data->salt.$this->request->data->password);
-				$this->request->data->codeactiv = randomString(25);
-				$this->request->data->password = '';
-				$this->request->data->confirm = '';
-				//Lang
-				$this->request->data->lang = Conf::$lang;
-				//Date d'inscription
-				$this->request->data->date = unixToMySQL(time());
-				//Sauvegarde				
-				$this->Users->save($this->request->data);
 
-				$user_id = $this->Users->id;														
-				$successMail = $this->sendValidateMail(array(
-										'dest'      =>$this->request->data->mail,
-										'user'      =>$this->request->data->login,
-										'codeactiv' =>$this->request->data->codeactiv,
-										'user_id'   =>$user_id										
-										));
+		if($data){
+			if($this->Users->validates($data,'register')){
 
-				if($successMail === true) {
-					$d['Success'] = true;
-					$this->session->setFlash("Votre inscription <strong>a bien été enregistré</strong>","success");
-					$this->session->setFlash("Un email <strong>a été envoyé</strong> à votre boite mail. Pour confirmer votre incription, <strong>veuillez cliquer sur le lien</strong> présent dans cette email", "info");
-					$this->session->setFlash("Il est possible que ce mail soit placé parmis les <strong>indésirables ou spam</strong> , pensez à vérifier !", "error");
+				//user object
+				$user = new stdClass();
+				$user = $data;
+				$user->salt = randomString(10);
+				$user->hash = md5($user->salt.$data->password);
+				$user->codeactiv = randomString(25);
+				$user->password = '';
+				$user->confirm = '';
+				$user->lang = Conf::$lang;
+				$user->date = unixToMySQL(time());
+								
+				//Sauvegarde
+				if($this->Users->save($user)) {
+
+					$user_id = $this->Users->id;
+
+					if(isset($user->status) && $user->status!='group')
+						$this->session->setFlash("<strong>Welcome</strong>","success");
+
+
+					if($this->sendValidateMail(array('dest'=>$user->mail,'user'=>$user->login,'codeactiv' =>$user->codeactiv,'user_id'=>$user_id)))
+					{
+						$d['Success'] = true;						
+						$this->session->setFlash("Un email <strong>a été envoyé</strong> à votre boite mail. Pour confirmer votre incription, <strong>veuillez cliquer sur le lien</strong> présent dans cette email", "info");
+						$this->session->setFlash("Il est possible que ce mail soit placé parmis les <strong>indésirables ou spam</strong> , pensez à vérifier !", "error");
+					}
+					else {
+						$d['Success'] = false;
+						$this->session->setFlash("Il y a eu une erreur lors de l'envoi de l'email de validation", "error");
+					}
 				}
 				else {
+
 					$d['Success'] = false;
-					$this->session->setFlash("Il y a eu une erreur lors de l'envoi de l'email de validation", "error");
+					$this->session->setFlash("Il y a eu une erreur lors de l'enregistrement dans la base", "error");
 				}
 			}
 			else {				

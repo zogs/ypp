@@ -362,8 +362,10 @@
  			if(empty($errors)){
  				return true;
  			}
-
- 			// debug($errors); 			
+ 			else {
+ 				debug($errors);
+ 			}
+ 					
  			return false;
  			 			 		
  	}

@@ -330,6 +330,8 @@ class ManifsController extends Controller{
 		
 	}
 
+
+
 	public function removeUser(){
 
 		$this->view = 'json';

@@ -1,7 +1,33 @@
 <?php 
 class Groups extends Model {
 
+	public $validates = array(
+			'register' => array(
+				'name' => array(
+					'rule'    => 'notEmpty',
+					'message' => 'Must not be empty'		
+					),
+				'mail' => array(
+					'rule' => '[_a-zA-Z0-9-+]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,4})',
+					'message' => "Email address is not correct"
+					),
+				'password' => array(
+					'rule' => '.{5,20}',
+					'message' => "Votre mot de passe doit etre entre 5 et 20 caracteres"
+					),
+				'confirm' => array(
+					'rule' => 'confirmPassword',
+					'message' => "Vos mots de passe ne sont pas identiques"
+					)
+			)
+		);
 
+	public function saveGroup($group){
+
+		if($this->save($group)) return true;
+		else return false;
+
+	}
 
 	public function findGroups($params){
 
@@ -14,7 +40,7 @@ class Groups extends Model {
  		else $sql .='*';
 
  		$sql .="
- 				FROM association as A
+ 				FROM groups as A
  				";
  		if(isset($params['category']))
 			$sql .= ' LEFT JOIN config_category as C ON ( C.id = A.cat2 OR C.id = A.cat3)';
@@ -28,9 +54,9 @@ class Groups extends Model {
  				WHERE 
  				";
 
- 		if(isset($params['asso_id'])){
+ 		if(isset($params['group_id'])){
 
- 			$sql .= 'A.asso_id = '.$params['asso_id'];
+ 			$sql .= 'A.group_id = '.$params['group_id'];
  		}
 
  		if(isset($params['conditions'])){
@@ -66,7 +92,7 @@ class Groups extends Model {
  		}
 
 
- 		$sql .= " GROUP BY A.asso_id";
+ 		$sql .= " GROUP BY A.group_id";
 
  		
  		if(isset($params['order'])){

@@ -1,18 +1,16 @@
 <div id="create">
 	
-	<div id="formulaire">
+	<div class="formulaire">
 
 		<?php echo $this->session->flash(); ?>
 
 		<form id="create-manif" class="" action="<?php echo Router::url('manifs/create/id:'.$manif->id.'/slug:'.$manif->slug); ?>" method="POST" enctype="multipart/form-data">
 
-			<div class="parts">
+			<div class="form-block">
 
 
 					<?php echo $this->Form->input('nommanif',"The Name",array('placeholder'=>'Ex: Occupy YouPorn','value'=>$manif->nommanif)); ?>
-
 					<?php echo $this->Form->input('description','Description',array('type'=>'textarea','placeholder'=>'Type your sex here','value'=>htmlentities($manif->description))); ?>
-
 					<?php echo $this->Form->input('keywords','Keywords',array('placeholder'=>'Separate them with sperm','value'=>$manif->keywords)); ?>
 				
 
@@ -23,7 +21,7 @@
 
 			</div>
 
-			<div class="parts">
+			<div class="form-block">
 
 				<div class="control-group">
 					<label for="cat2" class="control-label">Category</label>

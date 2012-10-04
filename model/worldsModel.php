@@ -33,7 +33,7 @@ class Worlds extends Model
 				$states[$key] = $this->findStates(array('CC1'=>$CC1,'ADM'=>$key,'ADM_PARENT'=>'useless'));
  				
  			}
- 			elseif($key=='city' && $value != ''){
+ 			elseif($key=='city' && $value != 0){
 
  				$states['city'] = $this->findCities($CC1,$this->formatADMArray($ADM) );
 

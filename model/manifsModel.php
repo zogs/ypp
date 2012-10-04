@@ -78,7 +78,7 @@ class Manifs extends Model {
 			    LEFT JOIN manif_tags as T ON TM.tag_id = T.tag_id
 			    LEFT JOIN manif_admin as AD ON AD.manif_id=D.manif_id AND AD.user_id ='.$user_id.'
 			    LEFT JOIN association_admin as MA ON MA.user_id=U.user_id AND MA.creator=1
-			    LEFT JOIN association as A ON MA.asso_id=A.asso_id	
+			    LEFT JOIN groups as A ON MA.asso_id=A.group_id	
 		        LEFT JOIN world_country as WC ON WC.CC1=D.CC1
     			LEFT JOIN world_cities as City ON City.UNI=D.city AND City.LC=WC.LO		   
 				LEFT JOIN (  
@@ -128,7 +128,7 @@ class Manifs extends Model {
  			$cond = array();
  			foreach ($req['location'] as $k => $v) {
 
- 				if($v!='' && $v!='NONE'){
+ 				if(trim($v)!=''){
 
 	 				if(!is_numeric($v)){ 
 	 					$v = '"'.mysql_escape_string($v).'"';	 					
