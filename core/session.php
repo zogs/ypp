@@ -7,16 +7,23 @@ class Session {
 
 		if(!isset($_SESSION)){
 			session_start();	
-			$_SESSION['flash'] = array();
+			//$_SESSION['flash'] = array();
+			
 		}
+		
 	}
 
 	public function setFlash($message, $type = 'success'){
 
-		array_push($_SESSION['flash'],array(
-			'message' => $message,
-			'type' => $type
-			));
+		$flash = array('message'=>$message,'type'=>$type);
+
+		if(isset($_SESSION['flash'])){
+			array_push($_SESSION['flash'],$flash);			
+		}
+		else {
+			$_SESSION['flash'] = array($flash);
+		}
+		
 	}
 
 	public function flash(){

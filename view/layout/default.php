@@ -71,8 +71,7 @@
 	  </div>
 	</div>
 
-	<div class="container" style="margin-top:42px;">	
-		<?php echo $this->session->flash();?>
+	<div class="container" style="margin-top:42px;">			
 		<?php echo $content_for_layout;?>
 	</div>
 

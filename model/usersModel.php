@@ -32,6 +32,16 @@ class Users extends Model{
 				'message' => "L'adresse email n'est pas valide"
 				)
 		),
+		'recovery_mdp' => array(
+			'password' => array(
+				'rule' => '.{5,20}',
+				'message' => "Votre mot de passe doit etre entre 5 et 20 caracteres"
+				),
+			'confirm' => array(
+				'rule' => 'confirmPassword',
+				'message' => "Vos mots de passe ne sont pas identiques"
+				)
+		),
 		'account_mdp' => array(
 			'oldpassword' => array(
 				'rule' => 'notEmpty',
@@ -83,7 +93,7 @@ class Users extends Model{
 
  		//Les vérifications sont faites dans model/validates
 
- 		$tmp = $_FILES['inputavatar'];
+ 		$tmp = $_FILES['avatar'];
  		$ext = $extention = substr(strrchr($tmp['name'], '.'),1);
  
  		$newname = 'u'.$user_id.'.'.$ext;

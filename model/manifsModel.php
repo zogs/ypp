@@ -281,7 +281,7 @@ class Manifs extends Model {
  		$manif->nommanif = $form->nommanif;
  		$manif->accroche = substr($form->description,0,200).'...';
  		$manif->description = $form->description;
- 		$manif->slug = str_replace(' ', '_', $form->nommanif);
+ 		$manif->slug = slugify($form->nommanif);
  		$manif->valid = 1;
  		$manif->manif_id = $this->id;
 

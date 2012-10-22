@@ -20,7 +20,7 @@ class UsersController extends Controller{
 				$field = 'login';
 			
 			$user = $this->Users->findFirst(array(
-				'fields'=> 'user_id,login,avatar,hash,salt,statut,pays,lang',
+				'fields'=> 'user_id,login,avatar,hash,salt,status,pays,lang',
 				'conditions' => array($field=>$login))
 			);
 			
@@ -34,8 +34,15 @@ class UsersController extends Controller{
 
 					$this->session->write('user', $user);				
 					$this->session->setFlash('Vous êtes maintenant connecté');
-					$this->reload(); 
-					
+
+					$loc = $_SERVER['REQUEST_URI'];
+					if($loc=='/ypp/users/login'||$loc=='/ypp/users/validate'){
+						$this->redirect('users/thread');
+					}
+					else{
+						$this->reload(); 
+					}					
+	
 
 				}
 				else {
@@ -49,51 +56,12 @@ class UsersController extends Controller{
 
 		}
 
-		/*  
-			Validation de l'inscription
-			===========================
-		*/
-		elseif($this->request->get('code') && $this->request->get('uid') && $this->request->get('login')) {
-
-			$get       = $this->request->get;
-			$login     = $get->login;
-			$user_id   = $get->uid;			
-			$codeactiv = $get->code;
-
-			$user = $this->Users->findFirst(array(
-				'fields'=>'codeactiv',
-				'conditions'=>array('login'=>$login,'user_id'=>$user_id)
-				));
-
-
-			if(!empty($user)){
-
-				if($user->codeactiv == $codeactiv) {
-					$data =  new stdClass();
-					$data->user_id = $user_id;
-					$data->valid = 1;
-					$this->Users->save($data);
-
-					$this->session->setFlash('<strong>Bravo</strong> '.$login.' ! Tu as validé ton inscription','success');
-					$this->session->setFlash('Tu peux te <strong>connecter</strong> dés maintenant!','info');
-
-				}
-				else {
-					$this->session->setFlash("Une erreur inconnue est intervenue pendant l'activation",'error');
-				}
-			}
-			else {				
-				$this->session->setFlash("Pas trouvé dans la bdd",'error');
-			}
-
-		}
-
 	}
 
 	public function logout(){
 		
 		unset($_SESSION['user']);
-		$this->session->setFlash('Vous êtes maintenant déconnecté','info');
+		$this->session->setFlash('Vous êtes maintenant déconnecté','info');	
 		$this->reload();
 
 
@@ -103,15 +71,16 @@ class UsersController extends Controller{
 	Register
 	@param object of a user
 	============================================================*/
-	public function register( $params = null){
+	public function register( $data = null){
 
 		$this->loadModel('Users');
 		$this->layout = 'none';
+
 		$d = array();		
 
 		
-		if(isset($params) && is_object($params)){
-			$data = $params;
+		if(isset($data) && is_object($data)){
+			$data = $data;
 		}
 		elseif($this->request->data){
 			$data = $this->request->data;
@@ -131,6 +100,7 @@ class UsersController extends Controller{
 				$user->confirm = '';
 				$user->lang = Conf::$lang;
 				$user->date = unixToMySQL(time());
+
 								
 				//Sauvegarde
 				if($this->Users->save($user)) {
@@ -166,6 +136,246 @@ class UsersController extends Controller{
 		$this->set($d);
 	}
 
+
+
+	/*===========================================================	        
+	Validate
+	Validate the email of the user	
+	============================================================*/
+	public function validate(){
+
+		$this->loadModel('Users');
+		$this->view = 'users/login';
+
+		if($this->request->get('c') && $this->request->get('u') ) {
+
+			$get       = $this->request->get;
+			$user_id   = base64_decode(urldecode($get->u));			
+			$code_url = base64_decode(urldecode($get->c));
+
+			$user = $this->Users->findFirst(array(
+				'fields'=>array('login','codeactiv'),
+				'conditions'=>array('user_id'=>$user_id)
+				));
+
+
+			if(!empty($user)){
+
+				if($user->codeactiv == $code_url) {
+					$data =  new stdClass();
+					$data->user_id = $user_id;
+					$data->valid = 1;
+					$this->Users->save($data);
+
+					$this->session->setFlash('<strong>Bravo</strong> '.$user->login.' ! Tu as validé ton inscription','success');
+					$this->session->setFlash('Tu peux te <strong>connecter</strong> dés maintenant!','info');
+									
+
+				}
+				else {
+					$this->session->setFlash("Une erreur inconnue est intervenue pendant l'activation",'error');
+				}
+			}
+			else {				
+				$this->session->setFlash("Pas trouvé dans la bdd",'error');
+			}
+
+		}
+
+	}
+
+	public function recovery(){
+
+		$this->loadModel('Users');
+
+		$action='';
+		
+		//if user past the link we mailed him
+		if($this->request->get('c') && $this->request->get('u') ){
+
+			
+			//find that user 
+			$user_id = base64_decode(urldecode($this->request->get('u')));
+			$user = $this->Users->findFirst(array(
+				'fields'=>array('user_id','salt'),
+				'conditions'=>array('user_id'=>$user_id)));
+			
+			//check the recovery code
+			$code = base64_decode(urldecode($this->request->get('c')));
+			$hash = md5($code.$user->salt);
+			$user = $this->Users->findFirst(array(
+				'table'=>T_USER_RECOVERY,
+				'fields'=>'user_id',
+				'conditions'=>'user_id='.$user_id.' AND code="'.$hash.'" AND date_limit >= "'.unixToMySQL(time()).'"'));
+
+			//if this is good
+			if(!empty($user)){
+
+				//show password form
+				$this->session->setFlash('Enter your new password','success');
+				$action = 'show_form_password';
+
+			}
+			else {
+				//else the link isnot good anymmore
+				$this->session->setFlash('Your link is not valid anymore. Please ask for a new password reset.','error');
+				$action = 'show_form_email';
+				
+			}
+
+			$d['code'] = $code;
+			$d['user_id'] = $user_id;
+
+		}
+
+		//if user enter a new password
+		if($this->request->post('password') && $this->request->post('confirm') && $this->request->post('code') && $this->request->post('user')){
+
+
+			$data    = $this->request->post();
+			
+			//find that user
+			$user_id = $data->user;
+			$user = $this->Users->findFirst(array(
+				'fields'=>array('user_id','salt'),
+				'conditions'=>array('user_id'=>$user_id)));
+
+			//check the recovery code
+			$code = md5($data->code.$user->salt);
+			$user = $this->Users->findFirst(array(
+				'table'=>T_USER_RECOVERY,
+				'fields'=>'user_id',
+				'conditions'=>'user_id='.$user_id.' AND code="'.$code.'" AND date_limit >= "'.unixToMySQL(time()).'"'));
+
+			//if the code is good
+			if(!empty($user)){
+
+				unset($data->code);
+				unset($data->user);
+				
+				//validates the password
+				if($this->Users->validates($data,'recovery_mdp')){
+
+					//save new password
+					$new = new stdClass();
+					$new->salt = randomString(10);
+					$new->hash = md5($new->salt.$data->password);
+					$new->user_id = $user->user_id;
+					if($this->Users->save($new)){
+
+						//find the recovery data 
+						$rec = $this->Users->findFirst(array(
+							'table'=>T_USER_RECOVERY,
+							'fields'=>array('id'),
+							'conditions'=>array('user_id'=>$user_id,'code'=>$code)));
+
+						//supress recovery data
+						$del = new stdClass();
+						$del->table = T_USER_RECOVERY;
+						$del->key = K_USER_RECOVERY;
+						$del->id = $rec->id;
+						$this->Users->delete($del);
+
+						//redirect to connexion page
+						$this->session->setFlash("Your password have been changed !","success");
+						$this->redirect('users/login');
+					}
+					else {
+						$action = 'show_form_password';
+						$this->session->setFlash("Error while saving. Please retry","error");
+					}
+				}
+				else {
+					$action = 'show_form_password';
+					$this->session->setFlash("Please review your data","error");
+				}
+
+			}
+			else
+			{
+				$action = 'show_form_email';
+				$this->session->setFlash("Error. Please ask for a new password reset.","error");
+			}
+
+			$d['code'] = $code;
+			$d['user_id'] = $user_id;
+
+
+
+		}
+
+		//If user enter his email address
+		if( $this->request->post('email') ) {
+
+			$action = 'show_form_email';
+
+			//check his email
+			$user = $this->Users->findFirst(array(
+				'fields'=>array('user_id','mail','login','salt'),
+				'conditions'=>array('mail'=>$this->request->post('email')),				
+			));
+
+			if(!empty($user)){
+
+				//check if existant recovery data
+				$recov = $this->Users->find(array(
+					'table'=>T_USER_RECOVERY,
+					'fields'=>array('id'),
+					'conditions'=>array('user_id'=>$user->user_id)
+					));
+
+				//if exist, delete it
+				if(!empty($recov)){
+
+					$del = new stdClass();
+					$del->table = T_USER_RECOVERY;
+					$del->key = K_USER_RECOVERY;
+					$del->id = $recov[0]->id;
+					$this->Users->delete($del);
+				}
+
+				//create new recovery data
+				$code = randomString(100);
+
+				$rec = new stdClass();				
+				$rec->user_id = $user->user_id;
+				$rec->code = md5($code.$user->salt);
+				$rec->date_limit = unixToMySQL(time() + (2 * 24 * 60 * 60));
+				$rec->table = T_USER_RECOVERY;
+				$rec->key = K_USER_RECOVERY;
+
+				//save it
+				if($this->Users->save($rec)){
+
+					//send email to user
+					if($this->sendRecoveryMail(array('dest'=>$user->mail,'user'=>$user->login,'code' =>$code,'user_id'=>$user->user_id))){
+
+						$this->session->setFlash('An email have been send to you.','success');
+						$this->session->setFlash("Please tcheck the spam box if you can't find it.","warning");
+
+					}
+					else{
+						$this->session->setFlash('Error while sending the email. users/recovery','error');
+						
+					}
+				}
+				else{
+					$this->session->setFlash('Error while saving data. users/recovery','error');
+					
+				}
+			}
+			else {
+				$this->session->setFlash('This email is not in our database','error');
+			}
+
+
+		}
+
+		$d['action'] = $action;
+		$this->set($d);
+
+	}
+
 	public function check(){
 
 		$this->loadModel('Users');
@@ -186,11 +396,51 @@ class UsersController extends Controller{
 		$this->set($d);	
 	}
 
+
+	public function sendRecoveryMail($data)
+    {
+    	extract($data);
+
+		$lien = "http://localhost/ypp/users/recovery?c=".urlencode(base64_encode($code))."&u=".urlencode(base64_encode($user_id));
+
+        //Création d'une instance de swift transport (SMTP)
+        $transport = Swift_SmtpTransport::newInstance()
+          ->setHost('smtp.manifeste.info')
+          ->setPort(25)
+          ->setUsername('admin@manifeste.info')
+          ->setPassword('XSgvEPbG');
+
+        //Création d'une instance de swift mailer
+        $mailer = Swift_Mailer::newInstance($transport);
+       
+        //Récupère le template et remplace les variables
+        $body = file_get_contents('../view/mail/recoveryPassword.html');
+        $body = preg_replace("~{site}~i", Conf::$Website, $body);
+        $body = preg_replace("~{user}~i", $user, $body);
+        $body = preg_replace("~{lien}~i", $lien, $body);
+
+        //Création du mail
+        $message = Swift_Message::newInstance()
+          ->setSubject("Change ton mot de passe")
+          ->setFrom('noreply@'.Conf::$Website, Conf::$Website)
+          ->setTo($dest, $user)
+          ->setBody($body, 'text/html', 'utf-8')
+          ->addPart("Hey {$user}, copy this link ".$lien." in your browser to change your password. Don't stop the Protest.", 'text/plain');
+       
+        //Envoi du message et affichage des erreurs éventuelles
+        if (!$mailer->send($message, $failures))
+        {
+            echo "Erreur lors de l'envoi du mail à :";
+            print_r($failures);
+        }
+        else return true;
+    }
+
 	public function sendValidateMail($data)
     {
     	extract($data);
 
-		$lien = "http://localhost/ypp/?murl=".urlencode("/ypp/users/login?code=".$codeactiv."&uid=".$user_id."&login=".$user);
+		$lien = "http://localhost/ypp/users/validate?c=".urlencode(base64_encode($codeactiv))."&u=".urlencode(base64_encode($user_id));
 
         //Création d'une instance de swift transport (SMTP)
         $transport = Swift_SmtpTransport::newInstance()
@@ -217,7 +467,7 @@ class UsersController extends Controller{
           ->setFrom('noreply@'.Conf::$Website, Conf::$Website)
           ->setTo($dest, $user)
           ->setBody($body, 'text/html', 'utf-8')
-          ->addPart("Bonjour {$user}, voici votre nouveau mot de passe: {$pass}", 'text/plain');
+          ->addPart("Hey {$user}, copy this link ".$lien." in your browser. Welcome on the Protest.", 'text/plain');
        
         //Envoi du message et affichage des erreurs éventuelles
         if (!$mailer->send($message, $failures))
@@ -351,7 +601,7 @@ class UsersController extends Controller{
 		    }
 
 	    	$user = $this->Users->findFirst(array(
-					'fields'=> 'user_id,login,avatar,mail,prenom,nom,statut,bonhom,pays,lang',
+					'fields'=> 'user_id,login,avatar,mail,prenom,nom,status,bonhom,pays,lang',
 					'conditions' => array('user_id'=>$user_id))
 				);
 	    	    	

@@ -1,5 +1,5 @@
 <div id="groups">
-	<div class="groupBanner"><?php if(isset($group->banner) && !empty($group->banner)) echo '<img src="'.Router::webroot('media/group/banner/'.$group->banner).'" />'; ?></div>
+	<div class="groupBanner"><?php if(isset($group->banner) && !empty($group->banner)) echo '<img src="'.Router::webroot($group->banner).'" />'; ?></div>
 	<div class="rightColomn">
 		<div class="rightBlock">
 			<h1>Protests</h1>
@@ -33,7 +33,7 @@
 	</div>
 	<div class="groupHead">
 		
-		<div class="groupLogo"><img src="<?php echo Router::webroot('media/group/logo/'.$group->logo);?>" /></div>
+		<div class="groupLogo"><img src="<?php echo Router::webroot($group->logo);?>" /></div>
 		<div class="groupName">
 			<?php echo $group->name; ?>							
 		</div>

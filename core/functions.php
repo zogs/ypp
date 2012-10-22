@@ -24,6 +24,18 @@ function debug($var){
 }
 
 	
+function unescape($obj){
+
+
+	foreach ($obj as $k => $v) {
+		
+		if(is_string($v)) {
+			$obj->$k = htmlentities($v);
+		}
+
+	}
+	return $obj;
+}
 function slugify($text)
 {
     // replace non letter or digits by -
@@ -54,7 +66,7 @@ function slugify($text)
 
 function randomString($length=10){
 
-	return substr(str_shuffle(MD5(microtime())), 0, 10);
+	return substr(str_shuffle(MD5(microtime())), 0, $length);
 }
 
 function unixToMySQL($timestamp)

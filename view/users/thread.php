@@ -1,4 +1,4 @@
-
+<?php echo $this->session->flash(); ?>
 <div id="thread">
 	<div class="left">
 		<div class="thread-user">

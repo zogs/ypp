@@ -18,29 +18,33 @@ class GroupsController extends Controller{
 		$this->loadModel('Groups');
 		$this->loadModel('Worlds');
 
-		if(is_numeric($group_id)){
+		if(isset($group_id)){
+
+			if(is_numeric($group_id)){
 
 
-			$params = array(
-							'fields'=>'A.group_id as id, A.name,A.address,A.mail,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
-							'group_id'=>$group_id);
+				$params = array(
+								'fields'=>'A.group_id as id, A.name,A.address,A.mail,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
+								'group_id'=>$group_id);
 
-			$groups = $this->Groups->findGroups($params);
-			$groups= $groups[0];
-			$groups->context = 'group';
-			$groups->context_id = $groups->id;
-			$groups->isadmin ='';
+				$groups = $this->Groups->findGroups($params);
+				$groups= $groups[0];
+				$groups->context = 'group';
+				$groups->context_id = $groups->id;
+				$groups->isadmin ='';
 
-			$groups = $this->Worlds->JOIN_GEO($groups);
+				$groups = $this->Worlds->JOIN_GEO($groups);
 
 
 
-			$d['group'] = $groups;
+				$d['group'] = $groups;
 
-		} 
-		else 
-			exit('wrong id param in url');
-		
+			} 
+			else 
+				exit('Error: (id must be numeric) {groups,view} ');
+		}
+		else
+			exit('Error: (id must exist) {groups,view}');
 		
 		$this->set($d);
 
@@ -48,22 +52,36 @@ class GroupsController extends Controller{
 
 	}
 
-	public function account( $action = null, $group_id = null, $slug = null){
+	public function create(){
 
-		if($action=='new' || $action == null){
+		$this->view = 'groups/account';
 
-			$this->account_new();
+		return $this->account_view();
+	}
+
+	public function account( $group_id = null, $slug = null){
+
+		if($this->request->data){
+
+			return $this->account_save( $this->request->data);
 		}
 
-		if($action=='modify'){
 
-			$this->account_modify( $group_id, $slug );
+		if(!isset($group_id)){
+
+			return $this->account_view();
 		}
+
+		if(is_numeric($group_id)){			
+
+			return $this->account_view($group_id,$slug);
+		}
+		else exit('Error: id must be numeric {groupsController, account');
 
 
 	}
 
-	public function account_modify( $group_id, $slug ){
+	public function account_view( $group_id = null, $slug = null ){
 
 		$d = array();
 		$this->loadModel('Groups');
@@ -71,123 +89,52 @@ class GroupsController extends Controller{
 		$this->loadModel('Manifs');
 
 		
-		//Get data
-		$group = $this->Groups->findGroups(array(
-										'fields'=>'A.group_id as id, A.name,A.address,A.mail,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
-										'group_id'=>$group_id
-										));
-		$group = $group[0];
-		//Get Geo
-		$d['states'] = $this->Worlds->findAllStates(array(
-		'CC1'=>$group->CC1,
-		'ADM1'=>$group->ADM1,
-		'ADM2'=>$group->ADM2,
-		'ADM3'=>$group->ADM3,
-		'ADM4'=>$group->ADM4,
-		'city'=>$group->city
-		));
-		//get category
-		$d['cats2'] = $this->Manifs->findCategory(array(
-		'lang'     =>$this->getLanguage(),
-		'level'    =>2
-		));	
-		$d['cats3'] = $this->Manifs->findCategory(array(
-		'lang'     =>$this->getLanguage(),
-		'level'    =>3
-		));	
-
-		$d['group'] = $group;
-		$d['submit_tx'] = 'Save';
-
-		$this->set($d);
-	}
-
-	public function account_new(){
+		if(isset($group_id)){
 
 
-		$this->loadModel('Groups');
-		$this->loadModel('Users');
-		$this->loadModel('Worlds');
-		$this->loadModel('Manifs');
-
-
-		if($this->request->data){
-
-			if($this->Groups->validates($this->request->data,'register')){
-
-				$data = $this->request->data;
-
-				$group = new stdClass();
-				$group->name = $data->name;
-				$group->slug = slugify($data->name);
-				$group->mail = $data->mail;							
-				$group->lang = Conf::$lang;
-				$group->cat2 = (isset($data->cat2) && !empty($data->cat2))? $data->cat2 : '';
-				$group->cat3 = (isset($data->cat3) && !empty($data->cat3))? $data->cat3 : '';
-				$group->CC1  = (isset($data->CC1) && !empty($data->CC1))? $data->CC1 : '';
-				$group->ADM1 = (isset($data->ADM1) && !empty($data->ADM1))? $data->ADM1 : '';
-				$group->ADM2 = (isset($data->ADM2) && !empty($data->ADM2))? $data->ADM2 : '';
-				$group->ADM3 = (isset($data->ADM3) && !empty($data->ADM3))? $data->ADM3 : '';
-				$group->ADM4 = (isset($data->ADM4) && !empty($data->ADM4))? $data->ADM4 : '';
-				$group->city = (isset($data->city) && !empty($data->city))? $data->city : '';
-				
-				//Save in the group database
-				if($this->Groups->saveGroup($group)){
-
-					$this->session->setFlash('Your group have succefully been created');
-					$group_id = $this->Groups->id;
-				}
-				else{
-					$this->session->setFlash('Oups... Error while saving group !','error');
-				}
-
-				$user           = new stdClass();
-				$user->login    = slugify($data->name);
-				$user->mail     = $data->mail;
-				$user->password = $data->password;
-				$user->confirm  = $data->confirm;
-				$user->bonhom   = 'bonhom_2';	
-				$user->lang     = Conf::$lang;
-				$user->status   = 'group';	
-
-				//Save in the user database
-				$this->request('users','register',array('user'=>$user));
-
+			if(is_numeric($group_id)){
 				//Get data
 				$group = $this->Groups->findGroups(array(
-												'fields'=>'A.group_id as id, A.name,A.address,A.mail,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
+												'fields'=>'A.group_id, A.user_id, A.name,A.address,A.mail,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
 												'group_id'=>$group_id
 												));
-				$group = $group[0];
-				//Get Geo
-				$d['states'] = $this->Worlds->findAllStates(array(
-				'CC1'=>$group->CC1,
-				'ADM1'=>$group->ADM1,
-				'ADM2'=>$group->ADM2,
-				'ADM3'=>$group->ADM3,
-				'ADM4'=>$group->ADM4,
-				'city'=>$group->city
-				));
-				//get category
-				$d['cats2'] = $this->Manifs->findCategory(array(
-				'lang'     =>$this->getLanguage(),
-				'level'    =>2
-				));	
-				$d['cats3'] = $this->Manifs->findCategory(array(
-				'lang'     =>$this->getLanguage(),
-				'level'    =>3
-				));	
+				if(isset($group[0])){
+					$group = $group[0];
+					//Get Geo
+					$d['states'] = $this->Worlds->findAllStates(array(
+					'CC1'=>$group->CC1,
+					'ADM1'=>$group->ADM1,
+					'ADM2'=>$group->ADM2,
+					'ADM3'=>$group->ADM3,
+					'ADM4'=>$group->ADM4,
+					'city'=>$group->city
+					));
+					//get category
+					$d['cats2'] = $this->Manifs->findCategory(array(
+					'lang'     =>$this->getLanguage(),
+					'level'    =>2
+					));	
+					$d['cats3'] = $this->Manifs->findCategory(array(
+					'lang'     =>$this->getLanguage(),
+					'level'    =>3
+					));	
 
-				$d['group'] = $group;
-				$d['submit_tx'] = 'Save';
-
-				
+					$d['action'] = 'change';
+					$d['group'] = unescape($group);
+					$d['submit_tx'] = 'Save';
+				}
+				else{
+					$this->session->setFlash('This group does not exist','error');
+					return $this->account_view();
+				}
 			}
 			else {
-				$this->session->setFlash('Please check your information','error');
+				debug('group_id is not numeric');
+				die();
 			}
 		}
 		else {
+
 
 			$this->session->setFlash("As a group, you can create protests, spread news, schedule events ! ",'warning');
 			//get geographical 
@@ -209,22 +156,136 @@ class GroupsController extends Controller{
 			'level'    =>3
 			));	
 
-			$group = new stdClass();
-			$group->cat2 = '';
-			$group->cat3 = '';
-			$group->CC1 = $this->CookieRch->read('CC1'); 
-			$group->ADM1 = $this->CookieRch->read('ADM1'); 
-			$group->ADM2 = $this->CookieRch->read('ADM2'); 
-			$group->ADM3 = $this->CookieRch->read('ADM3');
-			$group->ADM4 = $this->CookieRch->read('ADM4'); 
-			$group->city = $this->CookieRch->read('city');
-			$d['group'] = $group;
-			$d['submit_tx'] = 'Sign in';	
+			$group              = new stdClass();
+			$group->name        = '';
+			$group->mail        = '';
+			$group->cat2        = '';
+			$group->cat3        = '';
+			$group->CC1         = $this->CookieRch->read('CC1'); 
+			$group->ADM1        = $this->CookieRch->read('ADM1'); 
+			$group->ADM2        = $this->CookieRch->read('ADM2'); 
+			$group->ADM3        = $this->CookieRch->read('ADM3');
+			$group->ADM4        = $this->CookieRch->read('ADM4'); 
+			$group->city        = $this->CookieRch->read('city');
+			$group->description = '';
+			$group->group_id    = '';
+			$group->user_id     = '';
+			$group->logo        = '';
+			$group->banner      = '';
+
+			$d['action'] = 'create';
+			$d['group']      = $group;
+			$d['submit_tx']  = 'Sign in';	
 		}
 
-
 		$this->set($d);
+	}
+ 	
 
+	public function account_save( $data ){
+
+
+		$this->loadModel('Groups');
+		$this->loadModel('Users');
+		$this->loadModel('Worlds');
+		$this->loadModel('Manifs');
+
+
+		if($data){
+
+
+			//Create new OR modify existing group
+			if(isset($data->group_id) && is_numeric($data->group_id))
+				$action = 'change';
+			else
+				$action = 'create';
+
+				
+
+			//Validates form with appropriate rules
+			if($this->Groups->validates($data,$action)){
+
+				//make slug
+				$slug = slugify($data->name);
+
+				//Save user first				
+				$user           = new stdClass();
+				$user->login    = $slug;
+				$user->mail     = $data->mail;
+					if($action == 'create'){
+				$user->password = $data->password;
+				$user->confirm  = $data->confirm;
+					}
+				$user->bonhom   = 'bonhom_2';	
+				$user->lang     = Conf::$lang;
+				$user->status   = 'group';	
+				//if the group already exist, set user_id for update
+				if(is_numeric($data->user_id))
+					$user->user_id = $data->user_id;
+
+				//Save in the user database
+				//$this->request('users','register',array('user'=>$user));
+				//Get back the user_id
+				$user_id = $this->Users->id;
+
+
+				//Group to save
+				//If the group exist, set group_id for udpate , else set logo by default
+				$group = new stdClass();				
+				if(is_numeric($data->group_id)) {
+					$group->group_id = $data->group_id;						
+				}	
+				else {
+					$group->logo = 'img/logo_yp.png';
+				}		
+				$group->name     = $data->name;
+				$group->slug     = $slug;
+				$group->mail     = $data->mail;							
+				$group->lang     = Conf::$lang;
+				$group->user_id  = $user_id;
+				$group->cat2     = (isset($data->cat2) && !empty($data->cat2))? $data->cat2 : '';
+				$group->cat3     = (isset($data->cat3) && !empty($data->cat3))? $data->cat3 : '';
+				$group->CC1      = (isset($data->CC1) && !empty($data->CC1))? $data->CC1 : '';
+				$group->ADM1     = (isset($data->ADM1) && !empty($data->ADM1))? $data->ADM1 : '';
+				$group->ADM2     = (isset($data->ADM2) && !empty($data->ADM2))? $data->ADM2 : '';
+				$group->ADM3     = (isset($data->ADM3) && !empty($data->ADM3))? $data->ADM3 : '';
+				$group->ADM4     = (isset($data->ADM4) && !empty($data->ADM4))? $data->ADM4 : '';
+				$group->city     = (isset($data->city) && !empty($data->city))? $data->city : '';
+				
+				//Save in the group database				
+				if($this->Groups->saveGroup($group)){
+
+					if($this->Groups->action=='insert')
+						$this->session->setFlash('Your group have been <strong>succefully created</strong>');
+					elseif($this->Groups->action=='update')
+						$this->session->setFlash('<strong>Update successful</strong>');
+
+					$group_id = $this->Groups->id;
+
+				}
+				else{
+					$this->session->setFlash('Oups... error while saving group !','error');
+				}
+				
+
+				
+				//If there is image files
+				if(!empty($_FILES)){
+	 				$this->Groups->saveGroupFiles($group_id, $slug);
+	 			}
+
+				return $this->account_view($group_id);
+
+				
+			}
+			else {
+				$this->session->setFlash('Please check your information','error');
+			}
+		}
+		else {
+
+			$this->account_view();
+		}		
 
 
 	}

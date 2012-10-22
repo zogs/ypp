@@ -308,8 +308,8 @@ class ManifsController extends Controller{
 					}
 					else {
 
-						$this->session->setFlash("You can't do that...",'danger');
-						$this->e404('Who are you ?');
+						$this->session->setFlash("You are not admin of this protest...",'danger');
+						$this->e404('So, who are you ?');
 					}
 
 			}

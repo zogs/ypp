@@ -90,7 +90,12 @@ class Form{
 				$html .= '<input type="hidden" name="'.$name.'" value="0"><input type="checkbox" name="'.$name.'" value="1" '.(!empty($value)? 'checked' : '').' '.$attr.' />';
 			}
 			elseif($options['type']=='file'){
-				$html .= '<input type="file" class="input-file" id="input'.$name.'" name="input'.$name.'" '.$attr.'>';
+				$html .= '<input type="file" class="input-file" id="input'.$name.'" name="'.$name.'" '.$attr.'>';
+
+				if( !empty($options['src']) && $options['src']!=''){
+
+					$html .= '<div class="input-file-thumbnail"><img src="'.$options['src'].'" /></div>';
+				}
 			}
 			elseif($options['type']=='password'){
 				$html .= '<input type="password" id="input'.$name.'" name="'.$name.'" value="'.$value.'" '.$attr.'>';

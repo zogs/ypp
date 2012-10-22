@@ -7,6 +7,7 @@
  	public $db = false; //Connexion courante à la base
  	public $primaryKey = 'id'; //Nom de la clef primaire de la table
  	public $id; //valeur de la clef courante
+ 	public $action;
  	public $errors = array(); // tableaux des erreurs à afficher
 
 
@@ -81,25 +82,22 @@
 
  	public function find($req)
  	{
+ 		//Si la table nest pas precisé on prend la table par default du model
+ 		if(!isset($req['table']))
+ 			$table = $this->table.' as '.get_class($this);
+ 		else
+ 			$table = $req['table'];
+
+ 		//requete
  		$sql = 'SELECT ';
  		
- 		if(isset($req['fields'])){
+ 		//champ à récuper
+ 		$sql .= $this->sqlFields($req['fields']);
 
- 			if(is_array($req['fields'])){
- 				$sql .= implode(', ',$req['fields']);
- 			}
- 			else{
- 				$sql .= $req['fields'];
- 			}
- 		}
- 		else{
- 			$sql .= '*';
- 		}
+ 		//depuis la table
+ 		$sql .= ' FROM '.$table.' ';
 
- 		$sql .= ' FROM '.$this->table.' as '.get_class($this).' ';
-
-
- 		//Construction des conditions de la requete sql
+ 		//conditions de la requete sql
  		if(isset($req['conditions']) && $req['conditions'] != ''){
 
  			$sql .= ' WHERE ';
@@ -125,7 +123,7 @@
 	 			$sql .= implode(' AND ',$cond);
  			}
  			
- 		}
+ 		} 	
 
 
  		//Contruction de l'ordre
@@ -181,32 +179,62 @@
 
  	}
 
- 	public function delete($id){
+ 	public function delete($obj){
 
- 		$sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey}=$id";
- 		$res = $this->db->query($sql);
-		return $res;
+ 		if(is_numeric($obj)){
+	 		$sql = "DELETE FROM {$this->table} WHERE {$this->primaryKey}=$id";
+	 		$res = $this->db->query($sql);
+			return $res;
+		}
+		elseif(is_object($obj)){
+
+			if(isset($obj->table))
+				$table = $obj->table;			
+			else
+				$table = $this->table;
+			if(isset($obj->key))
+				$key = $obj->key;
+			else
+				$key = $this->primaryKey;
+
+
+			$sql = "DELETE FROM ".$table." WHERE ".$key."=".$obj->id;
+			$res = $this->db->query($sql);
+			return $res;
+		}
  	}
 
 
  	/*===========================================================	        
  	Save informations into sql tables
- 	@work effectue un insert ou un update si primaryKey est présente dans $data
  	@param $data = object of values to insert
+ 	@work effectue un insert ou un update si primaryKey est présente dans $data
  	@return true with $this->id as lastInsertId()
  	$return false with error in $this->error
  	============================================================*/
  	
  	public function save($data){
 
- 		$table = $this->table;
- 		$key = $this->primaryKey;
+ 		if(isset($data->table)){
+ 			$table = $data->table;
+ 			unset($data->table);
+ 		} 		
+ 		else
+ 			$table = $this->table;
+
+ 		if(isset($data->key)){
+ 			$primaryKey = $data->key;
+ 			unset($data->key);
+ 		}
+ 		else
+ 			$primaryKey = $this->primaryKey;
+ 	
  		$fields = array();
  		$tab = array();
  
  		//Pour chaque champ on cree les tableaux des valeurs 
  		foreach ($data as $k => $v) {
- 			if($k!=$this->primaryKey){ //sauf si il s'agit de la clef primaire
+ 			if($k!=$primaryKey){ //sauf si il s'agit de la clef primaire
  				if(!empty($v)) {	// si la valeur nest pas vide
 		 			$fields[] = "$k=:$k"; //tableaux des valeurs en sql
 		 			$tab[":$k"] = $v; //tableau des valeurs pour la fonction execute de PDO
@@ -216,20 +244,24 @@
 	 			$tab[":$k"] = $v; //on la rajoute a la liste des champs pour l'update
 	 		}
  		}
-
+ 		// debug($data);
+ 		// debug($key);
  		//Si la clef existe on fait un update
- 		if(isset($data->$key) && !empty($data->$key)){
+ 		if(isset($data->$primaryKey) && !empty($data->$primaryKey)){
 
  			$action = 'update';
- 			$sql = 'UPDATE '.$table.' SET '.implode(',',$fields).' WHERE '.$key.'=:'.$key;
+ 			$sql = 'UPDATE '.$table.' SET '.implode(',',$fields).' WHERE '.$primaryKey.'=:'.$primaryKey;
  			
- 			$this->id = $data->$key; // retourne l'id de l'update
+ 			$this->id = $data->$primaryKey; // retourne l'id de l'update
+
 
  		} else { //Sinon on fait un inset
  			$action = 'insert';
  			$sql = 'INSERT INTO '.$table.' SET '.implode(',',$fields);
  		}
+ 		
 
+ 		// debug($sql);
  		$pre = $this->db->prepare($sql); //prepare la requete
  		$pre->execute($tab); //execute la requete grace au tableaux des valeurs ( :name, :contenu, :date, ...)
  		
@@ -237,6 +269,9 @@
  		if($action=='insert'){
  			$this->id = $this->db->lastInsertId();
  		}
+
+ 		//Set the action
+ 		$this->action = $action;
 
  		//Si pas d'error retourne true
  		if($pre->errorCode()==0){
@@ -363,7 +398,7 @@
  				return true;
  			}
  			else {
- 				debug($errors);
+ 				//debug($errors);
  			}
  					
  			return false;

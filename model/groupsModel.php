@@ -1,8 +1,11 @@
 <?php 
 class Groups extends Model {
 
+
+	public $primaryKey = 'group_id';
+
 	public $validates = array(
-			'register' => array(
+			'create' => array(
 				'name' => array(
 					'rule'    => 'notEmpty',
 					'message' => 'Must not be empty'		
@@ -19,15 +22,36 @@ class Groups extends Model {
 					'rule' => 'confirmPassword',
 					'message' => "Vos mots de passe ne sont pas identiques"
 					)
-			)
+			),
+			'change' => array(
+				'name' => array(
+					'rule'    => 'notEmpty',
+					'message' => 'Must not be empty'		
+					),
+				'mail' => array(
+					'rule' => '[_a-zA-Z0-9-+]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,4})',
+					'message' => "Email address is not correct"
+					)
+				)
 		);
 
-	public function saveGroup($group){
+	public $validates_files = array(
+		'logo'=>array(
+			'extentions'=>array('png','gif','jpg','jpeg','JPG','bmp'),
+			'extentions_error'=>'Your logo is not an image file',
+			'max_size'=>50000,
+			'max_size_error'=>'Your image is too big',
+			'ban_php_code'=>true
+			),
+		'banner'=>array(
+			'extentions'=>array('png','gif','jpg','jpeg','JPG','bmp'),
+			'extentions_error'=>'Your banner is not an image file',
+			'max_size'=>50000,
+			'max_size_error'=>'Your image is too big',
+			'ban_php_code'=>true
+			)
+	);
 
-		if($this->save($group)) return true;
-		else return false;
-
-	}
 
 	public function findGroups($params){
 
@@ -41,6 +65,7 @@ class Groups extends Model {
 
  		$sql .="
  				FROM groups as A
+ 				JOIN users as U ON U.user_id=A.user_id
  				";
  		if(isset($params['category']))
 			$sql .= ' LEFT JOIN config_category as C ON ( C.id = A.cat2 OR C.id = A.cat3)';
@@ -122,5 +147,56 @@ class Groups extends Model {
  		return $pre->fetchAll(PDO::FETCH_OBJ);
  		
 	}
+
+	
+	public function saveGroup($group){
+
+		if($this->save($group)) return true;
+		else return false;
+
+	}
+	
+	public function saveGroupFiles($group_id, $slug){
+
+ 		//Les vérifications sont faites dans model/validates
+
+ 		if($_FILES['logo']){
+	 		$tmp = $_FILES['logo'];
+	 		$ext = substr(strrchr($tmp['name'], '.'),1);
+	 
+	 		$newname = 'logo_gid'.$group_id.'_'.$slug.'.'.$ext;
+	 		$directory = 'media/group/logo';
+	 		$destination = $directory.'/'.$newname;
+
+	 		
+	 		if(move_uploaded_file($tmp['tmp_name'], $destination)){
+			
+	 			$group = new StdClass();
+	 			$group->group_id = $group_id;
+	 			$group->logo = $destination;
+	 			$this->save($group);
+
+	 		}
+	 	}
+
+ 		if($_FILES['banner']){
+	 		$tmp = $_FILES['banner'];
+	 		$ext = substr(strrchr($tmp['name'], '.'),1);
+	 
+	 		$newname = 'banner_gid'.$group_id.'_'.$slug.'.'.$ext;
+	 		$directory = 'media/group/banner';
+	 		$destination = $directory.'/'.$newname;
+
+	 		
+	 		if(move_uploaded_file($tmp['tmp_name'], $destination)){
+			
+	 			$group = new StdClass();
+	 			$group->group_id = $group_id;
+	 			$group->banner = $destination;
+	 			$this->save($group);
+
+	 		}
+	 	}	
+ 	}
 }
 ?>
