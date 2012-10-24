@@ -66,7 +66,6 @@ class GroupsController extends Controller{
 			return $this->account_save( $this->request->data);
 		}
 
-
 		if(!isset($group_id)){
 
 			return $this->account_view();
@@ -81,102 +80,119 @@ class GroupsController extends Controller{
 
 	}
 
-	public function account_view( $group_id = null, $slug = null ){
+	public function account_view( $group_id = null, $slug = null ){		
 
 		$d = array();
 		$this->loadModel('Groups');
 		$this->loadModel('Worlds');
 		$this->loadModel('Manifs');
 
-		
-		if(isset($group_id)){
+		//if user log in
+		if($this->session->user()){
+
+			//if specific group		
+			if(isset($group_id)){
+
+				if(is_numeric($group_id)){
 
 
-			if(is_numeric($group_id)){
-				//Get data
-				$group = $this->Groups->findGroups(array(
-												'fields'=>'A.group_id, A.user_id, A.name,A.address,A.mail,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
-												'group_id'=>$group_id
-												));
-				if(isset($group[0])){
-					$group = $group[0];
-					//Get Geo
-					$d['states'] = $this->Worlds->findAllStates(array(
-					'CC1'=>$group->CC1,
-					'ADM1'=>$group->ADM1,
-					'ADM2'=>$group->ADM2,
-					'ADM3'=>$group->ADM3,
-					'ADM4'=>$group->ADM4,
-					'city'=>$group->city
-					));
-					//get category
-					$d['cats2'] = $this->Manifs->findCategory(array(
-					'lang'     =>$this->getLanguage(),
-					'level'    =>2
-					));	
-					$d['cats3'] = $this->Manifs->findCategory(array(
-					'lang'     =>$this->getLanguage(),
-					'level'    =>3
-					));	
+					//check if user is admin of the group
+					$admin = $this->Groups->isAdmin($this->session->user('user_id'),$group_id);
+					if(!$admin) {
+						$this->session->setFlash("You are not admin of this group","warning");
+						$this->redirect('/');
+					}					
 
-					$d['action'] = 'change';
-					$d['group'] = unescape($group);
-					$d['submit_tx'] = 'Save';
+					//Get group data
+					$group = $this->Groups->findGroups(array(
+													'fields'=>'A.group_id, A.user_id, A.name,A.address,A.mail,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
+													'group_id'=>$group_id
+													));
+					if(isset($group[0])){
+						$group = $group[0];
+						//Get Geo
+						$d['states'] = $this->Worlds->findAllStates(array(
+						'CC1'=>$group->CC1,
+						'ADM1'=>$group->ADM1,
+						'ADM2'=>$group->ADM2,
+						'ADM3'=>$group->ADM3,
+						'ADM4'=>$group->ADM4,
+						'city'=>$group->city
+						));
+						//get category
+						$d['cats2'] = $this->Manifs->findCategory(array(
+						'lang'     =>$this->getLanguage(),
+						'level'    =>2
+						));	
+						$d['cats3'] = $this->Manifs->findCategory(array(
+						'lang'     =>$this->getLanguage(),
+						'level'    =>3
+						));	
+
+						$d['action'] = 'change';
+						$d['group'] = unescape($group);
+						$d['submit_tx'] = 'Save';
+
+						$this->session->setFlash("You are admin of ".$group->name,"success");
+					}
+					else{
+						$this->session->setFlash('This group does not exist','error');
+						return $this->account_view();
+					}
 				}
-				else{
-					$this->session->setFlash('This group does not exist','error');
-					return $this->account_view();
+				else {
+					debug('group_id is not numeric');
+					die();
 				}
 			}
+			//else set default data for new group
 			else {
-				debug('group_id is not numeric');
-				die();
+
+
+				$this->session->setFlash("As a group, you can create protests, spread news, schedule events ! ",'warning');
+				//get geographical 
+				$d['states'] = $this->Worlds->findAllStates(array(
+					'CC1'=>$this->CookieRch->read('CC1'),
+					'ADM1'=>$this->CookieRch->read('ADM1'),
+					'ADM2'=>$this->CookieRch->read('ADM2'),
+					'ADM3'=>$this->CookieRch->read('ADM3'),
+					'ADM4'=>$this->CookieRch->read('ADM4'),
+					'city'=>$this->CookieRch->read('city')
+					));
+				//get category
+				$d['cats2'] = $this->Manifs->findCategory(array(
+				'lang'     =>$this->getLanguage(),
+				'level'    =>2
+				));	
+				$d['cats3'] = $this->Manifs->findCategory(array(
+				'lang'     =>$this->getLanguage(),
+				'level'    =>3
+				));	
+
+				$group              = new stdClass();
+				$group->name        = '';
+				$group->mail        = '';
+				$group->cat2        = '';
+				$group->cat3        = '';
+				$group->CC1         = $this->CookieRch->read('CC1'); 
+				$group->ADM1        = $this->CookieRch->read('ADM1'); 
+				$group->ADM2        = $this->CookieRch->read('ADM2'); 
+				$group->ADM3        = $this->CookieRch->read('ADM3');
+				$group->ADM4        = $this->CookieRch->read('ADM4'); 
+				$group->city        = $this->CookieRch->read('city');
+				$group->description = '';
+				$group->group_id    = '';
+				$group->user_id     = '';
+				$group->logo        = '';
+				$group->banner      = '';
+
+				$d['action'] = 'create';
+				$d['group']      = $group;
+				$d['submit_tx']  = 'Sign in';	
 			}
 		}
-		else {
-
-
-			$this->session->setFlash("As a group, you can create protests, spread news, schedule events ! ",'warning');
-			//get geographical 
-			$d['states'] = $this->Worlds->findAllStates(array(
-				'CC1'=>$this->CookieRch->read('CC1'),
-				'ADM1'=>$this->CookieRch->read('ADM1'),
-				'ADM2'=>$this->CookieRch->read('ADM2'),
-				'ADM3'=>$this->CookieRch->read('ADM3'),
-				'ADM4'=>$this->CookieRch->read('ADM4'),
-				'city'=>$this->CookieRch->read('city')
-				));
-			//get category
-			$d['cats2'] = $this->Manifs->findCategory(array(
-			'lang'     =>$this->getLanguage(),
-			'level'    =>2
-			));	
-			$d['cats3'] = $this->Manifs->findCategory(array(
-			'lang'     =>$this->getLanguage(),
-			'level'    =>3
-			));	
-
-			$group              = new stdClass();
-			$group->name        = '';
-			$group->mail        = '';
-			$group->cat2        = '';
-			$group->cat3        = '';
-			$group->CC1         = $this->CookieRch->read('CC1'); 
-			$group->ADM1        = $this->CookieRch->read('ADM1'); 
-			$group->ADM2        = $this->CookieRch->read('ADM2'); 
-			$group->ADM3        = $this->CookieRch->read('ADM3');
-			$group->ADM4        = $this->CookieRch->read('ADM4'); 
-			$group->city        = $this->CookieRch->read('city');
-			$group->description = '';
-			$group->group_id    = '';
-			$group->user_id     = '';
-			$group->logo        = '';
-			$group->banner      = '';
-
-			$d['action'] = 'create';
-			$d['group']      = $group;
-			$d['submit_tx']  = 'Sign in';	
-		}
+		else 
+			$this->redirect('/');
 
 		$this->set($d);
 	}
@@ -208,7 +224,7 @@ class GroupsController extends Controller{
 				//make slug
 				$slug = slugify($data->name);
 
-				//Save user first				
+				//Save user data first				
 				$user           = new stdClass();
 				$user->login    = $slug;
 				$user->mail     = $data->mail;
@@ -224,7 +240,7 @@ class GroupsController extends Controller{
 					$user->user_id = $data->user_id;
 
 				//Save in the user database
-				//$this->request('users','register',array('user'=>$user));
+				$this->Users->save($user);
 				//Get back the user_id
 				$user_id = $this->Users->id;
 

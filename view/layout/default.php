@@ -58,11 +58,13 @@
 				<?php else: ?>
 
 					<form class="loginForm" action="<?php echo Router::url('users/login'); ?>" method='post'>
-						<input type="login" name="login" required="required" placeholder="Login or email" autofocus="autofocus"/>
-						<input type="password" name="password" required="required" placeholder="Password" />
+						<input type="login" name="login" required="required" placeholder="Login or email" autofocus="autofocus" value="pumtchak"/>
+						<input type="password" name="password" required="required" placeholder="Password" value="fatboy" />
 						<input type="submit" value="OK" />
 					</form>
-					<li><a class="callModal" href='<?php echo Router::url('users/register');?>' >Inscription</a></li>	
+					<li><a href="<?php echo Router::url('users/login');?>">Login</a></li>	
+					<li><a class="callModal" href="<?php echo Router::url('users/register');?>" >Inscription</a></li>
+
 
 				<?php endif ?>
 
@@ -71,7 +73,8 @@
 	  </div>
 	</div>
 
-	<div class="container" style="margin-top:42px;">			
+	<div class="container mainContainer">	
+			
 		<?php echo $content_for_layout;?>
 	</div>
 

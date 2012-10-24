@@ -7,9 +7,8 @@ class Worlds extends Model
 
 	public function findCountry($CC1 = ''){
 
-		$this->table = "world_country";
-
  		return $this->find(array(
+ 			'table' => "world_country",
  			'fields'=>array('FULLNAME as name','CC1 as code'),
  			'conditions'=>$CC1,
  			'order'=>'FULLNAME'

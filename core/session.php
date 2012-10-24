@@ -6,11 +6,22 @@ class Session {
 		$this->controller = $controller;
 
 		if(!isset($_SESSION)){
-			session_start();	
+			session_start();
+
+			if(!isset($_SESSION['token'])){
+				$this->setToken();
+			}
 			//$_SESSION['flash'] = array();
 			
 		}
 		
+	}
+
+	public function setToken(){
+
+		if(!isset($_SESSION['token'])){
+			$_SESSION['token'] = md5(time()*rand(111,777));	
+		}
 	}
 
 	public function setFlash($message, $type = 'success'){

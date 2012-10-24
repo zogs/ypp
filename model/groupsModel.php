@@ -198,5 +198,19 @@ class Groups extends Model {
 	 		}
 	 	}	
  	}
+
+ 	public function isAdmin( $user , $group_id ){
+
+ 		if(is_numeric($user)){
+
+ 			$admin = $this->findFirst(array(
+ 				'table'=>'groups_admin',
+ 				'fields'=>'*',
+ 				'conditions'=>array('user_id'=>$user,'group_id'=>$group_id)
+ 				));
+ 			return $admin;
+ 		}
+
+ 	}
 }
 ?>

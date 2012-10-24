@@ -36,6 +36,8 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#24050101', e
 
 }
 
+.mainContainer {margin-top:42px; padding-top:5px;}
+
 
 /*
 Nav bar
@@ -124,7 +126,7 @@ div.geo-select .select2-results { max-height:300px; text-align:left; }
 
 .listed { width:78%; }
 .manif:before { content:''; position:relative; border:1px solid red; width:100px; height:100px; }
-.manif {  position:relative; float:left; overflow:hidden; margin:10px 0; padding:20px 2% 15px 4%; width:94%; border:1px solid #CCC; background:rgba(255, 255, 255, 0.6); box-shadow:0 -2px 10px rgba(0,0,0,0.1); border-radius: 6px;}
+.manif {  position:relative; float:left; overflow:hidden; margin:10px 0; padding:20px 2% 15px 4%; width:94%; border:1px solid #CCC; background:rgba(255, 255, 255, 0.6); box-shadow:0 5px 5px rgba(0,0,0,0.1); border-radius: 6px;}
 .manif:nth-child(odd) { background: E5E5E5;}
 .manif:nth-child(even) { background: E9E9E9;}
 .manif:hover { background-color: #F5F5F5;}

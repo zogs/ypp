@@ -16,6 +16,7 @@ class Controller {
 
 		if($request){
 			$this->request = $request; //ON stocke la request dans l'instance
+			$this->security($request); //On check le jeton de sécurité
 			require ROOT.DS.'config'.DS.'hook.php'; //Systeme de hook pour changer le layer en fonction du prefixe
 		}
 
@@ -125,8 +126,8 @@ class Controller {
 		require_once ROOT.DS.'controller'.DS.$controller.'.php';
 		$c = new $controller;
 		
-		call_user_func_array(array($c,$action),$params);
-		//return $c->$action();
+		return call_user_func_array(array($c,$action),$params);
+
 	}
 
 	public function redirect($url,$code = null){
@@ -177,6 +178,42 @@ class Controller {
 
 		if(isset($this->$property)) return $this->$property;
 		else return false;
+	}
+
+
+	//Permet de vérifier le jeton de securité
+	//@params request object
+	public function security($request){
+
+		if($request->get()){
+
+			if($request->get('token')){
+
+				if($request->get('token')!=$this->session->read('token')){
+
+					//$this->session->setFlash("bad token","error");
+					$this->e404('Your security token is outdated, please log in again');
+				}
+				else {
+					unset($this->get->token);
+				}
+			}
+		}
+
+		if($request->post()){
+
+			if($request->post('token')){
+
+				if($request->get('token')!=$this->session->read('token')){
+
+					//$this->session->setFlash("bad token","error");
+					$this->e404('Your security token is outdated, please log in again');
+				}
+				else {
+					unset($this->post->token);
+				}
+			}
+		}
 	}
 }
 ?>

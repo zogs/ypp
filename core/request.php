@@ -16,13 +16,15 @@ class Request{
 
 		//Récuperation des données GET dans un objet
 		if(!empty($_GET)){
+
 			$this->get = new stdClass();
 			foreach ($_GET as $k => $v) {
 				if(!is_numeric($v)){
 					$v = mysql_escape_string($v);
 				}
 				$this->get->$k = $v;
-			}
+			}						
+
 		}
 		
 		if(!isset($this->get->page) || $this->get->page <=0 ){

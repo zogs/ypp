@@ -136,7 +136,26 @@ class Router{
 				$url = str_replace($v, $k, $url);
 			}
 		}
+
+		//Security token
+		$url = Router::addToken($url);	
+
 		return  BASE_URL.'/'.$url;
+	}
+
+	static function addToken($url){
+
+		//Security token
+		if(isset($_SESSION['token'])){
+
+			//Si il y a des parametres dans l'url
+			if(strpos($url,'?')&&strpos($url,'=')){
+				$url .= '&token='.$_SESSION['token'];
+			}			
+			return $url;			
+		}
+		else
+			return $url;
 	}
 
 
@@ -146,7 +165,14 @@ class Router{
 	**/
 	static function webroot($url){
 		$url = trim($url,'/');
+		$url = Router::addToken($url);//add security token
 		return BASE_URL.'/'.$url;
 
 	}
+
+	static function url_get_param($url, $name) {
+    parse_str(parse_url($url, PHP_URL_QUERY), $vars);
+    return isset($vars[$name]) ? $vars[$name] : null;
+	}
+
 }

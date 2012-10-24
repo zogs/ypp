@@ -2,6 +2,9 @@
 	<div id="flash"></div>
 </div>
 <div id="manif">
+
+    <?php echo $this->session->flash() ;?>
+
     <div class="info">
         <header>
             <div class="logo"><?php if($manif->logo): ?><img src="<?php echo Router::webroot($manif->logo); ?>" /><?php else: ?><div class="nologo"></div><?php endif; ?></div>
@@ -179,11 +182,12 @@ $(document).ready(function(){
         manifName:"<?php echo $manif->nommanif; ?>",
         manifId:'<?php echo $manif->id; ?>',
         manifBackgroundColor:"0xEEEEEE",
-        userLogin:"Pumtchak",
-        userBonhom:'bonhom_2',
+        userID:'<?php if($this->session->user("user_id")) echo $this->session->user("user_id"); else echo ""; ?>',
+        userLogin:'<?php if($this->session->user("login")) echo $this->session->user("login"); else echo ""; ?>',
+        userBonhom:'<?php if($this->session->user("bonhom")) echo $this->session->user("bonhom"); else echo ""; ?>',
         userLogged:'<?php if($this->session->user()) echo "true"; else echo "false";?>',
         userParticipe:'<?php if($manif->pid==0) echo "false"; else echo "true";?>',
-        userLang:'fr',
+        userLang:'<?php if($this->session->getLang()) echo $this->session->user(); else echo ""; ?>',
         onlyBonhom:''
         
     },
@@ -213,10 +217,7 @@ $(document).ready(function(){
 
 
 
-    function addUserFromFlash( ){
-
-        alert('add user please');
-    }
+    
 
 </script>
 

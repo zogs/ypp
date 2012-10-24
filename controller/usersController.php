@@ -20,9 +20,11 @@ class UsersController extends Controller{
 				$field = 'login';
 			
 			$user = $this->Users->findFirst(array(
-				'fields'=> 'user_id,login,avatar,hash,salt,status,pays,lang',
+				'fields'=> 'user_id,login,bonhom,avatar,hash,salt,status,pays,lang',
 				'conditions' => array($field=>$login))
 			);
+
+			$user = $this->Users->JOIN('groups',array('group_id','logo as avatar','slug'),array('user_id'=>$user->user_id),$user);
 			
 			if(!empty($user)){
 
@@ -30,18 +32,23 @@ class UsersController extends Controller{
 
 					unset( $user->hash);
 					unset( $user->salt);
+					unset($_SESSION['user']);
+					unset($_SESSION['token']);
+
 					$this->user = $user;
 
-					$this->session->write('user', $user);				
+					$this->session->write('user', $user);
+					$this->session->setToken();				
 					$this->session->setFlash('Vous êtes maintenant connecté');
 
-					$loc = $_SERVER['REQUEST_URI'];
-					if($loc=='/ypp/users/login'||$loc=='/ypp/users/validate'){
-						$this->redirect('users/thread');
-					}
-					else{
-						$this->reload(); 
-					}					
+					$loc = $_SERVER['HTTP_REFERER'];
+					if(strpos($loc,'users/login')&&strpos($loc,'users/validate')){
+				
+						//$this->redirect('users/thread');
+					}				
+					//else
+						//$this->reload(); 
+									
 	
 
 				}
@@ -61,6 +68,7 @@ class UsersController extends Controller{
 	public function logout(){
 		
 		unset($_SESSION['user']);
+		unset($_SESSION['token']);
 		$this->session->setFlash('Vous êtes maintenant déconnecté','info');	
 		$this->reload();
 
@@ -487,6 +495,13 @@ class UsersController extends Controller{
 
     	if($this->session->user('user_id'))
     	{
+
+    		if($this->session->user('status')=='group'){
+
+    			$this->redirect('groups/account/'.$this->session->user('group_id').'/'.$this->session->user('slug'));
+    		}
+
+
 	    	$user_id = $this->session->user('user_id');
 	    	
 	    	/*======================
@@ -613,7 +628,8 @@ class UsersController extends Controller{
 	    	$this->set($var);
 	    }
 	    else {
-	    	$this->e404('You are not logged');
+
+	    	$this->redirect('/');	    	
 	    }
 
     }
@@ -637,6 +653,18 @@ class UsersController extends Controller{
     		
     		if(is_numeric($this->session->user('user_id'))){
 
+
+    			if($this->session->user('status')=='group'){
+
+    				$group = $this->Users->findFirst(array(
+    					'table'=>'groups',
+    					'fields'=>'group_id as id, slug',
+    					'conditions'=>array('user_id'=>$this->session->user('user_id'))
+    				));
+
+    				$this->redirect('groups/view/'.$group->id.'/'.$group->slug);
+    			} 
+    				
 
     			$user_id = $this->session->user('user_id');
 

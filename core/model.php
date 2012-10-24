@@ -209,6 +209,7 @@
  	Save informations into sql tables
  	@param $data = object of values to insert
  	@work effectue un insert ou un update si primaryKey est présente dans $data
+ 	@work pass a table in the object to specfify a table
  	@return true with $this->id as lastInsertId()
  	$return false with error in $this->error
  	============================================================*/

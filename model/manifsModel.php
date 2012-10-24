@@ -123,7 +123,7 @@ class Manifs extends Model {
 
 
  		//Location
- 		if(isset($req['location'])){
+ 		if(isset($req['location']) && !empty($req['location'])){
  			$sql .= ' AND ';
  			$cond = array();
  			foreach ($req['location'] as $k => $v) {

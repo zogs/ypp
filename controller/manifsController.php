@@ -20,10 +20,9 @@ class ManifsController extends Controller{
 		$this->loadModel('Manifs');
 		$this->loadModel('Worlds');
 		
-		
 
-		if(!$this->CookieRch->read('CC1')){
-						
+		if(!$this->CookieRch->read('CC1') && $this->CookieRch->read('CC1') != ''){
+				
 			$this->CookieRch->write(array('CC1'=>$this->getCountryCode()) );
 		}
 

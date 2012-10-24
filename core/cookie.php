@@ -55,7 +55,7 @@
             if(isset($_COOKIE[$name])){
                 // handle the cookie as a serialzied variable
                 $sCookie = unserialize($_COOKIE[$name]);
-                if(isset($sCookie[$item])){
+                if(isset($sCookie[$item])&&!empty($sCookie[$item])){
                     return $sCookie[$item];
                 }else{
                     return false;

@@ -654,6 +654,37 @@ function addBonhomToManif(bonhom,name){
     document.getElementById('manifflash').addHimToManif(bonhom,name);
 }
 
+/*==============================================================*/
+function addUserFromFlash( data ){
+
+    var btn      = $(".btn-protest:first");
+    var url      = btn.attr('href');
+    var manif_id = btn.attr('data-manif_id');
+    var user_id  = $("body").attr('data-user_id');
+    
+    alert(user_id);
+    alert(data.user_id);
+    alert(manif_id);
+    alert(data.manif_id);
+
+    if(user_id==data.user_id && manif_id==data.manif_id){            
+
+        $.ajax({
+            type:'GET',
+            url: url,
+            data: { manif_id : manif_id, user_id:user_id},
+            success : function(data){
+                if( data.success ){
+                    btn.css('display','none');
+                    $("#btn-cancel-"+manif_id).css('display','inline-block');                    
+                }
+                else
+                    alert( data.error );
+            },
+            dataType: 'json'
+        });
+    }
+}
 
 
 /*===========================
