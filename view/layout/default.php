@@ -100,6 +100,15 @@ if($this->request->get('murl') && !$this->session->user()){
 ?>
 
  <script type="text/javascript">
+
+ 	/*===========================================================
+ 		Set security token
+ 	============================================================*/
+ 	var CSRF_TOKEN = '<?php echo $this->session->token(); ?>';
+
+ 	/*===========================================================
+ 		GOOGLE FONTS
+ 	============================================================*/
       WebFontConfig = {
         google: { families: [ 'Bangers','Squada One','Oswald:300,400,700' ] },      
         fontinactive: function(fontFamily, fontDescription) { /*alert('Font '+fontFamily+' is currently not available'); */}

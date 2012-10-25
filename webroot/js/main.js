@@ -5,6 +5,22 @@
 $(document).ready(function(){
 	
 
+
+	/*===========================================================
+		Security token send with AJAX
+	============================================================*/
+
+	$("body").bind("ajaxSend", function(elm, xhr, settings){
+		if (settings.type == "POST") {
+
+			if(settings.data) {
+				settings.data += "&";
+				settings.data += "token="+CSRF_TOKEN;
+			}
+		
+		}
+	});
+
 	/*===========================================================
 		Tooltip bootstrap
 	============================================================*/
