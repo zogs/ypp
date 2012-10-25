@@ -20,7 +20,7 @@ class WorldController extends Controller
  		$this->loadModel('Worlds');
  		$this->layout = 'none';
  		 
- 		$ADM = $this->request->get('ADM'); 		
+ 		$ADM = $this->request->post('ADM'); 		
  		$ADM1 = '';
  		$ADM2 = '';
  		$ADM3 = '';
@@ -36,32 +36,32 @@ class WorldController extends Controller
  		
 
  		//Recuperation des parametres
- 		if($this->request->get('CC1')){ 			
- 			$CC1 = $this->request->get('CC1');
+ 		if($this->request->post('CC1')){ 			
+ 			$CC1 = $this->request->post('CC1');
  		} 		
  		else { 
  			$CC1 = $this->getCountryCode();
  		}
- 		if($this->request->get('ADM1'))	{
- 			$ADM1 = $this->request->get('ADM1');
- 			$ADM_PARENT = $this->request->get('ADM1');		
+ 		if($this->request->post('ADM1'))	{
+ 			$ADM1 = $this->request->post('ADM1');
+ 			$ADM_PARENT = $this->request->post('ADM1');		
  		}		
- 		if($this->request->get('ADM2'))	{
- 			$ADM2 = $this->request->get('ADM2');
- 			$ADM_PARENT = $this->request->get('ADM2');
+ 		if($this->request->post('ADM2'))	{
+ 			$ADM2 = $this->request->post('ADM2');
+ 			$ADM_PARENT = $this->request->post('ADM2');
  		}
- 		if($this->request->get('ADM3'))	{
- 			$ADM3 = $this->request->get('ADM3');
-			$ADM_PARENT = $this->request->get('ADM3');
+ 		if($this->request->post('ADM3'))	{
+ 			$ADM3 = $this->request->post('ADM3');
+			$ADM_PARENT = $this->request->post('ADM3');
  		}		
- 		if($this->request->get('ADM4'))	{
- 			$ADM4 = $this->request->get('ADM4');
- 			$ADM_PARENT = $this->request->get('ADM4');
+ 		if($this->request->post('ADM4'))	{
+ 			$ADM4 = $this->request->post('ADM4');
+ 			$ADM_PARENT = $this->request->post('ADM4');
  		}	
 
  		//debug('CC1:'.$CC1. ' ADM:'.$ADM.' ADM_PARENT:'.$ADM_PARENT);
 		
- 		//Find the states in the database , using the GET data 		
+ 		//Find the states in the database , using the post data 		
  		$d['states'] = $this->Worlds->findStates(array(
 										 			'CC1'=>$CC1,
 										 			'ADM_PARENT'=>$ADM_PARENT,

@@ -48,7 +48,7 @@ $(document).ready(function(){
                     
 
         $.ajax({
-            type:'GET',
+            type:'POST',
             url: url,
             data: { manif_id : manif_id, user_id:user_id},
             success : function(data){
@@ -87,7 +87,7 @@ $(document).ready(function(){
 				var user_id  = $("body").attr('data-user_id');
 
 			 	$.ajax({
-			 		type:'GET',
+			 		type:'POST',
 			 		url:url,
 			 		data:{ manif_id : manif_id, user_id: user_id},
 			 		success : function(data){
@@ -251,7 +251,7 @@ $(document).ready(function(){
 		                construct_params("?start="+Global_newerCommentId);    
 
 					$.ajax({
-					  type: 'GET',
+					  type: 'POST',
 					  url: Global_showComments_url,
 					  data: arrayParams2string(Global_showComments_params),
 					  success: function( html ) 
@@ -514,7 +514,7 @@ $(document).ready(function(){
 			            CurrentUrlPreview = url;       
 
 			            $.ajax({
-			                type : 'GET',
+			                type : 'POST',
 			                url : previewURL,
 			                data : {url:url},
 			                success: function( data ){
@@ -670,7 +670,7 @@ function addUserFromFlash( data ){
     if(user_id==data.user_id && manif_id==data.manif_id){            
 
         $.ajax({
-            type:'GET',
+            type:'POST',
             url: url,
             data: { manif_id : manif_id, user_id:user_id},
             success : function(data){
@@ -735,7 +735,7 @@ function showRegion(value,region)
 		var url = $('#submit-state').attr('data-url');
 
 		$.ajax({
-			type : 'GET',
+			type : 'POST',
 			url : url,
 			data : { parent:value, ADM: region, CC1:CC1, ADM1:ADM1, ADM2:ADM2, ADM3:ADM3, ADM4:ADM4 },
 			dataType: 'json',
@@ -764,7 +764,7 @@ function showCategory(parent,level){
 	var url = $('#submit-category').attr('data-url');
 
 	$.ajax({
-		type:'GET',
+		type:'POST',
 		url:url,
 		data: { parent:parent, level:level},
 		success: function(data){

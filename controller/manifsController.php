@@ -20,11 +20,12 @@ class ManifsController extends Controller{
 		$this->loadModel('Manifs');
 		$this->loadModel('Worlds');
 		
-
-		if(!$this->CookieRch->read('CC1') && $this->CookieRch->read('CC1') != ''){
+		//If no country is chosen, set one by default 
+		if(!$this->CookieRch->read('CC1')){
 				
 			$this->CookieRch->write(array('CC1'=>$this->getCountryCode()) );
 		}
+
 
 		//If search params are send
 		if( $this->request->get() ) {
@@ -170,8 +171,8 @@ class ManifsController extends Controller{
 
 		$d['category'] = $this->Manifs->findCategory(array(
 			'lang'=>$this->getLanguage(),
-			'level'=>$this->request->get('level'),
-			'parent'=>$this->request->get('parent')
+			'level'=>$this->request->post('level'),
+			'parent'=>$this->request->post('parent')
 			));
 
 		$this->set($d);
@@ -336,12 +337,12 @@ class ManifsController extends Controller{
 		$this->view = 'json';
 		$this->layout = 'none';
 
-		if($this->request->get('manif_id') && $this->request->get('user_id')){
+		if($this->request->post('manif_id') && $this->request->post('user_id')){
 
-			if( $this->session->user_id() == $this->request->get->user_id ){
+			if( $this->session->user_id() == $this->request->post('user_id') ){
 
 				$d = $this->removeProtester(
-					$this->request->get->manif_id,
+					$this->request->post('manif_id'),
 					$this->session->user_id()
 					);
 			}
@@ -353,17 +354,55 @@ class ManifsController extends Controller{
 
 	}
 
+
+	private function removeProtester($manif_id,$user_id){
+
+		$this->loadModel('Manifs');
+		$this->Manifs->table = "manif_participation";
+		$this->Manifs->primaryKey = "id";
+
+		$participation = $this->Manifs->findProtesters(array(
+			'fields'=>array('P.id','U.login','U.user_id'),
+			'conditions'=>array('P.manif_id'=>$manif_id,'P.user_id'=>$user_id))
+		);
+
+		if(!empty($participation)){
+
+			$del        = new stdClass();
+			$del->table = T_MANIF_PROTESTERS;
+			$del->key   = K_MANIF_PROTESTERS;
+			$del->id    = $participation->id;
+
+			if($this->Manifs->delete($del)){
+
+				$d['success'] = 'Cancel Ok';
+			}
+			else {
+				$d['error'] = 'Error canceling protesting '.$participation->login;
+			}
+
+		}
+		else $d['error'] = 'User not protest';
+
+		return $d;
+
+	}
+
+
 	public function addUser(){
 
 		$this->view = 'json';
 		$this->layout = 'none';
 
-		if($this->request->get('manif_id') && $this->request->get('user_id')){
+		//if POST data are correct
+		if($this->request->post('manif_id') && $this->request->post('user_id')){
 
-			if( $this->session->user_id() == $this->request->get->user_id ){
+			//if user is logged and the sender of data
+			if( $this->session->user_id() == $this->request->post('user_id') ){
 
+				//call to addProtester
 				$d = $this->addProtester(
-					$this->request->get->manif_id,
+					$this->request->post('manif_id'),
 					$this->session->user_id()
 					);
 			}
@@ -374,7 +413,7 @@ class ManifsController extends Controller{
 		$this->set($d);
 	}
 
-	public function addProtester($manif_id,$user_id){
+	private function addProtester($manif_id,$user_id){
 		
 		$this->loadModel('Manifs');
 		$this->Manifs->table = "manif_participation";
@@ -416,33 +455,7 @@ class ManifsController extends Controller{
 		return $d;
 	}
 
-	public function removeProtester($manif_id,$user_id){
-
-		$this->loadModel('Manifs');
-		$this->Manifs->table = "manif_participation";
-		$this->Manifs->primaryKey = "id";
-
-		$participation = $this->Manifs->findProtesters(array(
-			'fields'=>array('P.id','U.login','U.user_id'),
-			'conditions'=>array('P.manif_id'=>$manif_id,'P.user_id'=>$user_id))
-		);
-
-		if(!empty($participation)){
-
-			if($this->Manifs->delete($participation->id)){
-
-				$d['success'] = 'Cancel Ok';
-			}
-			else {
-				$d['error'] = 'Error canceling protesting '.$participation->login;
-			}
-
-		}
-		else $d['error'] = 'User not protest';
-
-		return $d;
-
-	}
+	
 	//========================================================================================
 	public function getProtester(){
 	//========================================================================================

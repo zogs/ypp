@@ -33,6 +33,8 @@
 			<?php if($this->CookieRch->read('cat3')): ?>
 			<?php echo $this->Form->generateSelect('cat3','btn cat-select',$cat3,'id','name',$this->CookieRch->read('cat3'),''); ?>
 			<?php endif; ?>
+
+
 			<button type="submit" class="btn" id="submit-category" data-url="<?php echo Router::url('manifs/getCategory'); ?>">OK</button>
 		
 		</div>	
@@ -64,7 +66,7 @@
 			<button type="submit" class="btn" >OK</button>
 			
 		</div>
-
+		<input type="hidden" name="token" value="<?php echo $this->session->token(); ?>" />		
 		<input type="submit" class="btn btn-large btn-primary" value="SEARCH"/>
 		</form>
 		
@@ -180,7 +182,7 @@
 				 		<div class="action">
 				 			<div class="btn-toolbar">
 				 			<?php if($this->session->user()): ?>
-						      <a class="btn btn-inverse btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> Protest?</a>
+						      <a class="btn btn-inverse btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> Protest</a>
 						      <a class="btn btn-cancel btn-red" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> You Protest</a>						      
 						    <?php endif; ?>
 						    <?php if(isset($manif->isadmin)): ?>

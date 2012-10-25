@@ -11,6 +11,11 @@
  	public $table = 'manif_comment';
 
 
+ 	/*=======================================
+ 	Show the whole comment system
+ 	@param $context ( manif, group, user ...)
+ 	@param $context_id int
+ 	========================================*/
  	public function show( $context, $context_id ){
 
  	
@@ -50,6 +55,13 @@
  		$this->render();
 
  	}
+
+
+ 	/*========================================
+ 	List all the comment depending of the context
+ 	@param $context (manif, group user...)
+ 	@param $context_id int
+ 	=========================================*/
  	public function index($context, $context_id){
 
 
@@ -75,10 +87,10 @@
 			"lang"       =>$this->session->getLang()
 			);
 
-		if(isset($this->request->get)){
+		if(isset($this->request->post)){
 
-			$array_get     = get_object_vars($this->request->get);
-			$params        = array_merge($array_get,$params);					
+			$array_post     = get_object_vars($this->request->post);
+			$params        = array_merge($array_post,$params);					
 		}
 
 		
@@ -119,6 +131,11 @@
 
  	}
 
+
+ 	/*====================================
+	Show a unique comment
+	@param $comment_id int
+ 	=====================================*/
  	public function view($comment_id){
 
 		$this->layout    = 'default';
@@ -148,13 +165,20 @@
 		
  	}
 
- 	public function tcheck($manif_id,$second){
+
+ 	/*========================================
+ 	Check for new comments
+ 	@param $context_id
+ 	$param $context
+ 	@second time in second since
+ 	========================================*/
+ 	public function tcheck($context,$context_id,$second){
 
  		$this->loadModel('Comments');
  		$this->layout = 'none';
 
  		$params = array(
-				"conditions" => array("manif_id"=>$manif_id,"reply_to"=>0),
+				"conditions" => array("context"=>$context,"context_id"=>$context_id,"reply_to"=>0),
 				"date_field" => 'date',
 				"second"     => $second
  			);
@@ -167,47 +191,55 @@
 
  	}
 
+
+
+ 	/*================================
+ 	Add a new comment
+ 	================================*/
  	public function add(){
 
 		$this->loadModel('Comments');
  		$this->layout = 'none';
 
 
-
+ 		//if there is a user logged in
  		if($this->session->isLogged()){
 
- 			//New Objet
+ 			//create new comment object
  			$newComment = new stdClass();
- 			//Values
  			$newComment->context = $this->request->data->context;
  			$newComment->user_id = $this->session->user('user_id');
  			$newComment->lang = $this->session->getLang();
  			$newComment->context_id = $this->request->data->context_id;
  			$newComment->type = $this->request->data->type;
 
- 			//Content treatment
  			//If there is a media content
  			if(isset($this->request->data->media) && $this->request->data->media !=''){
 
- 				$content = str_replace($this->request->data->media_url, '', $content);
- 				$content = $this->request->data->content.html_entity_decode($this->request->data->media);
+ 				$content = str_replace($this->request->data->media_url, '', $content); //suppress url
+ 				$content = $this->request->data->content.html_entity_decode($this->request->data->media); //add media to content
  				
  			}
  			else
  				$content = $this->request->data->content;
- 			//Replace
+ 			$newComment->content = $content;
+ 			$newComment->media = '';
+
+
+ 			//Replace line jump by <br>
  			$content = str_replace(array("\\n","\\r"),array("<br />",""),$content);
- 			//If NEWS , ifthere is a title then this is a News
+
+ 			//if there is a title then this is a NEWS
  			if(isset($this->request->data->title) && $this->request->data->title!=''){
  				$newComment->title = $this->request->data->title;
  				$newComment->type = 'news';
- 			} 			
- 			$newComment->content = $content;
- 			$newComment->media = '';
- 			//Saving
+ 			} 	
+	
+ 			//Save
  			$this->Comments->save($newComment);
  			$id = $this->Comments->id;
  			$d['id'] = $id;
+ 			//return id of the new comment
  		}
  		else {
 
@@ -313,12 +345,12 @@
  		$vars = array();
 
 
-		if($this->request->get() ){
+		if($this->request->post() ){
 
-			if($this->request->get('url')) {
+			if($this->request->post('url')) {
 
 
-				$url = trim($this->request->get('url'));								
+				$url = trim($this->request->post('url'));								
 				$pattern = '/^http\:\/\/[a-zA-Z0-9\-\.\_]+\.[a-zA-Z]{2,4}(\/\S*)?$/';				
 				if(!preg_match($pattern,$url)) exit('not url');
 

@@ -24,6 +24,11 @@ class Session {
 		}
 	}
 
+	public function token(){
+
+		return $this->read('token');
+	}
+
 	public function setFlash($message, $type = 'success'){
 
 		$flash = array('message'=>$message,'type'=>$type);
