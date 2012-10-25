@@ -204,9 +204,9 @@ class Controller {
 
 			if($request->post('token')){
 
-				if($request->get('token')!=$this->session->read('token')){
+				if($request->post('token')!=$this->session->read('token')){
 
-					//$this->session->setFlash("bad token","error");
+					$this->session->setFlash("Your security token is outdated, please log in again","error");
 					$this->e404('Your security token is outdated, please log in again');
 				}
 				else {

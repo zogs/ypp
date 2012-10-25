@@ -36,6 +36,13 @@
 				<div class="control-group">
 					<label for="description" class="control-label">Description</label>
 					<div class="controls">
+							<script type="text/javascript" src="<?php echo Router::webroot('js/ckeditor/ckeditor.js');?>"></script>
+							<script type="text/javascript" src="<?php echo Router::webroot('js/ckeditor/adapters/jquery.js');?>"></script>
+							<script type="text/javascript">
+								$(document).ready(function(){
+									$( '#description').ckeditor();
+								});
+							</script>
 						<textarea name="description" id="description"><?php echo utf8_encode($group->description); ?></textarea>
 					</div>
 				</div>
@@ -86,6 +93,7 @@
 				<?php echo $this->Form->input('banner','Banner',array('type'=>'file','info'=>'width :960px, max-weight: 200ko','src'=>(!empty($group->banner))? Router::webroot($group->banner):'')); ?>								
 
 				<div class="submit">
+					<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 					<input class="btn btn-info" type="submit" value="<?php echo $submit_tx; ?>"/>
 				</div>
 

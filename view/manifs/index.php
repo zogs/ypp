@@ -1,6 +1,7 @@
 
 <?php echo $this->session->flash(); ?>
 
+
 <!-- Top bar -->
 
 <div id="top-toolbar" class="btn-toolbar">

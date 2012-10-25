@@ -264,8 +264,9 @@ Commentaires
 #hiddenFormReply form { display:none;}
 #tri .btn { background-image:none; background-color:transparent; color:grey; border:0;}
 
-#bottomComments { float:left; margin-top:20px; padding:15px 0; width:100%; background-color: #292929; box-shadow:0 -3px 8px rgba(0,0,0,0.5); color:#656363; text-align:center; font-weight:bold; font-size:15px; }
-#loadingComments { display:none;}
+.bottomComments { float:left; margin-top:20px; padding:0px 0; width:100%; color:#656363; text-align:left; font-weight:normal; font-size:12px; }
+#loadingComments { display:none; }
+#noMoreComments { display:none; }
 .arrow_box {
     position: relative;
     

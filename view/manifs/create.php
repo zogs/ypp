@@ -10,6 +10,13 @@
 
 
 					<?php echo $this->Form->input('nommanif',"The Name",array('placeholder'=>'Ex: Occupy YouPorn','value'=>$manif->nommanif)); ?>
+					<script type="text/javascript" src="<?php echo Router::webroot('js/ckeditor/ckeditor.js');?>"></script>
+					<script type="text/javascript" src="<?php echo Router::webroot('js/ckeditor/adapters/jquery.js');?>"></script>
+					<script type="text/javascript">
+						$(document).ready(function(){
+							$( '#inputdescription').ckeditor();
+						});
+					</script>
 					<?php echo $this->Form->input('description','Description',array('type'=>'textarea','placeholder'=>'Type your sex here','value'=>htmlentities($manif->description))); ?>
 					<?php echo $this->Form->input('keywords','Keywords',array('placeholder'=>'Separate them with sperm','value'=>$manif->keywords)); ?>
 				
@@ -55,6 +62,7 @@
 				<?php echo $this->Form->input('logo','Logo',array('type'=>'file','info'=>'height & width :150px, max-weight: 100ko')); ?>								
 
 				<div class="submit">
+					<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 					<input class="btn btn-info" type="submit" value="<?php echo $submit_text; ?>"/>
 				</div>
 				

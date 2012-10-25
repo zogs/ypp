@@ -140,8 +140,23 @@
                     </div>
 
                     <div id="comments" data-start="0" style="float:left;width:100%;margin-top:10px;">
-                       
-                       <?php echo $this->request('comments','index',array($context,$context_id)); ?>
+                    <script type="text/javascript">
+
+                    show_comments();
+
+                    </script>
+
+                       <?php 
+
+                       //$this->request('comments','index',array($context,$context_id)); 
+
+
+                       ?>
+                        
+                    </div>
+                    <div class="bottomComments">
+                        <div id='loadingComments'>Loading comments ...</div>
+                        <div id='noMoreComments'>No more comment !</div>
                     </div>
                     <div id="hiddenFormReply">
                         <form id="formCommentReply" class="formCommentReply" action="<?php echo Router::url('comments/reply'); ?>" method="POST">                
@@ -154,9 +169,4 @@
                             <input class="btn btn-small" type="submit" name="" value="Répondre">
                         </form>
                     </div>
-                    <div id="bottomComments">
-                        <div id="loadingComments">
-                        Loading comments ...
-                        </div>
-                        <div id="noMoreComments" class="hide">No more comments</div>
-                    </div>
+                   

@@ -41,6 +41,7 @@
 					<?php echo $this->Form->generateSelect('pays','',$options,'code','name',$user->pays); ?>
 				</div>
 			</div>	
+			<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 			<input class="btn btn-large btn-inverse" type="submit" value="Save Informations" />	
 		</form>
 	</div>
@@ -52,6 +53,7 @@
 		<form class="form-yp" action="<?php echo Router::url('users/account'); ?>" method="post" enctype="multipart/form-data">
 			<?php echo $this->Form->input('modify','hidden',array('value'=>'avatar')); ?>
 			<?php echo $this->Form->input('avatar','Avatar',array('icon'=>'icon-bullhorn','type'=>'file')); ?>
+			<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 			<input type="submit" class="btn btn-large btn-inverse" value="Change avatar" />
 		</form>
 	</div>
@@ -63,16 +65,18 @@
 			<?php echo $this->Form->input('oldpassword','Old password',array('type'=>'password','icon'=>'icon-lock')); ?>
 			<?php echo $this->Form->input('password','New password',array('type'=>'password','icon'=>'icon-lock')); ?>
 			<?php echo $this->Form->input('confirm','Confirm password',array('type'=>'password','icon'=>'icon-lock')); ?>
+			<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 			<input class="btn btn-large btn-inverse" type="submit" value="Change Password" />	
 		</form>
 	</div>
 
 	<div class="account-block" id="delete">
-			<form class="form-yp" autocomplete="off" action="<?php echo Router::url('users/account'); ?>" method="post">
-				<?php echo $this->Form->input('modify','hidden',array('value'=>'delete')); ?>
-				<?php echo $this->Form->input('password','Do you want to delete your account ?', array('type'=>'password','icon'=>'icon-lock','placeholder'=>'Type your password and delete')); ?>
-				<input class="btn btn-large btn-inverse" type="submit" value="Delete" />
-			</form>	
+		<form class="form-yp" autocomplete="off" action="<?php echo Router::url('users/account'); ?>" method="post">
+			<?php echo $this->Form->input('modify','hidden',array('value'=>'delete')); ?>
+			<?php echo $this->Form->input('password','Do you want to delete your account ?', array('type'=>'password','icon'=>'icon-lock','placeholder'=>'Type your password and delete')); ?>
+			<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
+			<input class="btn btn-large btn-inverse" type="submit" value="Delete" />
+		</form>	
 	</div>
 	</div>
 </div>

@@ -76,13 +76,10 @@
 <script type="text/javascript" src="http://konami-js.googlecode.com/svn/trunk/konami.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){ 
+            
 
 
-
-        
         intervalRoutine = false;
-
-
         $('.btn-share').toggle(function(){            
             intervalRoutine = setInterval(addBonhomToManif,Math.floor(Math.random()*1000));
         },
@@ -101,10 +98,8 @@ $(document).ready(function(){
         $('#ypTab a:first').on('shown', function (e) {
           e.target // activated tab
           e.relatedTarget // previous tab
-        })
+        });
   
-
-
 
 
 

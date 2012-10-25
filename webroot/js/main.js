@@ -7,17 +7,14 @@ $(document).ready(function(){
 
 
 	/*===========================================================
-		Security token send with AJAX
+		Security token send with AJAX /!\
 	============================================================*/
 
 	$("body").bind("ajaxSend", function(elm, xhr, settings){
 		if (settings.type == "POST") {
-
 			if(settings.data) {
-				settings.data += "&";
-				settings.data += "token="+CSRF_TOKEN;
-			}
-		
+				settings.data += "&token="+CSRF_TOKEN;				
+			}		
 		}
 	});
 
@@ -68,6 +65,7 @@ $(document).ready(function(){
             url: url,
             data: { manif_id : manif_id, user_id:user_id},
             success : function(data){
+            	alert(data);
                 if( data.success ){
                     btn.css('display','none');
                     $("#btn-cancel-"+manif_id).css('display','inline-block');
@@ -145,7 +143,7 @@ $(document).ready(function(){
 		        Global_tcheckComments_offset = 0;
 		        Global_tcheckComments = setInterval(tcheckcomments,Global_tcheckComments_interval*1000);
 		        Global_loadingComments = false;        
-		        Global_pageComments = 1;
+		        Global_pageComments = 0;
 		        Global_newerCommentId = 0;
 		        //show_comments('clear');
 
@@ -254,7 +252,7 @@ $(document).ready(function(){
 		        @param use $arguments[] , string clear,newer,start
 		        ============================================================*/ 
 				function show_comments(){
-
+					
 					$("#loadingComments").show();
 
 		            var arg = (arguments[0]) ? arguments[0] : 'clear';
@@ -266,8 +264,10 @@ $(document).ready(function(){
 		            if(arg=='bottom')
 		                construct_params("?start="+Global_newerCommentId);    
 
+		            
+		            console.log(JSON.stringify(Global_showComments_params));
 					$.ajax({
-					  type: 'POST',
+					  type: 'GET',
 					  url: Global_showComments_url,
 					  data: arrayParams2string(Global_showComments_params),
 					  success: function( html ) 
@@ -276,7 +276,13 @@ $(document).ready(function(){
 
 		                //Jquery trick to decode html entities
 		                //var html = $('<div />').html(coms.content).text();
-		                                                                
+
+		                if(trim(html)==''){
+	                    	$("#loadingComments").hide();
+	                    	$("#noMoreComments").show();
+	                    } 
+
+
 		                if(arg=='new') {
 		                    $("#badge").empty().hide();
 		                    $('#comments').prepend(html);
@@ -302,9 +308,9 @@ $(document).ready(function(){
 		                Global_loadingComments = false;
 		                infiniteComment();
 		                
-
-	                    $("#loadingComments").hide();                    
-
+		                
+	                              
+		                $("#loadingComments").hide();
 		                    
 						
 					},
@@ -323,20 +329,23 @@ $(document).ready(function(){
 
 		            $(window).scroll(function(){
 		                
-		                var ylastCom = $("#loadingComments").offset();                 
-		                if( (ylastCom.top <= parseInt($(window).scrollTop()+$(window).height())  ) && Global_loadingComments===false && $("#numCommentsLeft").html()  > 0 ) 
+		                var ylastCom = $("#loadingComments").offset(); 
+		                var scrollPos = parseInt($(window).scrollTop()+$(window).height());
+		                //console.log(ylastCom.top+' <= '+scrollPos);
+		                if( (ylastCom.top <= scrollPos ) && Global_loadingComments===false ) 
 		                {   
-
+		                	
 		                    Global_loadingComments = true;
 		                    new_page        = Global_pageComments+1;
 		                    Global_pageComments   = new_page;
 		                    construct_params("?page="+new_page);                    
-		                    show_comments('bottom'); 
+		                    show_comments('bottom');		                    
+		                    
 		                }
 
 		            });
-		        }
-
+		        };
+		        infiniteComment();
 
 		        /*===========================================================
 		        	CONSTRUCT PARAMS

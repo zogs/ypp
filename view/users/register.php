@@ -53,7 +53,8 @@
 				</div>
 			</div>	
 		</div>	
-		<div class="actions">			
+		<div class="actions">
+			<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>			
 			<input class="btn btn-large btn-inverse" type="submit" value="C'est parti !" />
 			<p>En validant l'inscription j'accepte les conditions d'utilisations</p>
 		</div>

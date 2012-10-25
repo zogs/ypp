@@ -87,10 +87,10 @@
 			"lang"       =>$this->session->getLang()
 			);
 
-		if(isset($this->request->post)){
+		if(isset($this->request->get)){
 
-			$array_post     = get_object_vars($this->request->post);
-			$params        = array_merge($array_post,$params);					
+			$array_get     = get_object_vars($this->request->get);
+			$params        = array_merge($array_get,$params);					
 		}
 
 		
