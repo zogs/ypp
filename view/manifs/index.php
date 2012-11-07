@@ -181,7 +181,7 @@
 				 		</div>	
 				 		<div class="description"><?php echo $manif->description; ?></div>			 					 	
 				 		<div class="action">
-				 			<div class="btn-toolbar">
+				 			<div class="btn-toolbar">				 				
 				 			<?php if($this->session->user()): ?>
 						      <a class="btn btn-inverse btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> Protest</a>
 						      <a class="btn btn-cancel btn-red" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> You Protest</a>						      

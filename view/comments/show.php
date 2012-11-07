@@ -140,22 +140,11 @@
                     </div>
 
                     <div id="comments" data-start="0" style="float:left;width:100%;margin-top:10px;">
-                    <script type="text/javascript">
 
-                    show_comments();
-
-                    </script>
-
-                       <?php 
-
-                       //$this->request('comments','index',array($context,$context_id)); 
-
-
-                       ?>
                         
                     </div>
-                    <div class="bottomComments">
-                        <div id='loadingComments'>Loading comments ...</div>
+                    <div id="bottomComments">
+                        <div id='loadingComments'><span class="ajaxLoader"></span> Loading comments ...</div>
                         <div id='noMoreComments'>No more comment !</div>
                     </div>
                     <div id="hiddenFormReply">

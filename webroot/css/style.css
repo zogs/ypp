@@ -105,6 +105,8 @@ div.geo-select .select2-drop { left:0; margin-top: 0; padding:5px 0 2px 5px; wid
 div.geo-select .select2-results { max-height:300px; text-align:left; }
 
 
+.ajaxLoader { padding:0 10px; background-image:url('../img/ajax-loader.gif'); background-repeat: no-repeat; }
+
 .form-search input[type=text] { float:left; margin-right:2px;}
 .arianne span { margin-left:4px; }
 .arianne span a { border-bottom:1px solid #CCC; color:#999; text-transform:capitalize;}
@@ -264,7 +266,7 @@ Commentaires
 #hiddenFormReply form { display:none;}
 #tri .btn { background-image:none; background-color:transparent; color:grey; border:0;}
 
-.bottomComments { float:left; margin-top:20px; padding:0px 0; width:100%; color:#656363; text-align:left; font-weight:normal; font-size:12px; }
+#bottomComments { float:left; margin-top:20px; padding:0px 0; width:100%; color:#656363; text-align:left; font-weight:normal; font-size:12px; }
 #loadingComments { display:none; }
 #noMoreComments { display:none; }
 .arrow_box {
