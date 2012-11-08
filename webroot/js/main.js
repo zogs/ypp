@@ -282,7 +282,7 @@ $(document).ready(function(){
 	                construct_params("?start="+Global_newerCommentId);    
 
 	            
-	            console.log(JSON.stringify(Global_showComments_params));
+	            //console.log(JSON.stringify(Global_showComments_params));
 				$.ajax({
 				  type: 'GET',
 				  url: Global_showComments_url,
@@ -325,7 +325,7 @@ $(document).ready(function(){
 		                var first_id = $(html).first('.comment').attr('id');
 		                first_id = first_id.replace('com','');
 		                Global_newerCommentId = first_id;
-		                console.log('firstID'+Global_newerCommentId);
+		                //console.log('firstID'+Global_newerCommentId);
 		            }
 				},
 				  dataType: 'html'
@@ -345,7 +345,7 @@ $(document).ready(function(){
 	                
 	                var ylastCom = $("#bottomComments").offset(); 
 	                var scrollPos = parseInt($(window).scrollTop()+$(window).height());
-	                console.log(ylastCom.top+' <= '+scrollPos);
+	                //console.log(ylastCom.top+' <= '+scrollPos);
 	                if( (ylastCom.top <= scrollPos ) && Global_loadingComments===false ) 
 	                {   
 	                	

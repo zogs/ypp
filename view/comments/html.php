@@ -43,12 +43,12 @@
 
         ob_start();
         ?>
-        <div class="thread thread_info">
-            <img class="thread_logo" src="<?php echo Router::webroot($protester->logo)?>" alt="Logo" />
-            <div class="thread_content">
-                <abbr class="comment_date" title="<?php echo $protester->date;?>"><?php echo $protester->date;?></abbr>
+        <div class="thread post post_info">
+            <img class="logo" src="<?php echo Router::webroot($protester->logo)?>" alt="Logo" />
+            <div class="content">
+                <abbr class="date" title="<?php echo $protester->date;?>"><?php echo $protester->date;?></abbr>
                 <div>
-                    <span class="comment_user"><?php echo $protester->login ?> </span>
+                    <span class="user"><?php echo $protester->login ?> </span>
                     protest
                     <a href="<?php echo Router::url('manifs/view/'.$protester->manif_id.'/'.$protester->slug); ?>"><?php echo $protester->nommanif; ?></a>
                 </div>
@@ -69,25 +69,23 @@
         
         ob_start();
         ?>
-            <div class="thread comment <?php echo ($com->reply_to!=0)? 'reply':'';?>" id="<?php echo 'com'.$com->id; ?>">  
+            <div class="thread post <?php echo ($com->reply_to!=0)? 'reply':'';?> <?php echo 'type_'.$com->type;?>" id="<?php echo 'com'.$com->id; ?>">  
                 <?php if($com->type=='news'): ?> 
-                <img class="thread_logo" src="<?php echo Router::webroot($com->logoManif) ?>" alt="image avatar" />             
+                <img class="logo" src="<?php echo Router::webroot($com->logoManif) ?>" alt="image avatar" />             
                 <?php else: ?>
-                <img class="thread_logo" src="<?php echo Router::webroot($com->avatar) ?>" alt="image avatar" />
+                <img class="logo" src="<?php echo Router::webroot($com->avatar) ?>" alt="image avatar" />
                 <?php endif; ?>
-                <div class="thread_content">
-                    <?php if($com->type!='news'): ?>
-                    <h6 class="comment_user"><?php echo $com->login;?></h6>
-                    <abbr class="comment_date" title="<?php echo $com->date;?>"><?php echo $com->date;?></abbr>
-                    <?php else: ?> 
-                    <div class="news-head"><?php echo $com->head; ?></div>
-                    <abbr class="comment_date" title="<?php echo $com->date;?>"><?php echo $com->date;?></abbr>                     
+                <div>                    
+                    <div class="user"><?php echo $com->login;?></div>
+                    <abbr class="date" title="<?php echo $com->date;?>"><?php echo $com->date;?></abbr>
+                    <?php if($com->type=='news'): ?>
+                    <div class="title"><?php echo $com->head; ?></div>                                
                     <?php endif; ?>
-                    <div class="comment_txt comment_<?php echo $com->type;?>">
+                    <div class="content comment_<?php echo $com->type;?>">
                         <?php if ($com->type == 'com'): ?>
                         <div><?php echo str_replace("\\","",$com->content); ?></div>   
                         <?php elseif($com->type == 'slogan'): ?>
-                        <div class="content type_slogan"><div><?php echo $com->content; ?></div><img src="<?php echo Router::webroot('img/megaphone/megaphone'.$com->speaker.'.gif'); ?>" alt="" /></div>
+                        <div class="slogan"><div><?php echo $com->content; ?></div><img src="<?php echo Router::webroot('img/megaphone/megaphone'.$com->speaker.'.gif'); ?>" alt="" /></div>
                         <?php elseif($com->type == 'img'): ?>
                         <div><?php echo str_replace("\\","",$com->content); ?></div>
                         <?php elseif($com->type == 'video'): ?>
@@ -95,7 +93,7 @@
                         <?php elseif($com->type == 'url'): ?>
                         <div><?php echo str_replace("\\","",$com->content); ?></div>
                         <?php elseif($com->type == 'news'): ?>                       
-                        <div class="content news_comment"><?php echo str_replace("\\","",$com->content); ?></div> 
+                        <div><?php echo str_replace("\\","",$com->content); ?></div> 
                         <?php endif; ?>   
                         <?php if ($cuser): ?>
                         <div class="actions">                                 
