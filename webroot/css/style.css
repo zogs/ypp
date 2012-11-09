@@ -18,6 +18,20 @@
 
 }
 
+
+/* CSS Snippet */
+
+/* calcul size of a box */
+*, *:before, *:after {-webkit-box-sizing: border-box;-moz-box-sizing: border-box;box-sizing: border-box;}
+/* clearfix floated el */
+.clearfix:before,.clearfix:after {content: " ";display: table;}
+.clearfix:after {clear: both;}
+/* IE6/7 support */
+.clearfix {*zoom: 1;}
+/* disallow breaking line of text */
+.break {-ms-word-break: break-all;word-break: break-all;word-break: break-word;-webkit-hyphens: auto;-moz-hyphens: auto;hyphens: auto;}
+/* Create ... for long text */
+.ellipsis {width: 250px;white-space: nowrap;overflow: hidden;-ms-text-overflow: ellipsis; /* Required for IE8 */-o-text-overflow: ellipsis; /* Required for Opera */text-overflow: ellipsis;}
 /* */
 body { 
 
@@ -31,8 +45,6 @@ background: -o-linear-gradient(top,  rgba(5,1,1,0.14) 0%,rgba(0,0,0,0.07) 38%); 
 background: -ms-linear-gradient(top,  rgba(5,1,1,0.14) 0%,rgba(0,0,0,0.07) 38%); /* IE10+ */
 background: linear-gradient(top,  rgba(5,1,1,0.14) 0%,rgba(0,0,0,0.07) 38%); /* W3C */ background-attachment:fixed !important;
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#24050101', endColorstr='#12000000',GradientType=0 ); /* IE6-9 */
-
-
 
 }
 
