@@ -11,6 +11,13 @@ class Session {
 			if(!isset($_SESSION['token'])){
 				$this->setToken();
 			}
+
+			if(!isset($_SESSION['user'])){
+				$user = new stdClass();
+				$user->user_id = 0;
+				$user->avatar = 'img/logo_yp.png';
+				$_SESSION['user'] = $user;
+			}
 			//$_SESSION['flash'] = array();
 			
 		}
@@ -44,20 +51,21 @@ class Session {
 
 	public function flash(){
 
-		$html='';
-		foreach($_SESSION['flash'] as $v){
+		if(isset($_SESSION['flash'])){
+			$html='';
+			foreach($_SESSION['flash'] as $v){
 
-			if(isset($v['message'])){
-				$html .= '<div class="alert alert-'.$v['type'].'">
-							<button class="close" data-dismiss="alert">×</button>
-							<p>'.$v['message'].'</p>
-						</div>';				
+				if(isset($v['message'])){
+					$html .= '<div class="alert alert-'.$v['type'].'">
+								<button class="close" data-dismiss="alert">×</button>
+								<p>'.$v['message'].'</p>
+							</div>';				
+				}
 			}
+
+			$_SESSION['flash'] = array();
+			return $html;
 		}
-
-		$_SESSION['flash'] = array();
-		return $html;
-
 	}
 
 	public function write($key,$value){
@@ -88,7 +96,7 @@ class Session {
 	}
 
 	public function isLogged(){
-		if($this->read('user'))
+		if($this->user('user_id')!=0)
 			return true;		
 	}
 
@@ -115,7 +123,7 @@ class Session {
 			if($key){
 
 				if($key=='obj'){
-				return $this->read('user');
+					return $this->read('user');
 				}
 
 				if(isset($this->read('user')->$key)){

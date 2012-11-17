@@ -1,8 +1,7 @@
-<?php 
+<?php
 
     //Fichier qui contient la fonction qui cré le code du commentaire
     require('html.php');
-
 
 
     //If fail
@@ -11,24 +10,20 @@
         exit();
     }
 
-  
-
     //If there are comments
     if(!empty($coms)){
 
         //Create the html 
-        $html = utf8_decode(show_comment_or_replies($coms,$this->session->user('obj'),$context,$context_id) );
+        $html = show_comment_or_replies($coms,$this->session->user('obj'),$context,$context_id) ;
 
-        echo $html;
+        $html = htmlentities($html);
+        $html = utf8_encode($html);
+        
+        echo json_encode(array('content'=>$html));
     }
     else {
 
         echo '';
     }
-    
-
-
 
 ?>
-
-

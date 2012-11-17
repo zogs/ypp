@@ -73,6 +73,29 @@
         }
         }
     }
+    public function arr(){
+
+        if($this->cSerialize){
+            $name = $this->cName . "_S";
+            if(isset($_COOKIE[$name])){
+
+                $sCookie = unserialize($_COOKIE[$name]);
+                return $sCookie;
+            }
+            else
+                return false;            
+        }
+        else {
+            $name = $this->cName ."_". $item;
+            if(isset($_COOKIE[$name])){
+                // handle the item as separate cookies
+                return $_COOKIE[$name];
+            }else{
+                return false;
+            }
+        }
+    }
+
     public function kill($cName){
     $tStamp = time() - 432000;
     setcookie($cName,"",$tStamp,$this->cPath);

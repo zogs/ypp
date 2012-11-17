@@ -221,14 +221,15 @@ div.btn-group[data-toogle=buttons-radio] {margin:100px;}
 /*
 Commentaires
 */
+#comments { float:left; width:98%; margin:10px 1% 0 1%; }
 .no_comment { float:left; width:100%; color:#888; text-align:center; font-weight:bold;}
-.thread { position:relative; float:left; margin:10px 0; padding:10px 2%; width:96%;  }
+.thread { position:relative; float:left; margin:10px 0; padding:10px 3%; width:94%;  }
 
 .thread:after { content:" "; position:relative; top:-10px; left:0; width:100px; height:100px; background:#000; }
 
-.post { background-color:rgba(255,255,255,0.5); boox-shadow:0 2px 5px rgba(0, 0, 0, 0.3); border-bottom:1px solid #CCC;}
+.post { border:1px solid #CCC; background-color:rgba(255,255,255,0.5); box-shadow:0 3px 5px rgba(167,167,167,0.2);  }
 .post .actions { float:left; visibility: hidden; margin-top:10px; width:100%;}
-.post .actions a { color:darkgrey; font-size:90%;}
+.post .actions a, .post .actions span{ color:darkgrey; font-size:90%;}
 .post .actions a:hover { text-decoration: none; color:#4F88D8; cursor: pointer;}
 .post .actions a:after {content:' - '; }
 .post img.avatar { height:50px; }
@@ -243,7 +244,7 @@ Commentaires
 .reply:before { position:absolute; top:50%; left:-10px; z-index:-2; display:block; width:10px; border-top:1px solid #CCC; content:" "; }
 .replies:before { }
 
-
+.type_news { }
 .type_news .logo { position:relative; left:100%; top:0; width:100px ; margin-left:-100px; }
 .type_news .logo:before { content:' '; width:110px; height:200px; background-color:#000;}
 .type_news .user { position:relative; left:100%; top:100px; width:100px; margin-left:-105px; text-align:center; display:inline-block;}
@@ -271,15 +272,20 @@ Commentaires
 .previewMedia-title { width:100%; color:black; font-weight:bold;}
 .previewMedia-desc { overflow:hidden; width:100%; max-height:250px; }
 .userAvatarCommentForm { float:left; height: 30px; margin:0 5px 0 0;}
-.formCommentReply { float:left; margin-left:5%; padding:10px 3% 0 3%; width:70%;}
-.formCommentReply textarea { float:left; width:100%; height:50px; }
-.formCommentReply input[type=submit] { float:left; display:block;}
+.formCommentReply { float:left; padding:10px 8% 5px 3%; margin-bottom:0; width:89%; background-color:#E4E4E4; border:1px solid #CCC;}
+#formCommentReply { margin-left:7%; width:79%; margin-top:5px;}
+textarea.formComment  { float:left; width:60%; height:20px; }
+.formCommentReply input[type=submit] { float:left; display:block; margin-left:1%;}
 #hiddenFormReply form { display:none;}
 #tri .btn { background-image:none; background-color:transparent; color:grey; border:0;}
 
-#bottomComments { float:left; margin-top:20px; padding:0px 0; width:100%; color:#656363; text-align:left; font-weight:normal; font-size:12px; }
+#bottomComments { float:left; margin-top:20px; width:100%; color:#626262; background-color:#282828; text-transform:uppercase; text-align:center; font-weight:normal; font-size:12px; }
+#bottomComments div, #bottomComments a { color:#BBB; padding:10px 0; }
+a#showMoreComments { float:left; display:block; width:100%; height:100%; }
+a#showMoreComments:hover { color:white; text-decoration: none;}
 #loadingComments { display:none; }
 #noMoreComments { display:none; }
+
 .arrow_box {
     position: relative;
     
@@ -364,9 +370,18 @@ Inscription
 /*
 Account
 */
-#account { overflow:hidden; margin-top:20px;}
-#account .account-block { margin:5px 20px 25px 20px; padding:20px 50px; border:1px solid #CCC; background:#F2F2F2; box-shadow:0 0 4px 4px rgba(100,100,100,0.1); }
-#myaccount { float:left; width: 400px; height:600px;}
+#account { margin-top:20px;}
+#account .account-form { float:right; width:500px; padding-left:50px; padding-right:50px; overflow:visible}
+#account .account-form .control-label { float:left; width:20%; display:block; text-align:left; font-weight: normal ;font-size:95%;}
+#account .account-form .controls { float:left; width:60%; }
+#account .account-form input[type=submit] { float:left; margin-top:20px; margin-bottom:30px;}
+#account .account-form div.geo-select {width:100%}
+#account .account-form div.geo-select .select2-choice { padding:4px 5px; width:100%; height:auto; outline:none; border:0; border-radius:0; border:1px solid #CCC; border-radius:3px ; background-color:white; background-image:none; text-align:left; line-height:inherit; }
+#account .account-form div.geo-select .select2-choice:focus { outline:none;}
+#account .account-form div.geo-select .select2-choice div { border:0; background:white; background-image:none;}
+#account .account-form div.geo-select .select2-choice div b { background-position:0 -2px;}
+#account .account-form div.geo-select .select2-drop { left:0; margin-top: 0; padding:5px 0 2px 5px; width:200px;}
+#account .account-form div.geo-select .select2-results { max-height:300px; text-align:left; }
 #changeavatar { float:left; width:230px; }
 #changeavatar .avatar { margin-bottom:10px; width:100%; text-align:left;}
 #changeavatar .avatar img { width:120px; height:120px; }
@@ -374,6 +389,20 @@ Account
 #changepassword { float:left; width:230px; }
 #delete { float:left; width:230px; }
 
+.dashboard { width:302px; float:left;}
+.module { overflow:hidden; margin:5px 0 15px 0; padding:15px; border:1px solid #CCC; border-radius:10px; background:#F2F2F2; box-shadow:0 0 4px 4px rgba(100,100,100,0.1); }
+.module-header { margin-bottom:25px; border-bottom:1px solid #DDD; }
+.module-header h2 { color:#444 }
+.module-header p.subheader { color:#AAA;}
+.mini-profile b, .mini-profile small { margin-left:10px;}
+.mini-profile b { text-transform: capitalize;}
+.mini-profile small { font-size:90%; }
+
+
+.size16 {width:16px; height:16px;}
+.size32 { width:32px; height:32px;}
+.fleft { float:left;}
+.fright { float:right;}
 
 /**
 * Formulaire
@@ -390,7 +419,8 @@ Account
 .formulaire input[type=submit] { padding:10px 25px; width:auto; }
 .formulaire select { width:130px; -webkit-appearance:none;}
 .formulaire .submit .helper { display:inline; padding-left:15px; color:#AAA; text-align:left; }
-.formulaire div.geo-select { margin-right:10px; box-shadow: 0 0 0 5px #E2E2E2;}
+.formulaire div.geo-select { padding:3px 5px; margin-right:10px; box-shadow: 0 0 0 5px #E2E2E2;}
+
 /*
 Group View
 */

@@ -1,4 +1,3 @@
-
 <?php echo $this->session->flash(); ?>
 
 
@@ -13,26 +12,21 @@
 	</div>
 	<div class="btn-group">
 		<button class="btn btn-inverse disabled" disabled="disabled">Location</button>									
-			
 			<?php 
 
-	 		//debug($states);
-			foreach($states as $key=>$array){
+				//debug($this->CookieRch->read());
+				$arr = $this->CookieRch->arr();
+				$arr['selectClass'] = 'btn';
+				$this->request('world','locate',array($arr));
 
-				if($key!='city')							
-					echo $this->Form->generateSelect($key,'btn geo-select',$array,'code','name',$this->CookieRch->read($key),'onchange="showRegion(this.value,\''.$key.'\')"');
-				else
-					echo $this->Form->generateSelect($key,'btn geo-select',$array,'code','name',$this->CookieRch->read($key),'');
-			}
-			?>
-			
+			?>				
 		<button type="submit" class="btn" id="submit-state" data-url="<?php echo Router::url('world/getStates'); ?>">OK</button>		
 	</div>
 	<div class="btn-group">
 			<button class="btn btn-inverse disabled" disabled="disabled">Category</button>	
-			<?php echo $this->Form->generateSelect('cat2','btn cat-select',$cat2,'id','name',$this->CookieRch->read('cat2'),'onchange="showCategory(this.value,3)"'); ?>
+			<?php echo $this->Form->Select('cat2','Select category','btn cat-select',$cat2,$this->CookieRch->read('cat2'),'onchange="showCategory(this.value,3)"'); ?>
 			<?php if($this->CookieRch->read('cat3')): ?>
-			<?php echo $this->Form->generateSelect('cat3','btn cat-select',$cat3,'id','name',$this->CookieRch->read('cat3'),''); ?>
+			<?php echo $this->Form->Select('cat3','Select sub-category','btn cat-select',$cat3,$this->CookieRch->read('cat3'),''); ?>
 			<?php endif; ?>
 
 
@@ -63,7 +57,9 @@
 
 		<div class="btn-group">
 			<button class="btn btn-inverse disabled" disabled="disabled">Order</button>
-			<?php echo $this->Form->generateSelect('order','btn',$order,'code','name',$this->CookieRch->read('order'),''); ?>			
+			<?php 
+
+			echo $this->Form->Select('order','Select order','btn',$order,$this->CookieRch->read('order'),''); ?>			
 			<button type="submit" class="btn" >OK</button>
 			
 		</div>

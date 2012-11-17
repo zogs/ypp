@@ -60,6 +60,7 @@
 					<form class="loginForm" action="<?php echo Router::url('users/login'); ?>" method='post'>
 						<input type="login" name="login" required="required" placeholder="Login or email" autofocus="autofocus" value="pumtchak"/>
 						<input type="password" name="password" required="required" placeholder="Password" value="fatboy" />
+						<input type="hidden" name="token" value="<?php echo $this->session->token();?>" />
 						<input type="submit" value="OK" />
 					</form>
 					<li><a href="<?php echo Router::url('users/login');?>">Login</a></li>	

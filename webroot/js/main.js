@@ -95,6 +95,16 @@ $(document).ready(function(){
 
 
 
+
+	/*===========================================================
+		GEO LOCATE
+	============================================================*/
+
+    $(".geo-select").select2();
+    $("#CC1").select2({ formatResult: addCountryFlagToSelectState, formatSelection: addCountryFlagToSelectState});
+
+
+
 	/*===========================================================
 		ON CANCEL button, SHOW and CANCEL
 	============================================================*/
@@ -197,10 +207,20 @@ $(document).ready(function(){
 	        });
 
 
+
+	        /*===========================================================
+	        	SHOW MORE COMMENTS
+	        ============================================================*/
+	        $("#showMoreComments").bind('click',function(){
+
+	        	showMoreComments();
+
+	        	return false;
+	        });
 	        /*===========================================================
 	        	HOVER COMMENTS
 	        ============================================================*/
-	        $(".comment").livequery(function(){ 
+	        $(".post").livequery(function(){ 
 	            $(this) 
 	                .hover(function() { 
 	                    $(this).find('.actions').css('visibility','visible'); 
@@ -242,7 +262,9 @@ $(document).ready(function(){
 	                url: url,
 	                data: datas,
 	                success: function( com ){
-	                   if(!com.fail){		                    
+
+	                   if(!com.fail){
+								                    
 	                    $("#formCommentReply").appendTo("#hiddenFormReply");
 	                    var html = $('<div />').html(com.content).text(); //Jquery trick to decode html entities
 	                    $("#com"+parent_id).next('.replies').remove();
@@ -259,204 +281,6 @@ $(document).ready(function(){
 	            return false;
 
 	        });
-
-
-	        /*===========================================================	        
-	        SHOW COMMENTS
-	        @param use params in Global_showComments_params[]
-	        @param use $arguments[] , string clear,newer,start
-	        ============================================================*/ 
-	        
-			function show_comments(){
-				
-				$("#refresh_com").prepend(spanLoader);
-				$("#loadingComments").show();
-
-	            var arg = (arguments[0]) ? arguments[0] : 'clear';
-
-	            clean_params('newer','start'); 
-
-	            if(arg=='new')
-	                 construct_params("?newer="+Global_newerCommentId);
-	            if(arg=='bottom')
-	                construct_params("?start="+Global_newerCommentId);    
-
-	            
-	            //console.log(JSON.stringify(Global_showComments_params));
-				$.ajax({
-				  type: 'GET',
-				  url: Global_showComments_url,
-				  data: arrayParams2string(Global_showComments_params),
-				  success: function( html ) 
-	              {	                
-
-	                //Jquery trick to decode html entities
-	                //var html = $('<div />').html(coms.content).text();
-
-	                if(arg=='new') {
-	                    $("#badge").empty().hide();
-	                    $('#comments').prepend(html);
-	                    Global_tcheckComments_offset = 0;
-	                }                        
-	                else if(arg=='bottom') {                           
-	                    $('#comments').append(html);                       
-	                }
-	                else if(!arg || arg=='clear'){
-	                    $("#badge").empty().hide();                        
-	                    $('#comments').empty().append(html);
-	                    Global_tcheckComments_offset = 0; 
-	                    Global_newerCommentId = 0; 
-	                }
-	                
-
-	                Global_loadingComments = false;
-	               	                    
-	                $("#loadingComments").hide();
-	                $("#ajaxLoader").remove();	                
-	                 
-                  	if(trim(html)==''){
-                    	$("#loadingComments").hide();
-                    	$("#noMoreComments").show();
-                    	return;
-                    } 	                
-                           
-					//Get id of the first comment
-					if(arg=='new'){
-		                var first_id = $(html).first('.comment').attr('id');
-		                first_id = first_id.replace('com','');
-		                Global_newerCommentId = first_id;
-		                //console.log('firstID'+Global_newerCommentId);
-		            }
-				},
-				  dataType: 'html'
-				});
-				return;
-
-			}
-
-			/*===========================================================	        
-			INFINITE SCROLL
-			if scroll to the bottom of page
-			increment page and call show_comments
-			==========================================================*/								
-	        var infiniteComment = function() {
-
-	            $(window).scroll(function(){
-	                
-	                var ylastCom = $("#bottomComments").offset(); 
-	                var scrollPos = parseInt($(window).scrollTop()+$(window).height());
-	                //console.log(ylastCom.top+' <= '+scrollPos);
-	                if( (ylastCom.top <= scrollPos ) && Global_loadingComments===false ) 
-	                {   
-	                	
-	                    Global_loadingComments = true;
-	                    new_page        = Global_pageComments+1;
-	                    Global_pageComments   = new_page;
-	                    construct_params("?page="+new_page);                    
-	                    show_comments('bottom');		                    
-	                    
-	                }
-
-	            });
-	        };
-	        infiniteComment();
-
-	        /*===========================================================
-	        	CONSTRUCT PARAMS
-	        	@param string ?param=value
-	        ============================================================*/
-			function construct_params(param){
-				if(param!=''){
-					var p = [];
-					if(strpos(param,'?',0)==0){
-						param = str_replace('?','',param);
-						p = explode('=',param);
-						Global_showComments_params[p[0]] = p[1];	
-					}
-					else alert('href doit commencer par ?');                
-					return param;
-				}
-			}
-
-	        /*===========================================================
-	        	CLEAN PARAMS
-	        ============================================================*/
-	        function clean_params(){
-	            for(var key in arguments) {   
-	                for(var cle in Global_showComments_params){                    
-	                    //console.debug(' key:'+arguments[key]+'    cle:'+cle+'   value:'+Global_showComments_params[cle]);
-	                    if(arguments[key]==cle){
-	                        Global_showComments_params[cle] = 0;
-	                    }                    
-	                }
-	            }                         
-	        }
-
-	        /*===========================================================
-	        	??
-	        ============================================================*/
-	        function arrayParams2string(array){            
-	            var str ='';
-	            for(key in array){  
-
-	                    str += key+'='+array[key]+'&';
-	                    
-	            }
-	            str = str.substring(0,str.length-1);
-	            return str;
-	        }
-
-	        /*===========================================================
-	        	SET INTERVAL REFRESH
-	        ============================================================*/
-	        function setIntervalRefresh(second){
-
-	            if(Global_refreshComments!=false) clearInterval(Global_refreshComments);            
-	            Global_refreshComments = setInterval( function() { show_comments('new');} ,second*1000);        
-	        }
-	        /*===========================================================
-	        	SET INTERVAL TCHECK
-	        ============================================================*/
-	        function setIntervalTcheck(second){
-
-	            if(Global_tcheckComments!=undefined) clearInterval(Global_tcheckComments);            
-	            Global_tcheckComments = setInterval(tcheckcomments,second*1000);        
-	        }
-
-	        /*===========================================================
-	        	TCHECK COMMENTS
-	        ============================================================*/
-	        function tcheckcomments(){
-
-	            
-	            var obj = $('#refresh_com');
-	            var badge = obj.find('#badge');
-	            var url = obj.attr('data-url-count-com');
-	            Global_tcheckComments_offset = Number(Global_tcheckComments_offset) + Number(Global_tcheckComments_interval);
-	            var second = Global_tcheckComments_offset;
-
-	            url += second;
-
-	            $.ajax({
-	                type: 'GET',
-	                url: url,
-	                success: function(data){
-	                    //$('#manifeste').empty().html(data);
-	                    if(is_numeric(data.count)){
-	                        if(data.count>0){
-	                            badge.empty().html(trim(data.count));
-	                            badge.show();
-	                        }
-	                        else {
-	                            badge.hide();
-	                        }
-	                    }
-	                    else alert(data);
-
-	                },
-	                dataType: 'json'
-	            });
-	        }
 
 
 	        /*===========================================================
@@ -636,9 +460,225 @@ $(document).ready(function(){
 		    });
 
 
-        }           
+        }   
 
-	
+
+    /*===========================================================	        
+    SHOW COMMENTS
+    @param use params in Global_showComments_params[]
+    @param use $arguments[] , string clear,newer,start
+    ============================================================*/ 
+    
+	function show_comments(){
+		
+		$("#refresh_com").prepend(spanLoader);
+		$("#showMoreComments").hide();
+		$("#loadingComments").show();
+
+        var arg = (arguments[0]) ? arguments[0] : 'clear';
+
+        clean_params('newer','start'); 
+
+        if(arg=='new') 
+             construct_params("?newer="+Global_newerCommentId);
+        if(arg=='bottom')
+            construct_params("?start="+Global_newerCommentId);    
+
+        
+        console.log(JSON.stringify(Global_showComments_params));
+		$.ajax({
+		  type: 'GET',
+		  url: Global_showComments_url,
+		  data: arrayParams2string(Global_showComments_params),
+		  success: function( html ) 
+          {	                
+
+            //Jquery trick to decode html entities
+            //var html = $('<div />').html(coms.content).text();
+
+            if(arg=='new') {
+                $("#badge").empty().hide();
+                $('#comments').prepend(html);
+                Global_tcheckComments_offset = 0;
+            }                        
+            else if(arg=='bottom') {                           
+                $('#comments').append(html);                       
+            }
+            else if(!arg || arg=='clear'){
+                $("#badge").empty().hide();                        
+                $('#comments').empty().append(html);
+                $("#noMoreComments").hide();
+                Global_tcheckComments_offset = 0; 
+                Global_newerCommentId = 0; 
+            }
+            
+
+            Global_loadingComments = false;
+           	                    
+            $("#loadingComments").hide();
+            $("#showMoreComments").show();
+            $("#ajaxLoader").remove();	                
+             
+          	if(trim(html)==''){
+            	$("#loadingComments").hide();
+            	$("#showMoreComments").hide();
+            	$("#noMoreComments").show();
+            	return;
+            } 	                
+                   
+			//Get id of the first comment
+			if(arg=='new'){
+                var first_id = $(html).first('.comment').attr('id');
+                first_id = first_id.replace('com','');
+                Global_newerCommentId = first_id;
+                //console.log('firstID'+Global_newerCommentId);
+            }
+		},
+		  dataType: 'html'
+		});
+		return;
+
+	}
+
+	/*===========================================================	        
+	INFINITE SCROLL
+	if scroll to the bottom of page
+	increment page and call show_comments
+	==========================================================*/								
+    function infiniteComment() {
+
+        $(window).scroll(function(){
+            
+            var ylastCom = $("#bottomComments").offset(); 
+            var scrollPos = parseInt($(window).scrollTop()+$(window).height());
+            console.log(ylastCom.top+' <= '+scrollPos);
+            if( (ylastCom.top <= scrollPos ) && Global_loadingComments===false ) 
+            {   
+            	
+                Global_loadingComments = true;
+                new_page        = Global_pageComments+1;
+                Global_pageComments   = new_page;
+                construct_params("?page="+new_page);                    
+                show_comments('bottom');		                    
+                
+            }
+
+        });
+    };
+    //infiniteComment();
+
+
+    /*===========================================================
+    	SHOW MORE COMMENTS
+    	add the next page of comments
+    ============================================================*/
+    function showMoreComments() {
+
+    	Global_loadingComments = true;
+    	new_page = Global_pageComments+1;
+    	Global_pageComments = new_page;
+    	construct_params("?page="+new_page);
+    	show_comments('bottom');
+
+    }
+
+    /*===========================================================
+    	CONSTRUCT PARAMS
+    	@param string ?param=value
+    ============================================================*/
+	function construct_params(param){
+		if(param!=''){
+			var p = [];
+			if(strpos(param,'?',0)==0){
+				param = str_replace('?','',param);
+				p = explode('=',param);
+				Global_showComments_params[p[0]] = p[1];	
+			}
+			else alert('href doit commencer par ?');                
+			return param;
+		}
+	}
+
+    /*===========================================================
+    	CLEAN PARAMS
+    ============================================================*/
+    function clean_params(){
+        for(var key in arguments) {   
+            for(var cle in Global_showComments_params){                    
+                //console.debug(' key:'+arguments[key]+'    cle:'+cle+'   value:'+Global_showComments_params[cle]);
+                if(arguments[key]==cle){
+                    Global_showComments_params[cle] = 0;
+                }                    
+            }
+        }                         
+    }
+
+    /*===========================================================
+    	??
+    ============================================================*/
+    function arrayParams2string(array){            
+        var str ='';
+        for(key in array){  
+
+                str += key+'='+array[key]+'&';
+                
+        }
+        str = str.substring(0,str.length-1);
+        return str;
+    }
+
+    /*===========================================================
+    	SET INTERVAL REFRESH
+    ============================================================*/
+    function setIntervalRefresh(second){
+
+        if(Global_refreshComments!=false) clearInterval(Global_refreshComments);            
+        Global_refreshComments = setInterval( function() { show_comments('new');} ,second*1000);        
+    }
+    /*===========================================================
+    	SET INTERVAL TCHECK
+    ============================================================*/
+    function setIntervalTcheck(second){
+
+        if(Global_tcheckComments!=undefined) clearInterval(Global_tcheckComments);            
+        Global_tcheckComments = setInterval(tcheckcomments,second*1000);        
+    }
+
+    /*===========================================================
+    	TCHECK COMMENTS
+    ============================================================*/
+    function tcheckcomments(){
+
+        
+        var obj = $('#refresh_com');
+        var badge = obj.find('#badge');
+        var url = obj.attr('data-url-count-com');
+        Global_tcheckComments_offset = Number(Global_tcheckComments_offset) + Number(Global_tcheckComments_interval);
+        var second = Global_tcheckComments_offset;
+
+        url += second;
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(data){
+                //$('#manifeste').empty().html(data);
+                if(is_numeric(data.count)){
+                    if(data.count>0){
+                        badge.empty().html(trim(data.count));
+                        badge.show();
+                    }
+                    else {
+                        badge.hide();
+                    }
+                }
+                else alert(data);
+
+            },
+            dataType: 'json'
+        });
+    }
+
 	/*===========================================================
 		FORM AJAX
 	============================================================*/
@@ -672,6 +712,58 @@ $(document).ready(function(){
 	  });
   	//===============================
 
+
+  	/*===========================================================
+		CHECK DUPLICATE MAIL AND LOGIN
+	============================================================*/
+
+	$("#inputlogin,#inputemail").bind('keyup',function(){
+
+
+		var input = $(this);
+		var help = $(this).next('p.help-inline');
+		var value = $(this).val();
+		var url = $(this).attr('data-url');
+		var type = $(this).attr('name');
+
+		var c = forbiddenchar(value);
+		if(c && type=='login'){
+			input.parent().parent().addClass('error');
+			help.removeClass('hide').empty().html("Le caractère suivant n'est pas autorisé : "+c);
+		}
+		else {
+			input.parent().parent().removeClass('error');
+			help.addClass('hide').empty();
+
+			$.ajax({
+				type: 'POST',
+				url: url,
+				data: {type : type, value : value},
+				success: function(data){					
+					if(data){	
+						input.parent().parent().removeClass('success');					
+						input.parent().parent().addClass('error');
+						help.removeClass('hide').empty().html('This '+type+ ' already in use!');
+					}
+					else {
+						input.parent().parent().removeClass('error');
+						input.parent().parent().removeClass('success');
+						help.removeClass('hide').empty().html('Available !');
+					}
+				},
+				dataType: 'json'
+			});
+		}
+
+
+	});
+
+	function forbiddenchar(string){
+
+		var carac = new RegExp("[ @,\.;:/!&$£*§~#|)(}{ÀÂÇÈÉÊËÎÔÙÛàâçèéêëîôöùû]","g");
+		var c = string.match(carac);
+		if(c) return c;
+	}
 });
 
 
@@ -771,9 +863,9 @@ function showRegion(value,region)
 		if(region=='city') return false;		
 
 		var url = $('#submit-state').attr('data-url');
-
+		
 		$.ajax({
-			type : 'POST',
+			type : 'GET',
 			url : url,
 			data : { parent:value, ADM: region, CC1:CC1, ADM1:ADM1, ADM2:ADM2, ADM3:ADM3, ADM4:ADM4 },
 			dataType: 'json',

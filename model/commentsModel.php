@@ -396,14 +396,22 @@ class Comments extends Model
 
 	public function threadUser($params){
 
-		$thread = $this->getThreadUser($params);
-		$thread = $this->fillThreadUser($thread);
+		$thread = $this->getThreadUser($params); //get the order list
+		$thread = $this->fillThreadUser($thread);	//fill the list
 
 		return $thread;
 	}
 
 	public function getThreadUser($params){
 
+		//limit
+		if(isset( $params['limit']) && !empty($params['limit'])){
+			if(!isset($params['page'])) $params['page'] = 1;
+			$limit = (($params['page']-1)*$params['limit']).','.$params['limit'];
+		}
+		else $limit = 144;
+
+		//request
 		$sql = "SELECT 
 					'joinProtest' as thread,
 					id as id,
@@ -423,6 +431,7 @@ class Comments extends Model
 				WHERE
 					C.context = 'manif' AND C.type='news' AND C.context_id = P.manif_id 
 				ORDER BY date DESC
+				LIMIT ".$limit." 
 
 				";
 
@@ -443,7 +452,7 @@ class Comments extends Model
 			if($thread->thread == 'joinProtest'){
 				
 				$protester = $this->session->controller->Manifs->findProtesters(array(
-																					'fields'=>array('U.user_id','U.login','P.manif_id','P.date'),
+																					'fields'=>array('U.user_id','U.login','P.manif_id','P.date','P.id'),
 																					'conditions'=>array('P.id'=>$thread->id)
 																				));
 

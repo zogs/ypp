@@ -7,13 +7,18 @@ class Worlds extends Model
 
 	public function findCountry($CC1 = ''){
 
- 		return $this->find(array(
+ 		$res = $this->find(array(
  			'table' => "world_country",
- 			'fields'=>array('FULLNAME as name','CC1 as code'),
+ 			'fields'=>array('CC1 as code','FULLNAME as name'),
  			'conditions'=>$CC1,
  			'order'=>'FULLNAME'
  			));
 
+ 		return array(
+ 			'lvl'=>'CC1',
+ 			'title'=>'Select a country',
+ 			'list'=>$res
+ 			);
 
  	}
 
@@ -61,7 +66,7 @@ class Worlds extends Model
 
  		extract($data);
 
- 		$sql = "SELECT WR.FULLNAME as name, WR.ADM_CODE as code
+ 		$sql = "SELECT WR.ADM_CODE as code, WR.FULLNAME as name 
  				FROM world_states as WR
  				JOIN world_country as WC ON WC.CC1=WR.CC1";
 
@@ -75,7 +80,13 @@ class Worlds extends Model
 		$sql .= " GROUP BY WR.FULLNAME ORDER BY WR.FULLNAME";
 
 		 //debug($sql);
- 		return $this->query($sql);
+ 		$res = $this->query($sql);
+
+ 		return array(
+ 			'lvl'=>$ADM,
+ 			'title'=>'Select a state',
+ 			'list'=>$res
+ 			);
 
  	}
  	
@@ -89,7 +100,7 @@ class Worlds extends Model
  	public function findCities($CC1, $ADM){
 
 	 	extract($ADM);
- 		$sql = "SELECT C.FULLNAME as name, C.UNI as code
+ 		$sql = "SELECT C.UNI as code, C.FULLNAME as name
 				FROM world_cities as C	
 				JOIN world_country as WC ON C.CC1=WC.CC1				
 				WHERE C.CC1='".$CC1."' ";
@@ -108,7 +119,13 @@ class Worlds extends Model
 			
 		$sql .=" AND ( C.LC=WC.LO OR C.LC='') ORDER BY C.FULLNAME";
 		//debug($sql);
-		return $this->query($sql);
+		$res = $this->query($sql);
+
+		return array(
+			'lvl'=>'city',
+			'title'=>'Select a city',
+			'list'=>$res
+			);
  	}
 
  	public function formatADMArray($array){
