@@ -272,61 +272,61 @@ $(document).ready(function(){
 				$("#refresh_com").prepend(spanLoader);
 				$("#loadingComments").show();
 
-	            var arg = (arguments[0]) ? arguments[0] : 'clear';
+			            var arg = (arguments[0]) ? arguments[0] : 'clear';
 
-	            clean_params('newer','start'); 
+			            clean_params('newer','start'); 
 
-	            if(arg=='new')
-	                 construct_params("?newer="+Global_newerCommentId);
-	            if(arg=='bottom')
-	                construct_params("?start="+Global_newerCommentId);    
+			            if(arg=='new')
+			                 construct_params("?newer="+Global_newerCommentId);
+			            if(arg=='bottom')
+			                construct_params("?start="+Global_newerCommentId);    
 
-	            
-	            //console.log(JSON.stringify(Global_showComments_params));
+			            
+			            console.log(JSON.stringify(Global_showComments_params));
 				$.ajax({
 				  type: 'GET',
 				  url: Global_showComments_url,
 				  data: arrayParams2string(Global_showComments_params),
 				  success: function( html ) 
-	              {	                
+			             	 {	                
 
-	                //Jquery trick to decode html entities
-	                //var html = $('<div />').html(coms.content).text();
+				                //Jquery trick to decode html entities
+				                //var html = $('<div />').html(coms.content).text();
 
-	                if(arg=='new') {
-	                    $("#badge").empty().hide();
-	                    $('#comments').prepend(html);
-	                    Global_tcheckComments_offset = 0;
-	                }                        
-	                else if(arg=='bottom') {                           
-	                    $('#comments').append(html);                       
-	                }
-	                else if(!arg || arg=='clear'){
-	                    $("#badge").empty().hide();                        
-	                    $('#comments').empty().append(html);
-	                    Global_tcheckComments_offset = 0; 
-	                    Global_newerCommentId = 0; 
-	                }
-	                
+				                if(arg=='new') {
+				                    $("#badge").empty().hide();
+				                    $('#comments').prepend(html);
+				                    Global_tcheckComments_offset = 0;
+				                }                        
+				                else if(arg=='bottom') {                           
+				                    $('#comments').append(html);                       
+				                }
+				                else if(!arg || arg=='clear'){
+				                    $("#badge").empty().hide();                        
+				                    $('#comments').empty().append(html);
+				                    Global_tcheckComments_offset = 0; 
+				                    Global_newerCommentId = 0; 
+				                }
+			                
 
-	                Global_loadingComments = false;
-	               	                    
-	                $("#loadingComments").hide();
-	                $("#ajaxLoader").remove();	                
-	                 
-                  	if(trim(html)==''){
-                    	$("#loadingComments").hide();
-                    	$("#noMoreComments").show();
-                    	return;
-                    } 	                
-                           
+				                Global_loadingComments = false;
+				               	                    
+				                $("#loadingComments").hide();
+				                $("#ajaxLoader").remove();	                
+				                 
+			                  	if(trim(html)==''){
+			                    	$("#loadingComments").hide();
+			                    	$("#noMoreComments").show();
+			                    	return;
+			                    	} 	                
+	                           
 					//Get id of the first comment
 					if(arg=='new'){
-		                var first_id = $(html).first('.comment').attr('id');
-		                first_id = first_id.replace('com','');
-		                Global_newerCommentId = first_id;
-		                //console.log('firstID'+Global_newerCommentId);
-		            }
+				                var first_id = $(html).first('.comment').attr('id');
+				                first_id = first_id.replace('com','');
+				                Global_newerCommentId = first_id;
+				                //console.log('firstID'+Global_newerCommentId);
+				            }
 				},
 				  dataType: 'html'
 				});
@@ -339,27 +339,27 @@ $(document).ready(function(){
 			if scroll to the bottom of page
 			increment page and call show_comments
 			==========================================================*/								
-	        var infiniteComment = function() {
+			        var infiniteComment = function() {
 
-	            $(window).scroll(function(){
-	                
-	                var ylastCom = $("#bottomComments").offset(); 
-	                var scrollPos = parseInt($(window).scrollTop()+$(window).height());
-	                //console.log(ylastCom.top+' <= '+scrollPos);
-	                if( (ylastCom.top <= scrollPos ) && Global_loadingComments===false ) 
-	                {   
-	                	
-	                    Global_loadingComments = true;
-	                    new_page        = Global_pageComments+1;
-	                    Global_pageComments   = new_page;
-	                    construct_params("?page="+new_page);                    
-	                    show_comments('bottom');		                    
-	                    
-	                }
+			            $(window).scroll(function(){
+			                
+			                var ylastCom = $("#bottomComments").offset(); 
+			                var scrollPos = parseInt($(window).scrollTop()+$(window).height());
+			                //console.log(ylastCom.top+' <= '+scrollPos);
+			                if( (ylastCom.top <= scrollPos ) && Global_loadingComments===false ) 
+			                {   
+			                	
+			                    Global_loadingComments = true;
+			                    new_page        = Global_pageComments+1;
+			                    Global_pageComments   = new_page;
+			                    construct_params("?page="+new_page);                    
+			                    show_comments('bottom');		                    
+			                    
+			                }
 
-	            });
-	        };
-	        infiniteComment();
+			            });
+			        };
+			        infiniteComment();
 
 	        /*===========================================================
 	        	CONSTRUCT PARAMS
