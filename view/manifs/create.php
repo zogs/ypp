@@ -35,9 +35,9 @@
 					<p class='label-helper'>Choose a category or a sub-category</p>
 					<div class="controls">
 						<input type="hidden" id="submit-category" data-url="<?php echo Router::url('manifs/getCategory'); ?>">
-						<?php echo $this->Form->Select('cat2','Select category','btn',$cats2,$manif->cat2,'onchange="showCategory(this.value,3)"'); ?>
+						<?php echo $this->Form->_select('cat2',$cats2,array('placeholder'=>'Select category',"class"=>'btn',"default"=>$manif->cat2,"javascript"=>'onchange="showCategory(this.value,3)"')); ?>
 						<?php if($manif->cat3): ?>
-						<?php echo $this->Form->Select('cat3','Select sub-category','btn',$cats3,$manif->cat3,''); ?>
+						<?php echo $this->Form->_select('cat3',$cats3,array('placeholder'=>'Select sub-category',"class"=>'btn',"default"=>$manif->cat3)); ?>
 						<?php endif; ?>
 					</div>					
 				</div>

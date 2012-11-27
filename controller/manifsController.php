@@ -64,6 +64,7 @@ class ManifsController extends Controller{
 			'limit'=>(($this->request->get->page-1)*$perPage).','.$perPage
 			);
 
+
 		$list        = $this->Manifs->findManifs($params);	
 		$metas       = $this->metadata($list);	
 		$d['manifs'] = $metas;

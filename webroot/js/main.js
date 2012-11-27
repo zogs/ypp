@@ -717,46 +717,47 @@ $(document).ready(function(){
 		CHECK DUPLICATE MAIL AND LOGIN
 	============================================================*/
 
-	$("#inputlogin,#inputemail").bind('keyup',function(){
+		$("#inputlogin,#inputemail").bind('keyup',function(){
+
+			var input = $(this);
+			var control = input.parent().parent();
+			var help = input.next('p.help-inline');
+			var value = $(this).val();
+			var url = $(this).attr('data-url');
+			var type = $(this).attr('name');
+
+			var c = forbiddenchar(value);
+			if(c && type=='login'){
+				control.addClass('control-error');
+				help.removeClass('hide').empty().html("Le caractère suivant n'est pas autorisé : "+c);
+			}
+			else {
+				control.removeClass('control-error');
+				help.addClass('hide').empty();
+
+				$.ajax({
+					type: 'POST',
+					url: url,
+					data: {type : type, value : value},
+					success: function(data){
+
+						if(data.error){	
+							control.removeClass('control-success');					
+							control.addClass('control-error');
+							help.removeClass('hide').empty().html( data.error );
+						}
+						if(data.available) {;
+							control.removeClass('control-error');
+							control.removeClass('control-success');
+							help.removeClass('hide').empty().html( data.available );
+						}
+					},
+					dataType: 'json'
+				});
+			}
 
 
-		var input = $(this);
-		var help = $(this).next('p.help-inline');
-		var value = $(this).val();
-		var url = $(this).attr('data-url');
-		var type = $(this).attr('name');
-
-		var c = forbiddenchar(value);
-		if(c && type=='login'){
-			input.parent().parent().addClass('error');
-			help.removeClass('hide').empty().html("Le caractère suivant n'est pas autorisé : "+c);
-		}
-		else {
-			input.parent().parent().removeClass('error');
-			help.addClass('hide').empty();
-
-			$.ajax({
-				type: 'POST',
-				url: url,
-				data: {type : type, value : value},
-				success: function(data){					
-					if(data){	
-						input.parent().parent().removeClass('success');					
-						input.parent().parent().addClass('error');
-						help.removeClass('hide').empty().html('This '+type+ ' already in use!');
-					}
-					else {
-						input.parent().parent().removeClass('error');
-						input.parent().parent().removeClass('success');
-						help.removeClass('hide').empty().html('Available !');
-					}
-				},
-				dataType: 'json'
-			});
-		}
-
-
-	});
+		});
 
 	function forbiddenchar(string){
 

@@ -310,102 +310,129 @@
  		return $pre->fetch(PDO::FETCH_OBJ);
  	}
 
- 	public function validates($data, $rules = null){
+	public function validates($data, $rules = null){
 
 
- 			$errors = array();
+		$errors = array();
 
- 			//On recupere les regles de validation
- 			if(!$rules){
- 				$validates = $this->validates;
- 			}
- 			else {
- 				$validates = $this->validates[$rules];
- 			}
- 			
- 			//Vérifie les regles de validation pour chaque champs
- 			foreach ($validates  as $k => $v) { 				
+		//On recupere les regles de validation
+		if(!$rules){
+			$validates = $this->validates;
+		}
+		else {
+			$validates = $this->validates[$rules];
+		}
+		
+		//Vérifie les regles de validation pour chaque champs
+		foreach ($validates  as $k => $v) { 
+
+ 				//Si la donnée correspondant est manquante -> erreur				
  				if(!isset($data->$k)){
- 					$errors[$k] = $v['message'].'haa';
+ 					//Si il y a plusiers regles
+ 					if(isset($v['rules'])){
+ 						$rules = $v['rules'];
+ 						$rule = $rules[0];
+ 						$errors[$k] = $rule['message'];
+ 					}
+ 					//Si il y a qu'une regle
+ 					if(isset($v['rule'])){
+ 						
+ 						 $errors[$k] = $v['message'];
+ 					}
  				}
  				else{
-
- 					if($v['rule']=='notEmpty'){
- 						if(empty($data->$k)) $errors[$k] = $v['message'];				
- 					}
- 					elseif($v['rule']=='confirmPassword'){
- 						if($data->$k != $data->password) $errors[$k] = $v['message'];
- 					}
- 					elseif(!preg_match('/^'.$v['rule'].'$/',$data->$k)){
- 						$errors[$k] = $v['message'].'euhh';
- 					}
- 				}
-
- 			}
-
- 			//Vérifie les fichiers uploadé
- 			if(isset($_FILES)){ 				
+ 					
+				//Si il y a plusiers regles
+				if(isset($v['rules'])){
+					$rules = $v['rules']; 						
+				} 
+				//Si il y a qu'une regle
+				if(isset($v['rule'])){
+					
+					 $rules = array($v);
+				}
+				//Pour toutes les regles correspondante
+				foreach ($rules as $rule) {
+					
+				if($rule['rule']=='notEmpty'){
+						if(empty($data->$k)) $errors[$k] = $rule['message'];				
+					}
+					elseif($rule['rule']=='confirmPassword'){
+						if($data->$k != $data->password) $errors[$k] = $rule['message'];
+					}
+					elseif(!preg_match('/^'.$rule['rule'].'$/',$data->$k)){
+						$errors[$k] = $rule['message'];
+					}
+				}
 				
-				//Pour chaque fichier uploader
- 				foreach ($_FILES as $key => $file) {
+			}
 
- 					//Si le fichier n'est pas vide et quil n'y pas d'erreur d'envoi
- 					if($file['error'] == 'UPLOAD_ERR_OK'){
- 					
-	 					$input = str_replace('input','',$key);
+		}
 
-	 					//Si il y a des regles définies
-	 					if($this->validates_files[$input]){
 
-		 					//Si il y a une limite de poids 
-		 					if($this->validates_files[$input]['max_size']) {
+		//Vérifie les fichiers uploadé
+		if(isset($_FILES)){ 				
+		
+		//Pour chaque fichier uploader
+			foreach ($_FILES as $key => $file) {
 
-		 						//Si le fichier est trop gros
-		 						if($file['size']>$this->validates_files[$input]['max_size']){
+				//Si le fichier n'est pas vide et quil n'y pas d'erreur d'envoi
+				if($file['error'] == 'UPLOAD_ERR_OK'){
+				
+					$input = str_replace('input','',$key);
 
-		 							$errors[$input] = $this->validates_files[$input]['max_size_error'];
-		 						}
-		 					}
-		 					//Si il y a des extentions spécifiquement authorisées
- 							if($this->validates_files[$input]['extentions']){
- 								
- 								$extention = substr(strrchr($file['name'], '.'),1);
-	 							$extentions = $this->validates_files[$input]['extentions'];
+					//Si il y a des regles définies
+					if($this->validates_files[$input]){
 
-	 							if(!in_array($extention,$extentions)){
-	 								$errors[$input] = $this->validates_files[$input]['extentions_error'];	 					
- 								} 
- 							}
+ 					//Si il y a une limite de poids 
+ 					if($this->validates_files[$input]['max_size']) {
 
- 							//If Prevent hidden php code
- 							if($this->validates_files[$input]['ban_php_code'] && $this->validates_files[$input]['ban_php_code'] == true){
-	 							//Vérifie qu'il n'y a pas de code php caché dans l'image				 							
-	 							if(strpos(file_get_contents($file['tmp_name']),'<?php')){
+ 						//Si le fichier est trop gros
+ 						if($file['size']>$this->validates_files[$input]['max_size']){
 
-	 								die('Oh whats there ? Some php into a image file !! You funny jocker !');
-	 							}	
- 							}
-		 				}
-	 				}
- 				}
- 			}
+ 							$errors[$input] = $this->validates_files[$input]['max_size_error'];
+ 						}
+ 					}
+ 					//Si il y a des extentions spécifiquement authorisées
+						if($this->validates_files[$input]['extentions']){
+							
+							$extention = substr(strrchr($file['name'], '.'),1);
+							$extentions = $this->validates_files[$input]['extentions'];
 
- 			$this->errors = $errors;
+							if(!in_array($extention,$extentions)){
+								$errors[$input] = $this->validates_files[$input]['extentions_error'];	 					
+							} 
+						}
 
- 			//Si une class Form est lié a ce model
- 			if(isset($this->Form)){
- 				$this->Form->setErrors($errors); //On lui envoi les erreurs
- 			}
+						//If Prevent hidden php code
+						if($this->validates_files[$input]['ban_php_code'] && $this->validates_files[$input]['ban_php_code'] == true){
+							//Vérifie qu'il n'y a pas de code php caché dans l'image				 							
+							if(strpos(file_get_contents($file['tmp_name']),'<?php')){
 
- 			//Si pas d'erreur validates renvoi true
- 			if(empty($errors)){
- 				return true;
- 			}
- 			else {
- 				//debug($errors);
- 			}
- 					
- 			return false;
+								die('Oh whats there ? Some php into a image file !! You funny jocker !');
+							}	
+						}
+ 					}
+				}
+			}
+		}
+
+		$this->errors = $errors;
+
+		//Si une class Form est lié a ce model
+		if(isset($this->Form)){
+			$this->Form->setErrors($errors); //On lui envoi les erreurs
+		}
+
+		//Si pas d'erreur validates renvoi true
+		if(empty($errors)){
+			return true;
+		}
+		else {
+			//debug($errors);
+		}
+				
+		return false;
  			 			 		
  	}
 

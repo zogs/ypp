@@ -22,13 +22,18 @@ class Users extends Model{
 				'message' => "Vos mots de passe ne sont pas identiques"
 				)
 		),
-		'account_login' => array(
+		'account_info' => array(
 			'login' => array(
-				'rule' => 'notEmpty',
-				'message' => 'Your login is empty'
-				)
-		),
-		'account_email' => array(
+				'rules'=> array(
+					array(
+						'rule' => 'notEmpty',
+						'message' => 'Your login is empty'
+							),
+					array('rule' => '.{5,20}',
+						'message' => 'Login between 5 and 20 caracters'
+						)
+					)
+				),
 			'email' => array(
 				'rule' => '[_a-zA-Z0-9-+]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,4})',
 				'message' => "L'adresse email n'est pas valide"
@@ -87,7 +92,11 @@ class Users extends Model{
 		if(isset($user->action)) unset($user->action);
 		//set user_id for updating
 		if(isset($user_id)) $user->user_id = $user_id;
-		
+		//if there is nothing to save
+		$tab = (array) $user;
+		if( (count($tab)==0 ) || (count($tab)==1 && isset($tab['user_id'])))
+			return true;
+
 		//if new user , check unique value
 		if(!isset($user->user_id)){
 
@@ -103,8 +112,8 @@ class Users extends Model{
 
 			//check if mail already in use
 			$checkmail = $this->findFirst(array(
-												'fields'=>'email',
-												'conditions'=>array('email'=>$user->email)
+												'fields'=>'mail',
+												'conditions'=>array('mail'=>$user->mail)
 												));
 			if(!empty($checkmail)){
 				$this->session->setFlash("This email is already in use. Please try to recovery your password","error");

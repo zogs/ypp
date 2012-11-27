@@ -16,15 +16,75 @@ class Form{
 		$this->errors = $errors;
 	}
 
-	public function input($name,$label,$options = array()){
+	public function wrapInput($id, $label, $input, $params = null){		
 
 		//Gestion des erreurs
 		$error = false;
 		$classError ='';
 
 		//Si il y a une erreur qui correspond a ce champ
-		if(isset($this->errors[$name])){
-			$error = $this->errors[$name]; // recup l'erreur
+		if(isset($this->errors[$id])){
+			
+			$error = $this->errors[$id]; // recup l'erreur
+			$classError = 'control-error'; // défini la class css d'une erreur
+		}
+
+		//If hidden input only return input
+		if($label=='hidden') return $input;
+
+		//if submit button return input
+		if($label=='submit') return $input;
+
+		//Bootstrap html
+		$html = '<div class="control-group '.$classError.'">';
+		$html .= '<label class="control-label">'.$label.'</label>';
+		$html .= '<div class="controls">';
+
+		//Icon
+		if(isset($params['icon']))
+			$html .= "<i class='icon-form ".$params['icon']."'></i>";
+
+		//Input code
+		$html .= $input;	
+
+		//Error helper
+		if($error) {
+			$html .= '<p class="help-inline help-error">'.$error.'</p>';	
+		}		
+
+		//Info helper	
+		if(isset($params['helper']))
+			$html .= '<p class="help-inline">'.$params['helper'].'</p>';				
+		else
+			$html .= '<p class="help-inline"></p>';	
+
+		$html .= '</div>';
+		$html .= '</div>';
+
+		return $html;
+
+
+	}
+
+
+	public function Input($id,$label,$params = null){
+
+		return $this->wrapInput($id,$label,$this->_input($id, $label, $params),$params);
+	}
+
+
+
+	public function _input($id,$label,$options = array()){
+
+		$html ='';
+
+		//Gestion des erreurs
+		$error = false;
+		$classError ='';
+
+		//Si il y a une erreur qui correspond a ce champ
+		if(isset($this->errors[$id])){
+			$error = $this->errors[$id]; // recup l'erreur
 			$classError = 'error'; // défini la class css d'une erreur
 		}
 
@@ -32,101 +92,109 @@ class Form{
 		if(isset($options['value'])){
 			$value = $options['value'];
 		}
-		elseif(!isset($this->controller->request->data->$name)){ //Si le champ n'a pas de valeur pré-rempli
+		elseif(!isset($this->controller->request->data->$id)){ //Si le champ n'a pas de valeur pré-rempli
 			$value='';
 		}
 		else{ //Sinon on recupere la valeur dans les données passé en post dans l'objet request
-			$value = $this->controller->request->data->$name;
+			$value = $this->controller->request->data->$id;
 		}
 
+		//return if submit button
 		if($label=='submit'){
 
 			if(isset($options['class'])) $class = $options['class'];
 			else $class = '';
-			return '<input type="submit" value="'.$name.'" class="'.$class.'" />';
+			return '<input type="submit" value="'.$id.'" class="'.$class.'" />';
 		}
 
+		//return if hidden button
 		if($label=='hidden'){
 
-			return '<input type="hidden" name="'.$name.'" value="'.$value.'" />';
-		}
-
-		$html ='<div class="control-group '.$classError.'">';
-
-		if($label!=""){
-
-			$html .= '<label class="control-label" for="input'.$name.'">'.$label.'</label>';
-		}
-
-		if(isset($options['info']) && $options['info']!="") {
-
-			$html .= '<p class="label-helper">'.$options['info'].'</p>';
-		}
+			return '<input type="hidden" name="'.$id.'" id="'.$id.'" value="'.$value.'" />';
+		}		
 
 
-		$html .='<div class="controls">';
-			//Attribut html à rajouter en fin de champs
-			$attr='';
-			foreach ($options as $k => $v) {
-				if($k!='type' && $k!='icon'){
-					$attr .= " $k=\"$v\"";
-				}
+		//Attribut html à rajouter en fin de champs
+		$attr='';
+		foreach ($options as $k => $v) {
+			if($k!='type' && $k!='icon'){
+				$attr .= " $k=\"$v\"";
 			}
-
-			//Icone du bootstrap a afficher avant le champ
-			if(isset($options['icon'])){
-
-				$html .= "<i class='".$options['icon']." icon-form'></i>";
-			}
+		}
 		
-			if(!isset($options['type'])){
-				$html .= '<input type="text" id="input'.$name.'" name="'.$name.'" value="'.$value.'" '.$attr.'>';
-			}
-			elseif($options['type']=='email'){
-				$html .= '<input type="email" id="input'.$name.'" name="'.$name.'" value="'.$value.'" '.$attr.'>';
-			}
-			elseif($options['type']=='url'){
-				$html .= '<input type="url" id="input'.$name.'" name="'.$name.'" value="'.$value.'" '.$attr.'>';
-			}
-			elseif($options['type']=='textarea'){
-				$html .= '<textarea id="input'.$name.'" name="'.$name.'" '.$attr.'>'.$value.'</textarea>';
-			}
-			elseif($options['type']=='checkbox'){
-				$html .= '<input type="hidden" name="'.$name.'" value="0"><input type="checkbox" name="'.$name.'" value="1" '.(!empty($value)? 'checked' : '').' '.$attr.' />';
-			}
-			elseif($options['type']=='file'){
-				$html .= '<input type="file" class="input-file" id="input'.$name.'" name="'.$name.'" '.$attr.'>';
+		//Type de input
+		if(!isset($options['type'])){
+			$html .= '<input type="text" id="input'.$id.'" name="'.$id.'" value="'.$value.'" '.$attr.'>';
+		}
+		elseif($options['type']=='email'){
+			$html .= '<input type="email" id="input'.$id.'" name="'.$id.'" value="'.$value.'" '.$attr.'>';
+		}
+		elseif($options['type']=='url'){
+			$html .= '<input type="url" id="input'.$id.'" name="'.$id.'" value="'.$value.'" '.$attr.'>';
+		}
+		elseif($options['type']=='textarea'){
+			$html .= '<textarea id="input'.$id.'" name="'.$id.'" '.$attr.'>'.$value.'</textarea>';
+		}
+		elseif($options['type']=='checkbox'){
+			$html .= '<input type="hidden" name="'.$id.'" value="0"><input type="checkbox" name="'.$id.'" value="1" '.(!empty($value)? 'checked' : '').' '.$attr.' />';
+		}
+		elseif($options['type']=='file'){
+			$html .= '<input type="file" class="input-file" id="input'.$id.'" name="'.$id.'" '.$attr.'>';
 
-				if( !empty($options['src']) && $options['src']!=''){
+			if( !empty($options['src']) && $options['src']!=''){
 
-					$html .= '<div class="input-file-thumbnail"><img src="'.$options['src'].'" /></div>';
-				}
+				$html .= '<div class="input-file-thumbnail"><img src="'.$options['src'].'" /></div>';
 			}
-			elseif($options['type']=='password'){
-				$html .= '<input type="password" id="input'.$name.'" name="'.$name.'" value="'.$value.'" '.$attr.'>';
-			}
-
-			if(isset($options['helper'])){
-				$html .= '<p class="help-inline helper">'.$options['helper'].'</p>';
-			}
-
-			if($error) {
-				$classError = "help-inline";
-				$textError = $error;
-			}
-			else {
-				$classError = "help-inline hide";
-				$textError = '';
-			}
-			$html .= '<p class="'.$classError.'">'.$textError.'</p>';
-			
-			$html .='</div>';
-			$html .='</div>';
-			
-			return $html;
+		}
+		elseif($options['type']=='password'){
+			$html .= '<input type="password" id="input'.$id.'" name="'.$id.'" value="'.$value.'" '.$attr.'>';
+		}
+		
+		return $html;
 	}
 
-	/** SELECT
+
+
+	public function Select($id,$label,$options,$params = null){
+
+		$html = $this->wrapInput($id,$label,$this->_select($id,$options,$params),$params);
+
+		return $html;
+	}
+
+
+	public function SelectNumber( $id, $label, $start = 0, $end = 10, $params){
+
+		$html = $this->wrapInput($id, $label,$this->_selectNumber($id,$start,$end,$params),$params);
+
+		return $html;
+	}
+
+
+	public function _selectNumber( $id, $start = 0, $end = 10, $params = null){
+
+		(isset($params['class']))? $class = $params['class'] : $class = '' ;
+		(isset($params['default']))? $selected = $params['default'] : $selected = '';
+		(isset($params['placeholder']))? $placeholder = $params['placeholder'] : $placeholder = '';
+		(isset($params['javascript']))? $javascript = $params['javascript'] : $javascript = '';
+
+		$years = array();
+
+		if($start<$end) {
+			for( $i=$start; $i<=$end; $i++){
+				$years[$i] = $i;
+			}
+		}
+		elseif($start>$end) {
+			for( $i=$start; $i>=$end; $i--){
+				$years[$i] = $i;
+			}
+		}
+		return $this->_select($id,$years,$params);
+
+	}
+
+	/** _SELECT
 	* Genere un code html <select...> avec <option></option...>
 	*
 	* @param $id l'id du champ select
@@ -136,19 +204,22 @@ class Form{
 	* @param $javascript (facultatif)
 	* @return $html code html
 	*/ 
-	public function Select($id,$title,$class,$options, $selected = null, $javascript = null){
+	public function _select($id,$options,$params){
 
-		
+		(isset($params['class']))? $class = $params['class'] : $class = '' ;
+		(isset($params['default']))? $selected = $params['default'] : $selected = '';
+		(isset($params['placeholder']))? $placeholder = $params['placeholder'] : $placeholder = '';
+		(isset($params['javascript']))? $javascript = $params['javascript'] : $javascript = '';
 
 		if(!empty($options))
 		{
 
 			$html ='<select id="'.$id.'" name="'.$id.'" class="'.$class.'" '.$javascript.' >';
-			$html .= '<option value=" ">'.$title.'</options>';
+			$html .= '<option value=" ">'.$placeholder.'</options>';
 			
 			if(is_object($options)) $options = (array) $options;
 
-			foreach ($options as $line) {
+			foreach ($options as $key => $line) {
 					
 					if(is_object($line)) $line = (array) $line;
 
@@ -159,7 +230,7 @@ class Form{
 						$name = $line[$keys[1]];
 					}
 					else {
-						$value = $line;
+						$value = $key;
 						$name = $line;
 					}
 				
@@ -178,7 +249,7 @@ class Form{
 	}
 
 	/** OPTIONS
-	* Genere un code html <select...> avec <option></option...>
+	* Genere un code html <option></option...>
 	*
 	* @param $options tableaux associatifs des options : array('code'=>14,'nom'=>Cal)
 	* @param $value nom de la valeur propre au tableau
@@ -208,32 +279,65 @@ class Form{
 		else return false;
 	}
 
-	public function SelectYear( $id, $title, $class, $start = null, $end = null, $selected = null, $javascript = null){
+	
 
-		if(isset($start)) $start = $start;
-		else $start = 2006;
+	public function Radio( $id, $label, $options, $params = null){
 
-		if(isset($end)) $end = $end;
-		else $end = 1950;
 
-		$years = array();
+		$html = $this->wrapInput($id, $label, $this->_radio($id, $options, $params) ,$params);		
 
-		if($start<$end) {
-			for( $i=$start; $i<=$end; $i++){
-
-				$years[$i] = $i;
-			}
-		}
-		elseif($start>$end) {
-			for( $i=$start; $i>=$end; $i--){
-
-				$years[$i] = $i;
-			}
-		}
-		return $this->Select($id,$title,$class,$years,$selected);
-
+		return $html;
 	}
 
+	public function _radio($id, $options, $params){
+
+		(isset($params['class']))? $class = "class='".$params['class']."'" : $class = '' ;
+		(isset($params['default']))? $default = $params['default'] : $default = '';
+		(isset($arams['javascript']))? $javascript = $params['javascript'] : $javascript = '';
+
+		$html='';
+
+		if(is_object($options)) $options = (array) $options;
+
+		foreach($options as $value => $text){
+
+			if($value==$default) $checked = 'checked="checked"';
+			else $checked = '';
+			$html .= '<input type="radio" '.$class.' name="'.$id.'" value="'.$value.'" id="'.$value.'" '.$checked.' '.$javascript.'>';
+			$html .= '<label class="radio" for="'.$value.'">'.$text.'</label>';
+		}
+
+		return $html;
+	}
+
+
+	public function Checkbox($id, $label, $options, $params = null){
+	
+		return $this->wrapInput($id, $label,$this->_checkbox($id, $options, $params),$params);
+	
+	}
+
+	public function _checkbox($id, $options, $params=null){
+
+		(isset($params['class']))? $class = "class='".$params['class']."'" : $class = '' ;
+		(isset($params['default']))? $default = $params['default'] : $default = '';
+		(isset($arams['javascript']))? $javascript = $params['javascript'] : $javascript = '';
+
+		if(is_object($options)) $options = (array) $options;
+
+		$html = '';
+			foreach($options as $value => $text){
+
+				if($value==$default) $checked = 'checked="checked"';
+				else $checked = '';
+				$html .= '<input type="checkbox" '.$class.' name="'.$id.'" value="'.$value.'" id="'.$value.'" '.$checked.' '.$javascript.'>';
+				$html .= '<label class="checkbox" for="'.$value.'">'.$text.'</label>';
+			}
+
+		return $html;
+
+	}	
+	
 
 }
 

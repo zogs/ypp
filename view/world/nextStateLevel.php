@@ -2,11 +2,11 @@
 
 	$array = array(
 		'SelectID'=>$state['lvl'],
-		'SelectELEMENT'=> $this->Form->Select($state['lvl'],$state['title'],'geo-select',$state['list'],'','onchange="showRegion(this.value,\''.$state["lvl"].'\')"')
+		'SelectELEMENT'=> $this->Form->_select($state['lvl'],$state['list'],array("class"=>'geo-select',"placeholder"=>$state['title'],"javascript"=>'onchange="showRegion(this.value,\''.$state["lvl"].'\')"'))
 		);
 
 	echo json_encode($array);
-	
+	//echo $this->Form->Select($ADM,'btn geo-select',$states,'code','name','','onchange="showRegion(this.value,\''.$ADM.'\')"');
 }else {
 	echo 'empty';
 }?>

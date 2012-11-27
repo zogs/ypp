@@ -24,9 +24,9 @@
 	</div>
 	<div class="btn-group">
 			<button class="btn btn-inverse disabled" disabled="disabled">Category</button>	
-			<?php echo $this->Form->Select('cat2','Select category','btn cat-select',$cat2,$this->CookieRch->read('cat2'),'onchange="showCategory(this.value,3)"'); ?>
+			<?php echo $this->Form->_select('cat2',$cat2,array('placeholder'=>'Select category',"class"=>'btn cat-select',"default"=>$this->CookieRch->read('cat2'),"javascript"=>'onchange="showCategory(this.value,3)"')); ?>
 			<?php if($this->CookieRch->read('cat3')): ?>
-			<?php echo $this->Form->Select('cat3','Select sub-category','btn cat-select',$cat3,$this->CookieRch->read('cat3'),''); ?>
+			<?php echo $this->Form->_select('cat3',$cat3,array('placeholder'=>'Select category',"class"=>'btn cat-select',"default"=>$this->CookieRch->read('cat3'))); ?>
 			<?php endif; ?>
 
 
@@ -59,7 +59,7 @@
 			<button class="btn btn-inverse disabled" disabled="disabled">Order</button>
 			<?php 
 
-			echo $this->Form->Select('order','Select order','btn',$order,$this->CookieRch->read('order'),''); ?>			
+			echo $this->Form->_select('order',$order,array('class'=>'btn',"default"=>$this->CookieRch->read('order'))); ?>			
 			<button type="submit" class="btn" >OK</button>
 			
 		</div>
