@@ -125,6 +125,8 @@ class Controller {
 		$controller .= 'Controller';
 		require_once ROOT.DS.'controller'.DS.$controller.'.php';
 		$c = new $controller;
+		$c->request = $this->request;
+		$c->Form = $this->Form;
 		
 		return call_user_func_array(array($c,$action),$params);
 
@@ -202,13 +204,22 @@ class Controller {
 
 		if($request->post()){
 
-			if($request->post('token')!=$this->session->read('token')){
+			if(!$request->post('token')){
 
-				$this->session->setFlash("Your security token is outdated, please log in again","error");
-				$this->e404('Your security token is outdated, please log in again');
+				$this->session->setFlash("Warning security token is missing!!!","error");
+				$this->e404('Please log in again');
 			}
 			else {
-				unset($this->request->data->token);
+
+				if($request->post('token')!=$this->session->read('token')){
+					
+					$this->session->setFlash("Your security token is outdated, please log in again","error");
+					$this->e404('Your security token is outdated, please log in again');
+					
+				}
+				if($request->post('token')==$this->session->read('token')){
+					unset($this->request->data->token);
+				}
 			}			
 		}
 	}

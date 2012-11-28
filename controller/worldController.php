@@ -30,12 +30,6 @@ class WorldController extends Controller
 		else //else set empty object
 			$obj = new stdClass();
 		
-		//CSS class for select form
-		if(isset($obj->selectClass))
-			$d['class'] = $obj->selectClass;
-		else
-			$d['class'] = '';
-
 		//create empty location parameter if they don't exist
 		$lvl = array('CC1','ADM1','ADM2','ADM3','ADM4','city');
 		foreach ($lvl as $key) {
@@ -63,6 +57,16 @@ class WorldController extends Controller
 
 	}
 
+	public function formLocate($id, $label, $obj = null, $params = null ){
+
+		ob_start();
+		$this->locate($obj);
+		$html = ob_get_clean();
+		$html = $this->Form->wrapInput( $id, $label ,$html, $params);
+
+		echo $html;
+	}
+
 	public function getCountry(){
 
 		$this->loadModel('Worlds');
@@ -70,6 +74,42 @@ class WorldController extends Controller
 		
 	}
 
+	public function suggestCity(){
+
+		$this->view = 'json';
+		$this->layout = 'none';
+		$this->loadModel('Worlds');
+
+
+		if($this->request->get('query')){
+
+			$cities = $this->Worlds->suggestCities(array(
+													'prefix'=>$this->request->get('query'),
+													'CC1'=>'FR')
+													);
+
+			$suggestions = array();
+			$citiesCode = array();
+			$states = array('CC1','ADM1','ADM2','ADM3','ADM4');
+
+			foreach ($cities as $city) {
+				
+				foreach ($states as $key) {
+					if(isset($city->$key)) $state = $city->$key;
+				}
+				$suggestions[] = utf8_encode($city->name.' ('.$state.')');
+				$citiesCode[] = $city->city_id;			
+			}
+
+			$json = array(
+						'query'=>$this->request->get('query'),
+						'suggestions'=>$suggestions,
+						'data'=>$citiesCode
+						);
+		}
+
+		$this->set($json);
+	}
 
 	public function nextStateLevel(){
 

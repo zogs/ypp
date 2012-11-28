@@ -17,8 +17,7 @@
 				<?php
 					$links = array(
 									'profil'=>'Profil',
-									'login'=>'Login',
-									'email'=>'Email',
+									'account'=>'Account',
 									'avatar'=>'Avatar',									
 									'password'=>'Password',
 									'delete'=>'Delete'
@@ -44,6 +43,7 @@
 		<form class="form-yp" id="account-form" autocomplete="off" action="<?php echo Router::url('users/account/'.$action); ?>" method="post" enctype="multipart/form-data">
 			<?php echo $this->Form->input('action','hidden',array('value'=>$action)); ?>
 			<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
+			<?php echo $this->Form->_input('user_id','hidden',array('value'=>$this->session->user('user_id'))) ;?>
 
 			<?php //=========PROFIL================ ?>
 			<?php if($action=='profil'||$action==''): ?>
@@ -54,15 +54,8 @@
 				</div>
 								
 				<?php echo $this->Form->input('prenom','Prenom',array('icon'=>'icon-user','placeholder'=>'Prenom')); ?>
-				<?php echo $this->Form->input('nom','Nom',array('icon'=>'icon-user','placeholder'=>'Nom')); ?>	
-				
-				<div class="control-group">	
-					<label for="age" class="control-label">Age</label>			
-					<div class="controls">
-						<i class='icon-form icon-gift'></i>						
-						<?php echo $this->Form->SelectYear('age','Birth year','',2006,1950,$user->age) ;?>					
-					</div>
-				</div>
+				<?php echo $this->Form->input('nom','Nom',array('icon'=>'icon-user','placeholder'=>'Nom')); ?>
+				<?php echo $this->Form->SelectNumber('age','Birth year',2006,1950,array('default'=>$user->age,'icon'=>'icon-gift','placeholder'=>"( Your birth year )")) ;?>					
 
 				<div class="control-group">	
 					<label for="CC1" class="control-label">Localisation</label>			
@@ -102,30 +95,19 @@
 
 
 
-			<?php //=========LOGIN================= ?>
-			<?php if($action=='login'): ?>
+			<?php //=========ACCOUNT================= ?>
+			<?php if($action=='account'): ?>
 
 				<div class="module-header">
-					<h2>Login</h2>
-					<p class="subheader">The name people can see you.</p>
+					<h2>Account</h2>
+					<p class="subheader">User name and contact email</p>
 				</div>
 
 				<?php echo $this->Form->input('login','Login',array('icon'=>'icon-user','required'=>'required','data-url'=>Router::url('users/check'))); ?>
-				<?php echo $this->Form->input('Save login','submit',array('class'=>'btn btn-large btn-inverse')) ;?>
-
-			<?php endif ;?>
-
-
-			<?php //=========EMAIL================= ?>
-			<?php if($action=='email'): ?>
-
-				<div class="module-header">
-					<h2>Email</h2>
-					<p class="subheader">To contact you.</p>
-				</div>
-
 				<?php echo $this->Form->input('email','Email',array('icon'=>'icon-envelope','type'=>'email','required'=>'required','data-url'=>Router::url('users/check'))); ?>
-				<?php echo $this->Form->input('Save email','submit',array('class'=>'btn btn-large btn-inverse')) ;?>
+				<?php echo $this->Form->Select('lang','Language',Conf::$languageAvailable,array('default'=>$user->lang,'placeholder'=>'( your language )','icon'=>'icon-book')) ;?>
+				<?php echo $this->Form->Radio('account','Compte',array('private'=>'Privé','public'=>'Public'),array('default'=>$user->account,'helper'=>"Un compte public peut être vu et recevoir des messages d'autres utilisateurs")) ;?>				
+				<?php echo $this->Form->input('Save account','submit',array('class'=>'btn btn-large btn-inverse')) ;?>
 
 			<?php endif ;?>
 

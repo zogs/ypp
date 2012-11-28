@@ -16,9 +16,9 @@ class Session {
 				$user = new stdClass();
 				$user->user_id = 0;
 				$user->avatar = 'img/logo_yp.png';
+				$user->lang = $this->get_client_language(array_keys(Conf::$languageAvailable,Conf::$languageDefault));
 				$_SESSION['user'] = $user;
-			}
-			//$_SESSION['flash'] = array();
+			}			
 			
 		}
 		
@@ -162,7 +162,7 @@ class Session {
 		if(isset($this->read('user')->lang))
 			return $this->read('user')->lang;		
 		else 
-			return Conf::$lang;		
+			return Conf::$languageDefault;		
 	}
 
 	public function getPays(){
@@ -171,6 +171,26 @@ class Session {
 		else 
 			return Conf::$pays;
 	}
+
+	public function get_client_language($availableLanguages, $default='fr'){
+     
+	    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+	     
+		    $langs=explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		     
+		    //start going through each one
+		    foreach ($langs as $value){
+		     
+			    $choice=substr($value,0,2);
+			    if(in_array($choice, $availableLanguages)){
+			    	return $choice;
+			     
+			    }
+		     
+		    }
+	    }
+	    return $default;
+    }
 }
 
 ?>

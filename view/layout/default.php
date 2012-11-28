@@ -38,7 +38,7 @@
 			
 
 			<ul class="nav pull-right">
-				<?php if ($this->session->user('login')): ?>
+				<?php if ($this->session->user()): ?>
 					<li><a href="<?php echo Router::url('users/thread');?>">
 							<img class="nav-avatar" src="<?php echo Router::webroot($this->session->user('avatar')); ?>" />	
 							<span class="nav-login"><?php echo $this->session->user('login'); ?></span>

@@ -192,7 +192,8 @@ class UsersController extends Controller{
 
 	}
 
-public function account($action = null){    	
+
+    public function account($action = null){    	
 
     	$this->loadModel('Users');
     	//$this->layout = 'none';
@@ -217,68 +218,64 @@ public function account($action = null){
 			========================*/
 	    	if($this->request->data) {							    		
 
+	    		
+	    		$data = $this->request->data;
 
 	    		/*====================
-	    			MODIFY LOGIN
+	    			MODIFY ACCOUNT
 	    		====================*/
-	    		if($this->request->post('action')=='login'){
+	    		if($this->request->post('action')=='account'){
 
-	    			if($this->Users->validates($this->request->data,'account_login')){
+	    			if($this->Users->validates($data,'account_info')){
 
-	    				$user = $this->Users->findFirst(array('fields'=>'login','conditions'=>array('login'=>$this->request->post('login'))));
+						$user = $this->Users->findFirst(array('fields'=>'login, email','conditions'=>array('user_id'=>$this->request->post('user_id'))));
+																
+						//If it's the not same user name
+						if($user->login != $this->request->post('login'))
+							$checklogin = $this->Users->findFirst(array('fields'=>'login','conditions'=>array('login'=>$this->request->post('login'))));
+						else
+							unset($data->login);							
+						
 
-	    				if(empty($user->login)){
+						//if its not the same email
+						if($user->email != $this->request->post('email'))							
+							$checkemail = $this->Users->findFirst(array('fields'=>'email','conditions'=>array('email'=>$this->request->post('email'))));
+						else
+							unset($data->email);
+							
+	    				if(empty($checklogin)){
 
-	    					if($this->Users->saveUser($this->request->data,$user_id)){
+	    					if(empty($checkemail)){
 
-								$this->session->setFlash("Your login have been changed !","success");
+		    					if($this->Users->saveUser($data,$user_id)){
 
-								//get and update session
-								$user = $this->session->user('obj');
-		    					$user->login = $this->request->data->login;
-		    					$this->session->write('user', $user);
+									$this->session->setFlash("Your account have been saved !","success");
+
+									//update session login									
+									$user = $this->session->user('obj');
+			    					if(isset($data->login)) $user->login = $data->login;
+			    					if(isset($data->lang)) $user->lang = $data->lang;			    					
+			    					$this->session->write('user', $user);
+			    					
+								}
+								else{
+									$this->session->setFlash("Your account have not been saved, please retry","error");
+								}
 							}
-							else{
-								$this->session->setFlash("Your login have not been changed, please retry","error");
+							else {
+								$this->session->setFlash("This email is already in use","error");
 							}
 	    				}
 	    				else {
 	    					$this->session->setFlash("This login is already in use","error");
 	    				}
 	    			}
+	    			else {
+	    				$this->session->setFlash("Please review the form","error");
+	    			}
 	    		}
 	    		else {
 	    			if($this->request->post('login')) unset($_POST['login']);
-	    		}
-
-	    		/*====================
-	    			MODIFY EMAIL
-	    		====================*/
-	    		if($this->request->post('action')=='email'){
-
-
-
-	    			if($this->Users->validates($this->request->data,'account_email')){
-
-	    				$user = $this->Users->findFirst(array('fields'=>'email','conditions'=>array('email'=>$this->request->post('email'))));
-	    				
-	    				if(empty($user->email)){
-
-	    					if($this->Users->saveUser($this->request->data,$user_id)){
-
-								$this->session->setFlash("Your email have been changed !","success");
-							}
-							else{
-								$this->session->setFlash("Your email have not been changed, please retry","error");
-							}
-	    				}
-	    				else {
-	    					$this->session->setFlash("This email is already in use","error");
-	    				}
-	    			}	    			
-	    		}
-	    		else {
-	    			if($this->request->post('email')) unset($_POST['email']);
 	    		}
 
 
@@ -287,10 +284,11 @@ public function account($action = null){
 	    		=====================*/
 	    		if($this->request->post('action') == 'profil'){
 
-	    			if($this->Users->validates($this->request->data,'account_profil')){
+	    			if($this->Users->validates($data,'account_profil')){
 
 
-	    				if($this->Users->saveUser($this->request->data,$user_id)){
+
+	    				if($this->Users->saveUser($data,$user_id)){
 
 	    					$this->session->setFlash('Your profil have been saved ! ','success');
 	    				}
@@ -310,7 +308,7 @@ public function account($action = null){
 	    		===================== */
 	    		if($this->request->post('action') == 'avatar'){
 
-	    			if($this->Users->validates($this->request->data,'account_avatar')){
+	    			if($this->Users->validates($data,'account_avatar')){
 
 	    				if($this->Users->saveUserAvatar($user_id)){
 
@@ -334,7 +332,7 @@ public function account($action = null){
 	    		if($this->request->post('action') == 'password')
 	    		{
 	    			
-	    			if($this->Users->validates($this->request->data,'account_password')){
+	    			if($this->Users->validates($data,'account_password')){
 
 		    			if($this->request->post('password') == $this->request->post('confirm')){
 
@@ -366,7 +364,7 @@ public function account($action = null){
 	    		=====================*/
 	    		if($this->request->post('action') == 'delete'){
 
-	    			if($this->Users->validates($this->request->data,'account_delete')){
+	    			if($this->Users->validates($data,'account_delete')){
 
 	    				$db = $this->Users->findFirst(array(
 	    					'fields'=>'hash,salt',
@@ -414,8 +412,6 @@ public function account($action = null){
 	    }
 
     }
-
-
 
 
 	public function recovery(){
@@ -614,7 +610,9 @@ public function account($action = null){
 
 		$this->loadModel('Users');
 		$this->layout = 'none';
-		$d['result'] ='';
+		$this->view = 'json';
+
+		$d = array();
 
 		if($this->request->data){
 			$data = $this->request->data;
@@ -624,7 +622,12 @@ public function account($action = null){
 				'fields'=> $type,
 				'conditions' => array($type=>$value))
 			);
-			if(!empty($user)) $d['result'] = 'exist';
+			if(!empty($user)) {
+				$d['error'] = '<strong>'.$value."</strong> is already in use!";
+			}
+			else {
+				$d['available'] = "Available !";
+			}
 		}
 	
 		$this->set($d);	
