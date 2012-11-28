@@ -1,0 +1,11 @@
+# Impossibilité de commit ou de merge due à un conflit dans un fichier :
+
+	#1 , installer p4merge pour git
+	#2 , tapper dans la console git mergetool pour lancer p4merge
+	#3 , faire les modifs dans le fichier REMOTE ou LOCAL  et sauver
+	#4 , tenter le commit/merge
+	#5, if fail , tapper git status
+	#6 tapper git add <nom-ficher> pour les fichiers en rouge
+	#7 tapper git commit
+	#8 vérifier si le commit à été fait et sync
+	#9 WIN LIKE A BOSS
