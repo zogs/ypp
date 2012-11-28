@@ -117,7 +117,7 @@ class Controller {
 
 
 	//Permet d'appeler un controller depuis une vue
-	// @params 
+	// @params array to pass to the action
 	// $controller prefixe du Controller .ex: users
 	// $action action à appeler
 	public function request($controller,$action, $params = array() ){
@@ -202,17 +202,14 @@ class Controller {
 
 		if($request->post()){
 
-			if($request->post('token')){
+			if($request->post('token')!=$this->session->read('token')){
 
-				if($request->post('token')!=$this->session->read('token')){
-
-					$this->session->setFlash("Your security token is outdated, please log in again","error");
-					$this->e404('Your security token is outdated, please log in again');
-				}
-				else {
-					unset($this->post->token);
-				}
+				$this->session->setFlash("Your security token is outdated, please log in again","error");
+				$this->e404('Your security token is outdated, please log in again');
 			}
+			else {
+				unset($this->request->data->token);
+			}			
 		}
 	}
 }

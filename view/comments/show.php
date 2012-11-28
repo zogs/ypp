@@ -6,7 +6,7 @@
                     }
                     ?>
 
-                    <?php if ($this->session->user()): ?>
+                    <?php if ($this->session->isLogged()): ?>
                     <form id="smartForm" class="form-ajax" action="<?php echo Router::url('comments/add'); ?>" method="POST">                        
 
                         <?php 
@@ -19,7 +19,7 @@
                         ): ?>
 
                         <img class="userAvatarCommentForm" src="<?php echo Router::url($this->session->user('avatar')); ?>" />
-                        <textarea name="content" id="smartTextarea" data-url-preview="<?php echo Router::url('comments/preview'); ?>" placeholder="Express yourself here..."></textarea>
+                        <textarea name="content" id="smartTextarea" class="formComment" data-url-preview="<?php echo Router::url('comments/preview'); ?>" placeholder="Express yourself here..."></textarea>
                         <input type="hidden" name="context" value="<?php echo $context; ?>" />
                         <input type="hidden" name="context_id" value="<?php echo $context_id; ?>" />                        
                         <input type="hidden" name="type" id="type" value='com' />            
@@ -92,7 +92,10 @@
                             <span class="post_callback"></span>
                         </form> 
                     </div>                
-                    <?php endif ?>
+                    <?php else: ?>
+                    <img class="userAvatarCommentForm" src="<?php echo Router::url($this->session->user('avatar')); ?>" />
+                    <textarea disabled="disabled" name="content" id="smartTextarea" data-url-preview="<?php echo Router::url('comments/preview'); ?>" placeholder="You must log in to post comment"></textarea>
+                    <?php endif; ?>
                     
                     <div style="float:left;width:100%; height:0px;"></div>  
 
@@ -139,23 +142,31 @@
                         </div>      
                     </div>
 
-                    <div id="comments" data-start="0" style="float:left;width:100%;margin-top:10px;">
+                    <div id="comments" data-start="0">
 
                         
                     </div>
                     <div id="bottomComments">
+                        <a  id="showMoreComments" href="" ><span class="icon-white icon-arrow-down"></span> show more comments</a>
                         <div id='loadingComments'><span class="ajaxLoader"></span> Loading comments ...</div>
-                        <div id='noMoreComments'>No more comment !</div>
+                        <div id='noMoreComments'>No more comment</div>
                     </div>
                     <div id="hiddenFormReply">
+                         <?php if($this->session->isLogged()):?>
                         <form id="formCommentReply" class="formCommentReply" action="<?php echo Router::url('comments/reply'); ?>" method="POST">                
-                            <textarea name="content" placeholder="Reply here"></textarea> 
+                            <img class="userAvatarCommentForm" src="<?php echo Router::url($this->session->user('avatar')); ?>" />
+                            <?php if($this->session->isLogged()):?>
+                            <textarea name="content" class="formComment" placeholder="Reply here"></textarea> 
+                            <input class="btn btn-small" type="submit" name="" value="Send">
+                            <?php else: ?>
+                             <textarea disabled='disabled' name="content" placeholder="Log in to comment"></textarea> 
+                            <input disabled='disabled' class="btn btn-small" type="submit" name="" value="Send">
+                            <?php endif;?>
                             <input type="hidden" name="context" value="<?php echo $context; ?>"  />
                             <input type="hidden" name="context_id" value="<?php echo $context_id; ?>"/>
                             <input type="hidden" name="type" value="com" />
-                            <input type="hidden" name="reply_to" />
-                            <img class="userAvatarCommentForm" src="<?php echo Router::url($this->session->user('avatar')); ?>" />
-                            <input class="btn btn-small" type="submit" name="" value="Répondre">
+                            <input type="hidden" name="reply_to" />                                                       
                         </form>
+                        <?php endif ;?>
                     </div>
                    

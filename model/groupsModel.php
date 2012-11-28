@@ -10,7 +10,7 @@ class Groups extends Model {
 					'rule'    => 'notEmpty',
 					'message' => 'Must not be empty'		
 					),
-				'mail' => array(
+				'email' => array(
 					'rule' => '[_a-zA-Z0-9-+]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,4})',
 					'message' => "Email address is not correct"
 					),
@@ -28,7 +28,7 @@ class Groups extends Model {
 					'rule'    => 'notEmpty',
 					'message' => 'Must not be empty'		
 					),
-				'mail' => array(
+				'email' => array(
 					'rule' => '[_a-zA-Z0-9-+]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,4})',
 					'message' => "Email address is not correct"
 					)

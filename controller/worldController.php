@@ -7,6 +7,62 @@
 class WorldController extends Controller
 {
 	
+ 	/*=======================================
+ 	LOCATE
+ 	Display states fields that locate an object
+ 	$param objet or array that may contain location fields ( as CC1, ADM1, ADM..., city)
+ 	========================================*/
+	public function locate($obj = null){
+
+		$this->loadModel('Worlds');
+		$this->layout='none';
+
+		//if object is not null
+		if($obj){
+
+			if(is_array($obj))
+				$obj = (object) $obj; //convert array into obj
+			elseif(is_object($obj))
+				$obj = $obj;
+			else
+				return false;			
+		}
+		else //else set empty object
+			$obj = new stdClass();
+		
+		//CSS class for select form
+		if(isset($obj->selectClass))
+			$d['class'] = $obj->selectClass;
+		else
+			$d['class'] = '';
+
+		//create empty location parameter if they don't exist
+		$lvl = array('CC1','ADM1','ADM2','ADM3','ADM4','city');
+		foreach ($lvl as $key) {
+			if(!isset($obj->$key))
+				$obj->$key = '';
+		}
+		
+		//find states that correspond to the object parameters
+		$states = $this->Worlds->findAllStates(array(
+								'CC1'=>$obj->CC1,
+								'ADM1'=>$obj->ADM1,
+								'ADM2'=>$obj->ADM2,
+								'ADM3'=>$obj->ADM3,
+								'ADM4'=>$obj->ADM4,
+								'city'=>$obj->city
+								));
+
+		$d['states'] = $states;
+		$d['obj'] = $obj;
+
+		$this->set($d);
+		$this->view = 'world/locate';
+		$this->render();
+
+
+	}
+
 	public function getCountry(){
 
 		$this->loadModel('Worlds');
@@ -15,12 +71,12 @@ class WorldController extends Controller
 	}
 
 
-	public function getStates(){
+	public function nextStateLevel(){
 
  		$this->loadModel('Worlds');
  		$this->layout = 'none';
  		 
- 		$ADM = $this->request->post('ADM'); 		
+ 		$ADM = $this->request->get('ADM'); 		
  		$ADM1 = '';
  		$ADM2 = '';
  		$ADM3 = '';
@@ -36,43 +92,43 @@ class WorldController extends Controller
  		
 
  		//Recuperation des parametres
- 		if($this->request->post('CC1')){ 			
- 			$CC1 = $this->request->post('CC1');
+ 		if($this->request->get('CC1')){ 			
+ 			$CC1 = $this->request->get('CC1');
  		} 		
  		else { 
  			$CC1 = $this->getCountryCode();
  		}
- 		if($this->request->post('ADM1'))	{
- 			$ADM1 = $this->request->post('ADM1');
- 			$ADM_PARENT = $this->request->post('ADM1');		
+ 		if($this->request->get('ADM1'))	{
+ 			$ADM1 = $this->request->get('ADM1');
+ 			$ADM_PARENT = $this->request->get('ADM1');		
  		}		
- 		if($this->request->post('ADM2'))	{
- 			$ADM2 = $this->request->post('ADM2');
- 			$ADM_PARENT = $this->request->post('ADM2');
+ 		if($this->request->get('ADM2'))	{
+ 			$ADM2 = $this->request->get('ADM2');
+ 			$ADM_PARENT = $this->request->get('ADM2');
  		}
- 		if($this->request->post('ADM3'))	{
- 			$ADM3 = $this->request->post('ADM3');
-			$ADM_PARENT = $this->request->post('ADM3');
+ 		if($this->request->get('ADM3'))	{
+ 			$ADM3 = $this->request->get('ADM3');
+			$ADM_PARENT = $this->request->get('ADM3');
  		}		
- 		if($this->request->post('ADM4'))	{
- 			$ADM4 = $this->request->post('ADM4');
- 			$ADM_PARENT = $this->request->post('ADM4');
+ 		if($this->request->get('ADM4'))	{
+ 			$ADM4 = $this->request->get('ADM4');
+ 			$ADM_PARENT = $this->request->get('ADM4');
  		}	
 
  		//debug('CC1:'.$CC1. ' ADM:'.$ADM.' ADM_PARENT:'.$ADM_PARENT);
 		
- 		//Find the states in the database , using the post data 		
- 		$d['states'] = $this->Worlds->findStates(array(
+ 		//Find the state in the database , using the get data 		
+ 		$d['state'] = $this->Worlds->findStates(array(
 										 			'CC1'=>$CC1,
 										 			'ADM_PARENT'=>$ADM_PARENT,
 										 			'ADM'=>$ADM
  			));
- 		
- 		//If there is no states, we look for a city
- 		if(empty($d['states'])) {
+
+ 		//If there is no state, we look for a city
+ 		if(empty($d['state']['list'])) {
 
  			$ADM = 'city';
- 			$d['states'] = $this->Worlds->findCities($CC1,array(									 				
+ 			$d['state'] = $this->Worlds->findCities($CC1,array(									 				
 									 				'ADM1'=>$ADM1,
 									 				'ADM2'=>$ADM2,
 									 				'ADM3'=>$ADM3,
@@ -81,9 +137,9 @@ class WorldController extends Controller
  		}
 		
  		//If there is no city at all we are done
- 		if(empty($d['states'])) {
+ 		if(empty($d['state'])) {
 
- 			$d['states'] = false;
+ 			$d['state'] = false;
  		}
 
 

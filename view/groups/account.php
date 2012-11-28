@@ -9,7 +9,7 @@
 			<div class="form-block">
 
 				<?php echo $this->Form->input('name','Group name',array('value'=>$group->name,'required'=>'required','placeholder'=>"Nom du groupe",'data-url'=>Router::url('groups/check'))) ?>
-				<?php echo $this->Form->input('mail',"Contact Email",array('value'=>$group->mail,'type'=>'email',"required"=>"required","placeholder"=>"Contact Email",'data-url'=>Router::url('groups/check'))) ?>
+				<?php echo $this->Form->input('email',"Contact Email",array('value'=>$group->email,'type'=>'email',"required"=>"required","placeholder"=>"Contact Email",'data-url'=>Router::url('groups/check'))) ?>
 				
 				<?php if($action=='create'): ?>
 				<?php echo $this->Form->input('password','Password',array('type'=>"password",'required'=>'required','placeholder'=>'Password')) ?>

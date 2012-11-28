@@ -9,7 +9,7 @@ class Users extends Model{
 				'rule'    => 'notEmpty',
 				'message' => 'Vous devez choisir un pseudo'		
 				),
-			'mail' => array(
+			'email' => array(
 				'rule' => '[_a-zA-Z0-9-+]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,4})',
 				'message' => "L'adresse email n'est pas valide"
 				),
@@ -22,15 +22,20 @@ class Users extends Model{
 				'message' => "Vos mots de passe ne sont pas identiques"
 				)
 		),
-		'account_info' => array(
+		'account_login' => array(
 			'login' => array(
-				'rule'    => 'notEmpty',
-				'message' => 'Vous devez choisir un pseudo'		
-				),
-			'mail' => array(
+				'rule' => 'notEmpty',
+				'message' => 'Your login is empty'
+				)
+		),
+		'account_email' => array(
+			'email' => array(
 				'rule' => '[_a-zA-Z0-9-+]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,4})',
 				'message' => "L'adresse email n'est pas valide"
 				)
+		),
+		'account_profil' => array(
+			
 		),
 		'recovery_mdp' => array(
 			'password' => array(
@@ -42,7 +47,7 @@ class Users extends Model{
 				'message' => "Vos mots de passe ne sont pas identiques"
 				)
 		),
-		'account_mdp' => array(
+		'account_password' => array(
 			'oldpassword' => array(
 				'rule' => 'notEmpty',
 				'message' => "Votre mot de passe doit contenir entre 5 et 20 caracteres"
@@ -76,13 +81,38 @@ class Users extends Model{
 	);
 
 
-	public function saveUser($data,$user_id){
+	public function saveUser($user,$user_id = null){
 
+		//unset action value
+		if(isset($user->action)) unset($user->action);
+		//set user_id for updating
+		if(isset($user_id)) $user->user_id = $user_id;
+		
+		//if new user , check unique value
+		if(!isset($user->user_id)){
 
-		$data->user_id = $user_id;
-		$data->modify = '';
+			//check if login already exist
+			$check = $this->findFirst(array(
+											'fields'=>'user_id',
+											'conditions'=>array('login'=>$user->login)
+											));
+			if(!empty($check)){
+				$this->session->setFlash("Sorry this login is in use.","error");
+				return false;
+			}
 
-		if($this->save($data))
+			//check if mail already in use
+			$checkmail = $this->findFirst(array(
+												'fields'=>'email',
+												'conditions'=>array('email'=>$user->email)
+												));
+			if(!empty($checkmail)){
+				$this->session->setFlash("This email is already in use. Please try to recovery your password","error");
+				return false;
+			}
+		}		
+
+		if($this->save($user))
 			return true;
 		else
 			return false;

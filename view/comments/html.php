@@ -2,7 +2,7 @@
 
 
     //Fonction récursive qui affiche les commentaires avec les réponses
-    function show_comment_or_replies($coms,$user){
+    function show_comment_or_replies($coms,$user,$context,$context_id){
 
         $html = '';
         foreach ($coms as $com)
@@ -10,30 +10,70 @@
 
             //Si c'est un objet , c'est un commentaire donc on affiche un commentaire
             if(is_object($com)){                                                       
+                
+                //On recupere l'id de l'element
+                $c_com = $com->id;
 
-                if(!isset($com->thread)){
+                //Si c'est un element du thread user
+                if(isset($com->thread )){
 
+                    if($com->thread == 'manifNews'){
+
+                        $html .= html_comment( $com , $user);
+                    }
+
+                    if($com->thread == 'joinProtest'){
+
+                        $html .= html_joinProtest( $com , $user);
+                    }
+
+
+                }
+                //Sinon c'est que c'est un simple commentaire
+                elseif(!isset($com->thread)){
+                    
                     $html .= html_comment( $com, $user);
                 }
 
-                if(isset($com->thread) && $com->thread == 'manifNews'){
-
-                    $html .= html_comment( $com , $user);
-                }
-
-                if(isset($com->thread) && $com->thread == 'joinProtest'){
-
-                    $html .= html_joinProtest( $com , $user);
-                }
+                
                    
             }         
             //Si cest un tableau , c'est les réponses a un commentaire , on ouvre une div replies et on affiche les commentaires dedans
+            
             if(is_array($com)){
+
+                $reply_to = $c_com;
                 
-                $html .= '<div class="replies">';
-                $html .= show_comment_or_replies($com,$user);
-                $html .= '</div>';
-            }        
+                $html .= '<div class="replies">';            
+                $html .= show_comment_or_replies($com,$user,$context,$context_id); 
+                //formulaire de réponse
+                //if user is logged
+                if($user->user_id!=0){
+
+                    $html.= "<form class='formCommentReply' action='".Router::url('comments/reply')."' method='POST'>                
+                                <img class='userAvatarCommentForm' src='".Router::webroot($user->avatar)."' />
+                            ";
+                        if($user->user_id!=0){
+                        $html .= "<textarea name='content' class='formComment' placeholder='Reply here'></textarea> 
+                                    <input class='btn btn-small' type='submit' name='' value='Send'>";
+                        }
+                        else {
+                        $html .= "<textarea disabled='disabled' name='content' placeholder='Log in to comment'></textarea>
+                                    <input disabled='disabled' class='btn btn-small' type='submit' name='' value='Send'>";
+                        }
+                    
+                    $html .= "  <input type='hidden' name='context' value='".$context."' />
+                                <input type='hidden' name='context_id' value='".$context_id."'/>
+                                <input type='hidden' name='type' value='com' />
+                                <input type='hidden' name='reply_to' value='".$reply_to."' />                            
+                                
+                            </form>" ;
+                }
+                 $html .= '</div>';  
+                          
+            } 
+                   
+                
         }
         return $html; 
     }
@@ -98,20 +138,17 @@
                         <?php if ($cuser): ?>
                         <div class="actions">                                 
                             <div class="btn-group pull-left">
-                                <a class="btn-vote bubbtop" title="Like this comment" data-url="<?php echo Router::url('comments/vote/'.$com->id); ?>" >                      
-                                        <span class="badge badge-info" <?php if ($com->note == 0): ?>style="display:none"<?php endif ?>><?php echo $com->note; ?></span>
-                                    Like                         
-                                </a>
-                                <?php if($com->reply_to==0): ?>
-                                <a class="btn-comment-reply bubbtop" title="Reply to this comment" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id; ?>" >Reply</a>
+                                <?php if($cuser->user_id!=0): ?>
+                                    <a class="btn-vote bubbtop" title="Like this comment" data-url="<?php echo Router::url('comments/vote/'.$com->id); ?>" >                      
+                                            <span class="badge badge-info" <?php if ($com->note == 0): ?>style="display:none"<?php endif ?>><?php echo $com->note; ?></span>
+                                        Like                         
+                                    </a>              
+                                    <a class="btn-comment-reply" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id;?>">Reply</a>                                
+                                    <a href="<?php echo Router::url('comments/view/'.$com->id); ?>" target="_blank">Share</a>
+                                    <a href="">Alert</a>
                                 <?php else: ?>
-                                <a class="btn-comment-reply bubbtop" title="Reply to this discussion" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->reply_to; ?>" >Reply</a>
-                                <?php endif; ?>
-                                <?php if($com->reply_to!=0): ?> 
-                                <a class="btn-comment-reply" data-comid="<?php echo $com->id; ?>" href="<?php echo $com->id;?>">Reply this comment</a>
-                                <?php endif; ?>
-                                <a href="<?php echo Router::url('comments/view/'.$com->id); ?>" target="_blank">Share</a>
-                                <a href="">Alert</a>
+                                    <span>Log in to reply</span>
+                                <?php endif;?>
                             </div>                    
                         </div>
                         <?php endif; ?>

@@ -15,7 +15,7 @@ class UsersController extends Controller{
 			$login = $data->login;
 
 			if(strpos($login,'@'))
-				$field = 'mail';
+				$field = 'email';
 			else
 				$field = 'login';
 			
@@ -119,11 +119,11 @@ class UsersController extends Controller{
 						$this->session->setFlash("<strong>Welcome</strong>","success");
 
 
-					if($this->sendValidateMail(array('dest'=>$user->mail,'user'=>$user->login,'codeactiv' =>$user->codeactiv,'user_id'=>$user_id)))
+					if($this->sendValidateMail(array('dest'=>$user->email,'user'=>$user->login,'codeactiv' =>$user->codeactiv,'user_id'=>$user_id)))
 					{
 						$d['Success'] = true;						
-						$this->session->setFlash("Un email <strong>a été envoyé</strong> à votre boite mail. Pour confirmer votre incription, <strong>veuillez cliquer sur le lien</strong> présent dans cette email", "info");
-						$this->session->setFlash("Il est possible que ce mail soit placé parmis les <strong>indésirables ou spam</strong> , pensez à vérifier !", "error");
+						$this->session->setFlash("Un email <strong>a été envoyé</strong> à votre boite email. Pour confirmer votre incription, <strong>veuillez cliquer sur le lien</strong> présent dans cette email", "info");
+						$this->session->setFlash("Il est possible que ce email soit placé parmis les <strong>indésirables ou spam</strong> , pensez à vérifier !", "error");
 					}
 					else {
 						$d['Success'] = false;
@@ -191,6 +191,232 @@ class UsersController extends Controller{
 		}
 
 	}
+
+public function account($action = null){    	
+
+    	$this->loadModel('Users');
+    	//$this->layout = 'none';
+
+    	/*======================
+			If user is logged
+		========================*/
+    	if($this->session->user('user_id'))
+    	{
+
+    		//if user is a group ,redirect to group page
+    		if($this->session->user('status')=='group'){
+
+    			$this->redirect('groups/account/'.$this->session->user('group_id').'/'.$this->session->user('slug'));
+    		}
+
+
+	    	$user_id = $this->session->user('user_id');
+	    	
+	    	/*======================
+				If POST DATA are sended
+			========================*/
+	    	if($this->request->data) {							    		
+
+
+	    		/*====================
+	    			MODIFY LOGIN
+	    		====================*/
+	    		if($this->request->post('action')=='login'){
+
+	    			if($this->Users->validates($this->request->data,'account_login')){
+
+	    				$user = $this->Users->findFirst(array('fields'=>'login','conditions'=>array('login'=>$this->request->post('login'))));
+
+	    				if(empty($user->login)){
+
+	    					if($this->Users->saveUser($this->request->data,$user_id)){
+
+								$this->session->setFlash("Your login have been changed !","success");
+
+								//get and update session
+								$user = $this->session->user('obj');
+		    					$user->login = $this->request->data->login;
+		    					$this->session->write('user', $user);
+							}
+							else{
+								$this->session->setFlash("Your login have not been changed, please retry","error");
+							}
+	    				}
+	    				else {
+	    					$this->session->setFlash("This login is already in use","error");
+	    				}
+	    			}
+	    		}
+	    		else {
+	    			if($this->request->post('login')) unset($_POST['login']);
+	    		}
+
+	    		/*====================
+	    			MODIFY EMAIL
+	    		====================*/
+	    		if($this->request->post('action')=='email'){
+
+
+
+	    			if($this->Users->validates($this->request->data,'account_email')){
+
+	    				$user = $this->Users->findFirst(array('fields'=>'email','conditions'=>array('email'=>$this->request->post('email'))));
+	    				
+	    				if(empty($user->email)){
+
+	    					if($this->Users->saveUser($this->request->data,$user_id)){
+
+								$this->session->setFlash("Your email have been changed !","success");
+							}
+							else{
+								$this->session->setFlash("Your email have not been changed, please retry","error");
+							}
+	    				}
+	    				else {
+	    					$this->session->setFlash("This email is already in use","error");
+	    				}
+	    			}	    			
+	    		}
+	    		else {
+	    			if($this->request->post('email')) unset($_POST['email']);
+	    		}
+
+
+	    		/*====================
+					MODIFY INFO
+	    		=====================*/
+	    		if($this->request->post('action') == 'profil'){
+
+	    			if($this->Users->validates($this->request->data,'account_profil')){
+
+
+	    				if($this->Users->saveUser($this->request->data,$user_id)){
+
+	    					$this->session->setFlash('Your profil have been saved ! ','success');
+	    				}
+	    				else {
+	    					$this->session->setFlash("Sorry but something goes wrong please retry",'error');
+	    				}
+			    		
+		    		}
+		    		else 
+		    			$this->session->setFlash('Please review your informations','error');
+		    	
+	    		}
+
+
+	    		/*===================
+	    		 *   MODIFY AVATAR
+	    		===================== */
+	    		if($this->request->post('action') == 'avatar'){
+
+	    			if($this->Users->validates($this->request->data,'account_avatar')){
+
+	    				if($this->Users->saveUserAvatar($user_id)){
+
+	    					$this->session->setFlash('Your avatar have been changed ! ', 'success');
+
+	    					//get the new avatar and set it in the session
+	    					$new = $this->Users->findFirst(array('fields'=>'avatar','conditions'=>array('user_id'=>$user_id)));
+	    					$user = $this->session->user('obj');
+	    					$user->avatar = $new->avatar;
+	    					$this->session->write('user', $user);
+	    				}
+	    				else
+	    					$this->session->setFlash('Sorry something goes wrond.. Please retry', 'error');
+	    			}	    			
+	    			else
+	    				$this->session->setFlash('Please review your file','error');
+	    		}
+	    		/*====================
+					MODIFY PASSWORD
+	    		=====================*/
+	    		if($this->request->post('action') == 'password')
+	    		{
+	    			
+	    			if($this->Users->validates($this->request->data,'account_password')){
+
+		    			if($this->request->post('password') == $this->request->post('confirm')){
+
+		    				$db = $this->Users->findFirst(array(
+		    					'fields' => 'user_id,salt,hash',
+		    					'conditions'=> array('user_id'=>$user_id)
+		    					));
+
+		    				if($db->hash == md5($db->salt.$this->request->post('oldpassword'))){
+
+		    					$data = new stdClass();
+		    					$data->hash = md5($db->salt.$this->request->post('oldpassword'));
+		    					$data->user_id = $user_id;
+		    					
+		    					$this->Users->save($data);
+		    					$this->session->setFlash('Your password has been changed !');
+
+		    				}
+		    				else $this->session->setFlash('Your old password is not good','error');
+		    			}
+		    			else $this->session->setFlash('Your new passwords are not the same','error');
+		    		}
+		    		else 
+		    			$this->session->setFlash('Please review your informations','error');
+	    		}
+
+	    		/*====================
+					MODIFY DELETE
+	    		=====================*/
+	    		if($this->request->post('action') == 'delete'){
+
+	    			if($this->Users->validates($this->request->data,'account_delete')){
+
+	    				$db = $this->Users->findFirst(array(
+	    					'fields'=>'hash,salt',
+	    					'conditions'=>array('user_id'=>$user_id)
+	    					));
+	    				
+	    				if($db->hash == md5($db->salt.$this->request->post('password'))){
+
+	    					
+	    					$this->Users->delete($user_id);
+	    					unset($_SESSION['user']);
+	    					$user_id = 0;
+	    					$this->session->setFlash('Your account has been delete... <strong>Wait ? Why did you do that ??</strong>');
+
+	    				}
+	    				else
+	    					$this->session->setFlash('Your password is not good','error');
+
+	    			}
+	    			else
+	    				$this->session->setFlash('Please review your password','error');
+
+	    		}	    			    			  
+		    	
+		    }
+
+		    //get account info
+	    	$user = $this->Users->findFirst(array(
+					'conditions' => array('user_id'=>$user_id))
+				);	    	    	
+	    	// /!\ request->data used by Form class
+	    	$this->request->data = $user;
+
+	    	$d['user'] = $user;
+
+	    	//action
+	    	if(!isset($action)) $action = 'profil';
+	    	$d['action'] = $action;
+
+	    	$this->set($d);
+	    }
+	    else {
+
+	    	$this->redirect('/');	    	
+	    }
+
+    }
+
+
+
 
 	public function recovery(){
 
@@ -319,8 +545,8 @@ class UsersController extends Controller{
 
 			//check his email
 			$user = $this->Users->findFirst(array(
-				'fields'=>array('user_id','mail','login','salt'),
-				'conditions'=>array('mail'=>$this->request->post('email')),				
+				'fields'=>array('user_id','email','login','salt'),
+				'conditions'=>array('email'=>$this->request->post('email')),				
 			));
 
 			if(!empty($user)){
@@ -356,7 +582,7 @@ class UsersController extends Controller{
 				if($this->Users->save($rec)){
 
 					//send email to user
-					if($this->sendRecoveryMail(array('dest'=>$user->mail,'user'=>$user->login,'code' =>$code,'user_id'=>$user->user_id))){
+					if($this->sendRecoveryMail(array('dest'=>$user->email,'user'=>$user->login,'code' =>$code,'user_id'=>$user->user_id))){
 
 						$this->session->setFlash('An email have been send to you.','success');
 						$this->session->setFlash("Please tcheck the spam box if you can't find it.","warning");
@@ -422,7 +648,7 @@ class UsersController extends Controller{
         $mailer = Swift_Mailer::newInstance($transport);
        
         //Récupère le template et remplace les variables
-        $body = file_get_contents('../view/mail/recoveryPassword.html');
+        $body = file_get_contents('../view/email/recoveryPassword.html');
         $body = preg_replace("~{site}~i", Conf::$Website, $body);
         $body = preg_replace("~{user}~i", $user, $body);
         $body = preg_replace("~{lien}~i", $lien, $body);
@@ -438,7 +664,7 @@ class UsersController extends Controller{
         //Envoi du message et affichage des erreurs éventuelles
         if (!$mailer->send($message, $failures))
         {
-            echo "Erreur lors de l'envoi du mail à :";
+            echo "Erreur lors de l'envoi du email à :";
             print_r($failures);
         }
         else return true;
@@ -464,7 +690,7 @@ class UsersController extends Controller{
         $pass = randomString(10);
        
         //Récupère le template et remplace les variables
-        $body = file_get_contents('../view/mail/validateAccount.html');
+        $body = file_get_contents('../view/email/validateAccount.html');
         $body = preg_replace("~{site}~i", Conf::$Website, $body);
         $body = preg_replace("~{user}~i", $user, $body);
         $body = preg_replace("~{lien}~i", $lien, $body);
@@ -480,180 +706,46 @@ class UsersController extends Controller{
         //Envoi du message et affichage des erreurs éventuelles
         if (!$mailer->send($message, $failures))
         {
-            echo "Erreur lors de l'envoi du mail à :";
+            echo "Erreur lors de l'envoi du email à :";
             print_r($failures);
         }
         else return true;
     }
 
 
-    public function account(){    	
-
-    	$this->loadModel('Users');
-    	//$this->layout = 'none';
+    
 
 
-    	if($this->session->user('user_id'))
-    	{
+    public function index(){
 
-    		if($this->session->user('status')=='group'){
-
-    			$this->redirect('groups/account/'.$this->session->user('group_id').'/'.$this->session->user('slug'));
-    		}
-
-
-	    	$user_id = $this->session->user('user_id');
-	    	
-	    	/*======================
-				Requete POST 
-			========================*/
-	    	if($this->request->data) {							    		
-
-
-	    		/*====================
-					MODIFY INFO
-	    		=====================*/
-	    		if($this->request->post('modify') == 'informations'){
-
-	    			if($this->Users->validates($this->request->data,'account_info')){
-
-	    				if($this->Users->saveUser($this->request->data,$user_id)){
-
-	    					$this->session->setFlash('Your profil have been saved ! ','success');
-	    				}
-	    				else {
-	    					$this->session->setFlash("Sorry but something goes wrong please retry",'error');
-	    				}
-			    		
-		    		}
-		    		else 
-		    			$this->session->setFlash('Please review your informations','error');
-		    	
-	    		}
-
-
-	    		/*===================
-	    		 *   MODIFY AVATAR
-	    		===================== */
-	    		if($this->request->post('modify') == 'avatar'){
-
-	    			if($this->Users->validates($this->request->data,'account_avatar')){
-
-	    				if($this->Users->saveUserAvatar($user_id)){
-
-	    					$this->session->setFlash('Your avatar have been changed ! ', 'success');
-	    				}
-	    				else
-	    					$this->session->setFlash('Sorry something goes wrond.. Please retry', 'error');
-	    			}	    			
-	    			else
-	    				$this->session->setFlash('Please review your file','error');
-	    		}
-	    		/*====================
-					MODIFY PASSWORD
-	    		=====================*/
-	    		if($this->request->post('modify') == 'password')
-	    		{
-	    			
-	    			if($this->Users->validates($this->request->data,'account_mdp')){
-
-		    			if($this->request->post('password') == $this->request->post('confirm')){
-
-		    				$db = $this->Users->findFirst(array(
-		    					'fields' => 'user_id,salt,hash',
-		    					'conditions'=> array('user_id'=>$user_id)
-		    					));
-
-		    				if($db->hash == md5($db->salt.$this->request->post('oldpassword'))){
-
-		    					$data = new stdClass();
-		    					$data->hash = md5($db->salt.$this->request->post('oldpassword'));
-		    					$data->user_id = $user_id;
-		    					
-		    					$this->Users->save($data);
-		    					$this->session->setFlash('Your password has been changed !');
-
-		    				}
-		    				else $this->session->setFlash('Your old password is not good','error');
-		    			}
-		    			else $this->session->setFlash('Your new passwords are not the same','error');
-		    		}
-		    		else 
-		    			$this->session->setFlash('Please review your informations','error');
-	    		}
-
-	    		/*====================
-					MODIFY DELETE
-	    		=====================*/
-	    		if($this->request->post('modify') == 'delete'){
-
-	    			if($this->Users->validates($this->request->data,'account_delete')){
-
-	    				$db = $this->Users->findFirst(array(
-	    					'fields'=>'hash,salt',
-	    					'conditions'=>array('user_id'=>$user_id)
-	    					));
-	    				
-	    				if($db->hash == md5($db->salt.$this->request->post('password'))){
-
-	    					
-	    					$this->Users->delete($user_id);
-	    					unset($_SESSION['user']);
-	    					$user_id = 0;
-	    					$this->session->setFlash('Your account has been delete... <strong>Wait ? Why did you do that ??</strong>');
-
-	    				}
-	    				else
-	    					$this->session->setFlash('Your password is not good','error');
-
-	    			}
-	    			else
-	    				$this->session->setFlash('Please review your password','error');
-
-	    		}
-	    			    			   
-		    	
-		    }
-
-	    	$user = $this->Users->findFirst(array(
-					'fields'=> 'user_id,login,avatar,mail,prenom,nom,status,bonhom,pays,lang',
-					'conditions' => array('user_id'=>$user_id))
-				);
-	    	    	
-
-	    	$this->request->data = $user;
-
-	    	$var['user'] = $user;
-
-	    	$this->set($var);
-	    }
-	    else {
-
-	    	$this->redirect('/');	    	
-	    }
-
+    	if($this->session->user()){
+    		$this->thread();
+    	}
+    	else {
+    		$this->redirect('users/login');
+    	}
+    	
     }
 
-
-
     /**
-        
-			User Thread
-
-        */ 
+    *    
+	*	User Thread
+	*
+    */ 
     public function thread(){
 
+    	$this->view = 'users/thread';
     	$this->loadModel('Users');
     	$this->loadModel('Manifs');
     	$this->loadModel('Comments');
 
-
+    	//if user is logged
     	if($this->session->user()){
 
-    		
+    		//if user is numeric
     		if(is_numeric($this->session->user('user_id'))){
 
-
+    			//if user is a group, redirect to group page
     			if($this->session->user('status')=='group'){
 
     				$group = $this->Users->findFirst(array(
@@ -665,7 +757,7 @@ class UsersController extends Controller{
     				$this->redirect('groups/view/'.$group->id.'/'.$group->slug);
     			} 
     				
-
+    			//set $user_id
     			$user_id = $this->session->user('user_id');
 
     			//User

@@ -62,7 +62,7 @@
  	@param $context (manif, group user...)
  	@param $context_id int
  	=========================================*/
- 	public function index($context, $context_id){
+ 	public function index($context, $context_id, $comment_id = null) {
 
 
 		$context         = (strlen($context)<=10)? $context : exit('wrong url context parameter');
@@ -82,6 +82,7 @@
 									
 			"context"    =>$context,
 			"context_id" =>$context_id,
+			"comment_id" =>$comment_id,
 			'limit'      =>$perPage,
 			"pays"       =>$this->session->getPays(),
 			"lang"       =>$this->session->getLang()
@@ -89,8 +90,7 @@
 
 		if(isset($this->request->get)){
 
-			$array_get     = get_object_vars($this->request->get);
-			$params        = array_merge($array_get,$params);					
+			$params = array_merge( get_object_vars($this->request->get) ,$params);					
 		}
 
 		
@@ -119,6 +119,7 @@
 		}
 		elseif($context=='user'){
 
+			$params['limit'] = 10;
 			$d['coms'] = $this->Comments->threadUser($params);
 
 		}
@@ -136,11 +137,11 @@
 	Show a unique comment
 	@param $comment_id int
  	=====================================*/
- 	public function view($comment_id){
+ 	public function view($comment_id ){
 
-		$this->layout    = 'default';
+		$this->layout = 'default';
 		$this->loadModel('Comments');
-		$this->view      = 'comments/view';
+		$this->view = 'comments/view';
 		
 		$com = $this->Comments->getComments($comment_id);
 		$com = $com[0];
@@ -253,7 +254,6 @@
  	public function reply(){
 
  		$this->loadModel('Comments');
- 		$this->view = 'comments/index';
  		$this->layout = 'none';
 
  		if($this->request->post('content')!=''){
@@ -276,7 +276,14 @@
 	 			$comment_id = $this->request->data->reply_to;
 
 	 			//Enfin , on renvoi la vue du commentaire
-	 			$this->index($this->request->data->context,$this->request->data->context_id,$comment_id);
+				$coms       = $this->Comments->findCommentsWithoutJOIN(array('comment_id'=>$comment_id));
+				$coms       = $this->Comments->findReplies($coms);
+				$coms       = $this->Comments->joinUserData($coms);
+				$d['coms']  = $coms;
+				$d['context']    = $this->request->data->context;
+				$d['context_id'] = $this->request->data->context_id;
+	 			$this->set($d);
+
 
 		 		}
 		 		else {
@@ -292,7 +299,7 @@
 	 		}
 	 	}
 	 	else {
-	 		$d['fail'] = 'This is empty you know...';
+	 		$d['fail'] = 'This is empty... You have nothing to say ?';
 	 		$this->set($d);
 	 	}
  	

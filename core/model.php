@@ -92,7 +92,10 @@
  		$sql = 'SELECT ';
  		
  		//champ à récuper
- 		$sql .= $this->sqlFields($req['fields']);
+ 		if(isset($req['fields']))
+ 			$sql .= $this->sqlFields($req['fields']);
+ 		else
+ 			$sql .= '*';
 
  		//depuis la table
  		$sql .= ' FROM '.$table.' ';

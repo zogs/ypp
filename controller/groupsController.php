@@ -24,7 +24,7 @@ class GroupsController extends Controller{
 
 
 				$params = array(
-								'fields'=>'A.group_id as id, A.name,A.address,A.mail,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
+								'fields'=>'A.group_id as id, A.name,A.address,A.email,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
 								'group_id'=>$group_id);
 
 				$groups = $this->Groups->findGroups($params);
@@ -105,7 +105,7 @@ class GroupsController extends Controller{
 
 					//Get group data
 					$group = $this->Groups->findGroups(array(
-													'fields'=>'A.group_id, A.user_id, A.name,A.address,A.mail,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
+													'fields'=>'A.group_id, A.user_id, A.name,A.address,A.email,A.website,A.logo,A.official_number,A.purpose,A.motsclefs,A.description,A.lang,A.banner,A.CC1,A.ADM1,A.ADM2,A.ADM3,A.ADM4,A.city,A.cat2,A.cat3',
 													'group_id'=>$group_id
 													));
 					if(isset($group[0])){
@@ -171,7 +171,7 @@ class GroupsController extends Controller{
 
 				$group              = new stdClass();
 				$group->name        = '';
-				$group->mail        = '';
+				$group->email        = '';
 				$group->cat2        = '';
 				$group->cat3        = '';
 				$group->CC1         = $this->CookieRch->read('CC1'); 
@@ -227,7 +227,7 @@ class GroupsController extends Controller{
 				//Save user data first				
 				$user           = new stdClass();
 				$user->login    = $slug;
-				$user->mail     = $data->mail;
+				$user->email     = $data->email;
 					if($action == 'create'){
 				$user->password = $data->password;
 				$user->confirm  = $data->confirm;
@@ -254,19 +254,19 @@ class GroupsController extends Controller{
 				else {
 					$group->logo = 'img/logo_yp.png';
 				}		
-				$group->name     = $data->name;
-				$group->slug     = $slug;
-				$group->mail     = $data->mail;							
-				$group->lang     = Conf::$lang;
-				$group->user_id  = $user_id;
-				$group->cat2     = (isset($data->cat2) && !empty($data->cat2))? $data->cat2 : '';
-				$group->cat3     = (isset($data->cat3) && !empty($data->cat3))? $data->cat3 : '';
-				$group->CC1      = (isset($data->CC1) && !empty($data->CC1))? $data->CC1 : '';
-				$group->ADM1     = (isset($data->ADM1) && !empty($data->ADM1))? $data->ADM1 : '';
-				$group->ADM2     = (isset($data->ADM2) && !empty($data->ADM2))? $data->ADM2 : '';
-				$group->ADM3     = (isset($data->ADM3) && !empty($data->ADM3))? $data->ADM3 : '';
-				$group->ADM4     = (isset($data->ADM4) && !empty($data->ADM4))? $data->ADM4 : '';
-				$group->city     = (isset($data->city) && !empty($data->city))? $data->city : '';
+				$group->name    = $data->name;
+				$group->slug    = $slug;
+				$group->email   = $data->email;							
+				$group->lang    = Conf::$lang;
+				$group->user_id = $user_id;
+				$group->cat2    = (isset($data->cat2) && !empty($data->cat2))? $data->cat2 : '';
+				$group->cat3    = (isset($data->cat3) && !empty($data->cat3))? $data->cat3 : '';
+				$group->CC1     = (isset($data->CC1) && !empty($data->CC1))? $data->CC1 : '';
+				$group->ADM1    = (isset($data->ADM1) && !empty($data->ADM1))? $data->ADM1 : '';
+				$group->ADM2    = (isset($data->ADM2) && !empty($data->ADM2))? $data->ADM2 : '';
+				$group->ADM3    = (isset($data->ADM3) && !empty($data->ADM3))? $data->ADM3 : '';
+				$group->ADM4    = (isset($data->ADM4) && !empty($data->ADM4))? $data->ADM4 : '';
+				$group->city    = (isset($data->city) && !empty($data->city))? $data->city : '';
 				
 				//Save in the group database				
 				if($this->Groups->saveGroup($group)){
