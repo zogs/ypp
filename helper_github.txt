@@ -1,3 +1,4 @@
+#FAILED TO COMMIT
 # Impossibilité de commit ou de merge due à un conflit dans un fichier :
 
 	#1 , installer p4merge pour git
@@ -9,3 +10,8 @@
 	#7 tapper git commit
 	#8 vérifier si le commit à été fait et sync
 	#9 WIN LIKE A BOSS
+
+#FAILED TO SYNC THIS BRANCH
+
+	#1 , Open shell
+	#2 , tap git push
