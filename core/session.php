@@ -36,9 +36,9 @@ class Session {
 		return $this->read('token');
 	}
 
-	public function setFlash($message, $type = 'success'){
+	public function setFlash($message, $type = 'success', $duration = 5){
 
-		$flash = array('message'=>$message,'type'=>$type);
+		$flash = array('message'=>$message,'type'=>$type,'duration'=>$duration);
 
 		if(isset($_SESSION['flash'])){
 			array_push($_SESSION['flash'],$flash);			
@@ -56,9 +56,10 @@ class Session {
 			foreach($_SESSION['flash'] as $v){
 
 				if(isset($v['message'])){
-					$html .= '<div class="alert alert-'.$v['type'].'">
+					$html .= '<div class="alert alert-'.$v['type'].' alert-hide-'.$v['duration'].'s">
 								<button class="close" data-dismiss="alert">×</button>
 								<p>'.$v['message'].'</p>
+								<div class="alert-progress alert-progress-'.$v['duration'].'s"></div>
 							</div>';				
 				}
 			}
