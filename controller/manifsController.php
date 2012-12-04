@@ -61,7 +61,7 @@ class ManifsController extends Controller{
 								'ADM3'=>$this->CookieRch->read('ADM3'),
 								'ADM4'=>$this->CookieRch->read('ADM4'),
 								'city'=>$this->CookieRch->read('city')),
-			'limit'=>(($this->request->get->page-1)*$perPage).','.$perPage
+			'limit'=>(($this->request->page-1)*$perPage).','.$perPage
 			);
 
 
