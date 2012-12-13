@@ -19,11 +19,24 @@
         //Create the html 
         $html = utf8_decode(show_comment_or_replies($coms,$this->session->user('obj'),$context,$context_id) );
 
-        echo $html;
+        $html = htmlentities($html);
+
+        echo json_encode(array(
+            'html'=>$html,
+            'commentsNumber'=>count($coms),
+            'commentsTotal'=>$commentsTotal,
+            'commentsDisplayed'=>$commentsDisplayed,
+            'commentsLeft'=>$commentsLeft));
     }
     else {
 
-        echo '';
+        echo json_encode(array(
+            'html'=>'',
+            'commentsNumber'=>0,
+            'commentsTotal'=>$commentsTotal,
+            'commentsDisplayed'=>$commentsDisplayed,
+            'commentsLeft'=>0
+            ));
     }
     
 

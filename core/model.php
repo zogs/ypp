@@ -28,9 +28,12 @@
  			$this->db = Model::$connections[$this->conf];
  			return true;	
  		} 
- 		//Sinon
- 		//On essaye de se connecter a la base
+ 		
+ 		//Cache
+ 		$this->cacheModel = new Cache(Conf::$cacheLocation,60*24*7);
 
+
+ 		//On essaye de se connecter a la base
  		try{
  			//Creation d'un objet PDO
  			$pdo = new PDO('mysql:host='.$conf['host'].';dbname='.$conf['database'].';',

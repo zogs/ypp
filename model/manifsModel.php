@@ -48,11 +48,10 @@ class Manifs extends Model {
 		$user_id = $this->session->user('user_id');	
 
 		//Lang
-		if(isset($req['lang']))
+		if(isset($req['lang']) && $req['lang']!='')
 			$lang = $req['lang'];
 		else
-			$lang = $this->session->getLang();
-
+			$lang = $this->session->getLang();		
 
 		//Query construct
  		$sql = 'SELECT ';
@@ -187,7 +186,7 @@ class Manifs extends Model {
  			$sql .= ' '.$req['end'];
  		}
  		
- 		//debug($sql);
+ 		// debug($sql);
 		$pre = $this->db->prepare($sql);
  		$pre->execute();
  		return $pre->fetchAll(PDO::FETCH_OBJ);

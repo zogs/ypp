@@ -23,6 +23,61 @@ function debug($var){
 
 }
 
+
+
+function day($lang,$day){
+
+	
+
+	$days = array(
+		'fr'=>array('Today'=>"Aujourd'hui",'Mon'=>'Lundi','Tue'=>'Mardi','Wed'=>'Mercredi','Thu'=>'Jeudi','Fri'=>'Vendredi','Sat'=>'Samedi','Sun'=>'Dimanche')
+		);
+
+	return $days[$lang][$day];
+
+}
+
+function datefr($date) { 
+
+//tableau des mois de l'année en francais
+$type_mois['00']='00';
+$type_mois['01']='Janvier';   $type_mois['02']='Février';
+$type_mois['03']='Mars';      $type_mois['04']='Avril';
+$type_mois['05']='Mai';       $type_mois['06']='Juin';
+$type_mois['07']='Juillet';   $type_mois['08']='Août';
+$type_mois['09']='Septembre'; $type_mois['10']='Octobre';
+$type_mois['11']='Novembre';  $type_mois['12']='Décembre';
+//on separe la date en jour mois annee
+	$split = explode("-",$date); 
+	$annee = $split[0]; 
+	$num_mois = $split[1]; 
+	$jour = $split[2]; 
+	//on associe le numero du mois au nom correspondant dans le tableau
+	$mois = $type_mois[$num_mois];
+	//on retourne la valeur
+	return "$jour"." "."$mois"." "."$annee"; 
+} 
+
+
+function ageFromBY($year){
+
+	$age = 0;
+	$current = Date('Y');
+	for($i=$year; $i<$current; $i++){
+		$age++;
+	}
+	return $age;
+}
+
+function make_path($path) {
+        //Test if path exist
+        if (is_dir($path) || file_exists($path)) return $path;
+        //No, create it
+        if(mkdir($path, 0777, true))
+        	return $path;
+        else
+        	return false;
+}
 	
 function unescape($obj){
 

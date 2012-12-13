@@ -87,12 +87,12 @@
 			"pays"       =>$this->session->getPays(),
 			"lang"       =>$this->session->getLang()
 			);
-
+		
 		if(isset($this->request->get)){
 
 			$params = array_merge( get_object_vars($this->request->get) ,$params);					
 		}
-
+		
 		
 		if($context=='manif' ||$context=='group'){
 
@@ -101,7 +101,9 @@
 			$coms       = $this->Comments->findReplies($coms);
 			$coms       = $this->Comments->joinUserData($coms);
 			$d['coms']  = $coms;
-			$d['total'] = $this->Comments->totalComments($context,$context_id);
+			$d['commentsTotal'] = $this->Comments->totalComments($context,$context_id);
+			$d['commentsDisplayed'] = $perPage*$this->request->page;
+			$d['commentsLeft'] = $d['commentsTotal'] - $d['commentsDisplayed'];
 				
 		}
 		elseif($context=='comment'){

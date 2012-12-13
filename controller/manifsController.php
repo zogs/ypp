@@ -28,8 +28,8 @@ class ManifsController extends Controller{
 
 
 		//If search params are send
-		if( $this->request->get() ) {
-			
+		if( $this->request->get() ) {						
+
 			//Write cookie of seach params
 			$this->CookieRch->write(array('rch'=>$this->request->get('rch'),												
 												'CC1'=>$this->request->get('CC1'),
@@ -44,10 +44,11 @@ class ManifsController extends Controller{
 												));			
 		}
 		
+		
 		//get protests
 		$perPage = 10;
 		$params = array(
-			"fields"=>array('D.manif_id as id','D.numerus','D.date_creation','D.logo','D.cat2','D.cat3','MD.nommanif','MD.description','MD.slug','P.id as pid','AD.user_id as isadmin'),
+			"fields"=>array('D.manif_id as id','D.numerus','D.date_creation','D.logo','D.cat2','D.cat3','MD.nommanif','MD.description','MD.slug','P.id as doesUserProtest','AD.user_id as doesUserAdmin'),
 			"conditions"=>array('D.online'=>1),
 			"cat2"=>$this->CookieRch->read('cat2'),
 			"cat3"=>$this->CookieRch->read('cat3'),
@@ -140,7 +141,7 @@ class ManifsController extends Controller{
 		$this->loadModel('Manifs');
 
 		$params = array(
-			'fields' => array('D.manif_id as id','D.numerus','D.logo','D.date_creation','MD.nommanif','MD.slug','U.login as user','P.id as pid','MD.description','AD.user_id as isadmin'),
+			'fields' => array('D.manif_id as id','D.numerus','D.logo','D.date_creation','MD.nommanif','MD.slug','U.login as user','P.id as doesUserProtest','MD.description','AD.user_id as doesUserAdmin'),
 			'conditions' => array('D.manif_id'=>$id,'online'=>1),
 			"user"=>array('statut'=>$this->session->user('statut'),"id"=>$this->session->user_id()),
 			"lang"=>$this->session->getLang(),
@@ -148,18 +149,20 @@ class ManifsController extends Controller{
 			);
 
 
-
 		$d['manif'] = $this->Manifs->findFirstManif($params);
-		$d['manif']->context = 'manif';
-		$d['manif']->context_id = $id;
 
 		if(empty($d['manif'])){
 			$this->e404('Manif introuvable');
 		}
 
 		if($slug!=$d['manif']->slug){
-			$this->redirect("manifs/view/id:$id/slug:".$d['manif']->slug,301);
+			//$this->redirect("manifs/view/id:$id/slug:".$d['manif']->slug,301);
 		}
+
+		$d['manif']->context = 'manif';
+		$d['manif']->context_id = $id;
+
+		
 
 		$this->set($d);
 	}
@@ -338,16 +341,10 @@ class ManifsController extends Controller{
 		$this->view = 'json';
 		$this->layout = 'none';
 
-		if($this->request->post('manif_id') && $this->request->post('user_id')){
+		if($this->request->post('manif_id')){			
 
-			if( $this->session->user_id() == $this->request->post('user_id') ){
-
-				$d = $this->removeProtester(
-					$this->request->post('manif_id'),
-					$this->session->user_id()
-					);
-			}
-			else $d['error'] = 'User is not connected';			
+			$d = $this->removeProtester($this->request->post('manif_id'),$this->session->user_id());
+			
 		}
 		else $d['error'] = 'Missing data in manifs/removeUser url ';
 
@@ -363,7 +360,7 @@ class ManifsController extends Controller{
 		$this->Manifs->primaryKey = "id";
 
 		$participation = $this->Manifs->findProtesters(array(
-			'fields'=>array('P.id','U.login','U.user_id'),
+			'fields'=>array('P.id','U.login','U.user_id','bonhom'),
 			'conditions'=>array('P.manif_id'=>$manif_id,'P.user_id'=>$user_id))
 		);
 
@@ -376,7 +373,10 @@ class ManifsController extends Controller{
 
 			if($this->Manifs->delete($del)){
 
-				$d['success'] = 'Cancel Ok';
+				$d['login'] = $participation->login;
+				$d['bonhom'] = $participation->bonhom;
+				$d['user_id'] = $participation->user_id;
+				$d['success'] = 'remove';
 			}
 			else {
 				$d['error'] = 'Error canceling protesting '.$participation->login;
@@ -396,18 +396,11 @@ class ManifsController extends Controller{
 		$this->layout = 'none';
 
 		//if POST data are correct
-		if($this->request->post('manif_id') && $this->request->post('user_id')){
+		if($this->request->post('manif_id')){
+		
+			//call to addProtester
+			$d = $this->addProtester($this->request->post('manif_id'),$this->session->user_id());				
 
-			//if user is logged and the sender of data
-			if( $this->session->user_id() == $this->request->post('user_id') ){
-
-				//call to addProtester
-				$d = $this->addProtester(
-					$this->request->post('manif_id'),
-					$this->session->user_id()
-					);
-			}
-			else $d['error'] = 'User is not connected';			
 		}
 		else $d['error'] = 'Missing data in manifs/addUser url';
 
@@ -421,33 +414,38 @@ class ManifsController extends Controller{
 		$this->Manifs->primaryKey = "id";
 				
 		$user = $this->Manifs->findFirst(array(
+			'table'=>'manif_participation',
 			'fields'=>'id',
 			'conditions'=>array('manif_id'=>$manif_id,'user_id'=>$user_id))
 		);
 		
 		if(empty($user)){
 
-			$protester = new stdClass();
-			$protester->manif_id = $manif_id;
-			$protester->user_id = $user_id;
-			$protester->date = Date::SQLNow();
-			$user = $this->Manifs->save( $protester );
-			
-			if($user){
-				$this->Manifs->table = "users";
-				$user = $this->Manifs->findFirst(array(
-				'fields'=>'bonhom,login',
-				'conditions'=>array('user_id'=>$user_id))
-				);
+			if($user_id!=0){
+				$protester = new stdClass();
+				$protester->manif_id = $manif_id;
+				$protester->user_id = $user_id;
+				$protester->date = Date::SQLNow();
+				$user = $this->Manifs->save( $protester );
 				
-				$d['login'] = $user->login;
-				$d['bonhom'] = $user->bonhom;
-				$d['success'] = "You protest ! ";
+				if($user){
+					$this->Manifs->table = "users";
+					$user = $this->Manifs->findFirst(array(
+					'fields'=>'bonhom,login',
+					'conditions'=>array('user_id'=>$user_id))
+					);
+					
+					$d['login'] = $user->login;
+					$d['bonhom'] = $user->bonhom;
+					$d['success'] = "added";
+				}
+				else {
+					$d['error'] = "SQL insertion failed ";
+					//debug($this->Manifs->error);
+				}
 			}
-			else {
-				$d['error'] = "SQL insertion failed ";
-				//debug($this->Manifs->error);
-			}
+			else
+				$d['error'] = 'User id = zero';
 		}
 		else {
 			$d['error'] = "You are already in";

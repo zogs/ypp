@@ -60,9 +60,9 @@
 					<p class='label-helper'>Choose a category or a sub-category</p>
 					<div class="controls">
 						<input type="hidden" id="submit-category" data-url="<?php echo Router::url('manifs/getCategory'); ?>">
-						<?php echo $this->Form->generateSelect('cat2','btn',$cats2,'id','name',$group->cat2,'onchange="showCategory(this.value,3)"'); ?>
+						<?php echo $this->Form->_select('cat2',$cats2,array('placeholder'=>'Select category',"class"=>'btn',"default"=>$group->cat2,"javascript"=>'onchange="showCategory(this.value,3)"')); ?>
 						<?php if($group->cat3): ?>
-						<?php echo $this->Form->generateSelect('cat3','btn',$cats3,'id','name',$group->cat3,''); ?>
+						<?php echo $this->Form->_select('cat3',$cats3,array('placeholder'=>'Select sub-category',"class"=>'btn',"default"=>$group->cat3)); ?>
 						<?php endif; ?>
 					</div>					
 				</div>
@@ -74,17 +74,8 @@
 					<div class="controls">
 						<input type="hidden" id="submit-state" data-url="<?php echo Router::url('world/getStates'); ?>">
 						<?php 
-
-
-							foreach($states as $key=>$array){	
-								
-								if(!empty($array)){
-									if($key!='city')							
-										echo $this->Form->generateSelect($key,'btn geo-select',$array,'code','name',$group->$key,'onchange="showRegion(this.value,\''.$key.'\')"');
-									else
-										echo $this->Form->generateSelect($key,'btn geo-select',$array,'code','name',$group->$key,'');
-								}
-							}
+							$this->request('world','locate',array($group));
+							
 						 ?>						 
 					</div>					
 				</div>

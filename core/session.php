@@ -160,7 +160,7 @@ class Session {
 		else return 0;
 	}
 	public function getLang(){
-		if(isset($this->read('user')->lang))
+		if(isset($this->read('user')->lang) && $this->read('user')->lang!='')
 			return $this->read('user')->lang;		
 		else 
 			return Conf::$languageDefault;		

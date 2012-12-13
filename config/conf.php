@@ -7,6 +7,7 @@ class Conf {
 	static $adminPrefix = 'banane';
 	static $Website = 'YouProtest.net';
 	static $pays = 'FR';
+	static $lang = 'fr';
 	static $databases = array(
 			
 		'default'  => array(
@@ -21,6 +22,8 @@ class Conf {
 	static $languageAvailable = array('fr'=>'Francais','en'=>'English');
 	static $languageDefault = 'fr';
 
+	static $cacheLocation = 'D:/wamp/www/ypp/webroot/cache';
+
 
 }
 
@@ -33,6 +36,7 @@ Router::connect('','manifs/index'); //RAcine du site ( à laisser en premiere re
 
 Router::connect('m/:slug-:id','manifs/create/id:([0-9]+)/slug:([a-zA-Z0-9\-]+)');
 Router::connect('create','manifs/create');
+Router::connect('groups/create','groups/account');
 //Router::connect('blog/:slug-:id','posts/view/id:([0-9]+)/slug:([a-zA-Z0-9\-]+)');
 //Router::connect('blog/*','posts/*');
 

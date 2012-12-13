@@ -36,7 +36,7 @@ class Form{
 		if($label=='submit') return $input;
 
 		//Bootstrap html
-		$html = '<div class="control-group '.$classError.'">';
+		$html = '<div class="control-group '.$classError.'" id="control-'.$id.'">';
 		$html .= '<label class="control-label">'.$label.'</label>';
 		$html .= '<div class="controls">';
 
@@ -113,12 +113,14 @@ class Form{
 			return '<input type="hidden" name="'.$id.'" id="'.$id.'" value="'.$value.'" />';
 		}		
 
-
-		//Attribut html à rajouter en fin de champs
-		$attr='';
-		foreach ($options as $k => $v) {
-			if($k!='type' && $k!='icon'){
-				$attr .= " $k=\"$v\"";
+		
+		//Attribut html à rajouter en fin de champs	
+		$attr='';	
+		if(!empty($options)){			
+			foreach ($options as $k => $v) {
+				if($k!='type' && $k!='icon'){
+					$attr .= " $k=\"$v\"";
+				}
 			}
 		}
 		
@@ -149,13 +151,16 @@ class Form{
 		elseif($options['type']=='password'){
 			$html .= '<input type="password" id="input'.$id.'" name="'.$id.'" value="'.$value.'" '.$attr.'>';
 		}
+		else{
+			$html .= '<input type="'.$options['type'].'" id="input'.$id.'" name="'.$id.'" value="'.$value.'" '.$attr.'>';
+		}
 		
 		return $html;
 	}
 
 
 
-	public function Select($id,$label,$options,$params = null){
+	public function Select($id,$label,$options,$params){
 
 		$html = $this->wrapInput($id,$label,$this->_select($id,$options,$params),$params);
 
@@ -280,16 +285,22 @@ class Form{
 	}
 
 	
-
+	/**
+	*	Radio
+	*	$id name of the field
+	*	$label title of the field
+	*	$options array of option
+	*	$params array('class','default','javascript')
+	*/
 	public function Radio( $id, $label, $options, $params = null){
 
 
-		$html = $this->wrapInput($id, $label, $this->_radio($id, $options, $params) ,$params);		
+		$html = $this->wrapInput($id, $label, $this->_radio($id, $label, $options, $params) ,$params);		
 
 		return $html;
 	}
 
-	public function _radio($id, $options, $params){
+	public function _radio($id, $label, $options, $params){
 
 		(isset($params['class']))? $class = "class='".$params['class']."'" : $class = '' ;
 		(isset($params['default']))? $default = $params['default'] : $default = '';
@@ -301,10 +312,17 @@ class Form{
 
 		foreach($options as $value => $text){
 
-			if($value==$default) $checked = 'checked="checked"';
+			$checked = '';
+				if(is_array($default)){
+					if(in_array($value,$default)) $checked = 'checked="checked"';
+				}
+				elseif($value==$default) $checked = 'checked="checked"';
 			else $checked = '';
+
+			(isset($params['openwrap']))? $html .= $params['openwrap'] : $html .= '';
 			$html .= '<input type="radio" '.$class.' name="'.$id.'" value="'.$value.'" id="'.$value.'" '.$checked.' '.$javascript.'>';
 			$html .= '<label class="radio" for="'.$value.'">'.$text.'</label>';
+			(isset($params['closewrap']))? $html .= $params['closewrap'] : $html .= '';
 		}
 
 		return $html;
@@ -313,32 +331,54 @@ class Form{
 
 	public function Checkbox($id, $label, $options, $params = null){
 	
-		return $this->wrapInput($id, $label,$this->_checkbox($id, $options, $params),$params);
+		return $this->wrapInput($id, $label,$this->_checkbox($id, $label, $options, $params),$params);
 	
 	}
 
-	public function _checkbox($id, $options, $params=null){
+	public function _checkbox($id, $label, $options, $params=null){
 
 		(isset($params['class']))? $class = "class='".$params['class']."'" : $class = '' ;
 		(isset($params['default']))? $default = $params['default'] : $default = '';
 		(isset($arams['javascript']))? $javascript = $params['javascript'] : $javascript = '';
 
 		if(is_object($options)) $options = (array) $options;
-
+		
 		$html = '';
 			foreach($options as $value => $text){
 
-				if($value==$default) $checked = 'checked="checked"';
-				else $checked = '';
+				$checked = '';
+				if(is_array($default)){
+					if(in_array($value,$default)) $checked = 'checked="checked"';
+				}
+				elseif($value==$default) {
+					$checked = 'checked="checked"';;
+				}
+				(isset($params['openwrap']))? $html .= $params['openwrap'] : $html .= '';
 				$html .= '<input type="checkbox" '.$class.' name="'.$id.'" value="'.$value.'" id="'.$value.'" '.$checked.' '.$javascript.'>';
 				$html .= '<label class="checkbox" for="'.$value.'">'.$text.'</label>';
+				(isset($params['closewrap']))? $html .= $params['closewrap'] : $html .= '';
 			}
 
 		return $html;
 
+	}
+	/*
+	public function Textarea($id, $label, $params = null){
+
+		return $this->wrapInput($id,$label,$this->_textarea($id,$label,$params),$params);
 	}	
 	
 
+	public function _textarea($id, $label, $params = null){
+
+		(isset($params['class']))? $class = "class='".$params['class']."'" : $class = '' ;
+		(isset($params['default']))? $default = $params['default'] : $default = '';
+		(isset($arams['javascript']))? $javascript = $params['javascript'] : $javascript = '';
+
+		$html = '';
+
+	}
+	*/
 }
 
  ?>

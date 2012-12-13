@@ -7,34 +7,38 @@
 
     <div class="info">
         <header>
-            <div class="logo"><?php if($manif->logo): ?><img src="<?php echo Router::webroot($manif->logo); ?>" /><?php else: ?><div class="nologo"></div><?php endif; ?></div>
+            <div class="logo"><img src="<?php echo ($manif->logo)? Router::webroot($manif->logo) : Router::webroot('img/logo_yp.png');?>" /></div>
             <div class="meta">
                 <h1><?php echo $manif->nommanif; ?></h1>
                 <div class="by">                    
-                    <span><a class="user"><?php echo $manif->user; ?></a></span>
+                    <span><a class="user">par <strong><?php echo $manif->user; ?></strong></a></span>
                     <span><a class="category"></a></span>
-                    <span class="date">Since <?php echo $manif->date_creation; ?></span>
+                    <span class="date">Since <?php echo datefr($manif->date_creation); ?></span>
+                </div>
+
+                <div class="actions">
+                    
+                    <div class="switchProtest">
+                        <input type="checkbox" <?php echo (!empty($manif->doesUserProtest))? 'checked="checked"' : '';?> class="btn-switch-protested" data-protest="<?php echo $manif->id;?>" data-url-protest="<?php echo Router::url('manifs/addUser');?>" data-url-cancel="<?php echo Router::url('manifs/removeUser');?>">
+                        <label><i></i></label>
+                    </div>
+
+                    <div class="btn-toolbar">
+                        <?php if(!$this->session->user()): ?>                    
+                        <a class="btn btn-dark btn-large btn-inverse callModal" href="<?php echo Router::url('users/login');?>" ><i class="icon-user icon-white"></i> <strong>Connexion</strong> </a>
+                        <?php endif; ?>
+                        <a class="btn btn-dark btn-large btn-share"><i class="icon-heart icon-white"></i> Partager</a> 
+                        <?php if(isset($manif->doesUserAdmin)): ?>
+                          <a class="btn btn-dark btn-large btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
+                        <?php endif;?>        
+                    </div>
                 </div>
             </div>
-            <div class="actions">
-                <div class="btn-toolbar">
-                    <?php if($this->session->user()): ?>
-                    <a class="btn btn-large btn-inverse btn-protest" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-plus-sign icon-white"></i> <strong>Protest</strong> </a>
-                    <button class="btn btn-large btn-red btn-cancel" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/removeUser');?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> <strong>You Protest</strong> </button>
-                    <?php else: ?>
-                    <a class="btn btn-large btn-inverse callModal" href="<?php echo Router::url('users/login');?>" ><i class="icon-user icon-white"></i> <strong>Connexion</strong> </a>
-                    <?php endif; ?>
-                    <a class="btn btn-large btn-share"><i class="icon-heart"></i> <strong>Partager</strong></a> 
-                    <?php if(isset($manif->isadmin)): ?>
-                      <a class="btn btn-large btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
-                    <?php endif;?>        
-                </div>
-            </div>
+            
         </header>
     </div>
 
 
-    
     <div class="manifeste"> 
         <div class="description expandable" data-maxlength="500" data-expandtext=" read more..." data-collapsetext=" reduce">
             <?php echo $manif->description ?>
@@ -181,7 +185,7 @@ $(document).ready(function(){
         userLogin:'<?php if($this->session->user("login")) echo $this->session->user("login"); else echo ""; ?>',
         userBonhom:'<?php if($this->session->user("bonhom")) echo $this->session->user("bonhom"); else echo ""; ?>',
         userLogged:'<?php if($this->session->user()) echo "true"; else echo "false";?>',
-        userParticipe:'<?php if($manif->pid==0) echo "false"; else echo "true";?>',
+        userParticipe:'<?php if(empty($manif->doesUserProtest)) echo "false"; else echo "true";?>',
         userLang:'<?php if($this->session->getLang()) echo $this->session->user(); else echo ""; ?>',
         onlyBonhom:''
         

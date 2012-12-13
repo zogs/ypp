@@ -127,9 +127,11 @@
                             </ul>
                         </div>  
                         <div class="btn-group pull-right">
+
                             <a class="btn btn-mini bubble-bottom" title="Display new comments" href="<?php echo Router::url('comments/index/'.$context.'/'.$context_id); ?>" id="refresh_com" data-url-count-com="<?php echo Router::url('comments/tcheck/'.$context.'/'.$context_id.'/'); ?>">
                                 <i class="icon-repeat"></i>  Actualiser <span class="badge badge-inverse hide" id="badge"></span>
                             </a>
+                            <span id="ajaxLoader" style="display:none"><img src="<?php echo Router::webroot('img/ajax-loader.gif');?>" alt="Loading" /></span>
                             <a class="btn btn-mini dropdown-toggle hide" data-toggle="dropdown" href="#">              
                             <span class="caret"></span>
                             </a>
@@ -143,14 +145,17 @@
                     </div>
 
                     <div id="comments" data-start="0">
-
-                        
+                        <?php 
+                        // load in ajax 
+                        ?>                    
                     </div>
                     <div id="bottomComments">
-                        <a  id="showMoreComments" href="" ><span class="icon-white icon-arrow-down"></span> show more comments</a>
-                        <div id='loadingComments'><span class="ajaxLoader"></span> Loading comments ...</div>
-                        <div id='noMoreComments'>No more comment</div>
+                        <a  id="showMoreComments" href="" ><span class="icon-arrow-down"></span> Afficher plus de commentaires (<span id="commentsLefts"></span> restants)</a>
+                        <div id='loadingComments'><span class="ajaxLoader"></span> Chargement des commentaires ...</div>
+                        <div id='noMoreComments'>Pas de commentaires</div>
+                        <div id="noCommentYet">Pas encore de questions</div>
                     </div>
+
                     <div id="hiddenFormReply">
                          <?php if($this->session->isLogged()):?>
                         <form id="formCommentReply" class="formCommentReply" action="<?php echo Router::url('comments/reply'); ?>" method="POST">                

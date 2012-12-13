@@ -171,22 +171,31 @@
 				 		<?php endif; ?>
 
 				 		<div class="title">
-				 			<a class="nommanif" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><?php echo $manif->nommanif; ?></a>
-							<span class="numerus" id="numerus<?php echo $manif->id;?>" ><?php echo $manif->numerus; ?></span>
-							<?php echo ($manif->pid>0)? '<span class="label label-success">You Protest</span>' : '';?>							
+				 			<a class="nommanif" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><?php echo $manif->nommanif; ?></a>														
 				 		</div>	
+
 				 		<div class="description"><?php echo $manif->description; ?></div>			 					 	
-				 		<div class="action">
-				 			<div class="btn-toolbar">				 				
-				 			<?php if($this->session->user()): ?>
-						      <a class="btn btn-inverse btn-protest bubble-bottom" id="btn-protest-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" href="<?php echo Router::url('manifs/addUser');?>" data-original-title="One-click Protest !" <?php if($manif->pid>0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> Protest</a>
-						      <a class="btn btn-cancel btn-red" href="<?php echo Router::url('manifs/removeUser');?>" id="btn-cancel-<?php echo $manif->id;?>" data-manif_id="<?php echo $manif->id; ?>" <?php if($manif->pid==0) echo 'style="display:none"'; ?>><i class="icon-user icon-white"></i> You Protest</a>						      
-						    <?php endif; ?>
-						    <?php if(isset($manif->isadmin)): ?>
-						      <a class="btn btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
-					    	<?php endif;?>
-						      <a class="btn" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><i class="icon-plus-sign"></i>  En Savoir +</a>					      		
-							</div>
+				 		<div class="actions">
+				 			<div class="numerus" id="numerus<?php echo $manif->id;?>"><?php echo number_format($manif->numerus,0,' ',' '); ?></div>
+
+				 			<?php if($this->session->islogged()): ?>
+				 			<div class="switchProtest mini">
+		                        <input type="checkbox" <?php echo ($manif->doesUserProtest>0)? 'checked="checked"' : '';?> class="btn-switch-protested" data-protest="<?php echo $manif->id;?>" data-url-protest="<?php echo Router::url('manifs/addUser');?>" data-url-cancel="<?php echo Router::url('manifs/removeUser');?>">
+		                        <label><i></i></label>
+                   			</div>                   			
+                   		<?php endif; ?>
+							<div class="btn-group dropup fright">
+							  <a class="btn" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><i class="icon-eye-open"></i>  Voir </a>					      		
+							  <button class="btn dropdown-toggle" data-toggle="dropdown">
+							    <span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu">
+							  		<?php if(isset($manif->doesUserAdmin)): ?>
+						      	<li><a href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>">Administrer</a></li>
+					    			<?php endif;?>
+							    <li><a href="#">Signaler</a></li>							    
+							  </ul>
+							</div>						
 				 		</div>
 				 	</div>
 

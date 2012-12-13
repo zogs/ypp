@@ -2,7 +2,6 @@ var spanLoader = '<span class="ajaxLoader" id="ajaxLoader"></span>';
 var ajaxLoader = "#ajaxLoader";
 
 
-
 /*===========================================================
 	JQUERY 
 ============================================================*/
@@ -54,44 +53,60 @@ $(document).ready(function(){
 
     /*===========================================================
         On PROTEST button , add a protester in bdd & SHOW cancel button
-    ============================================================*/
-    $(".btn-protest").livequery('click',function(){
+	=============================================================*/
 
+	$(".btn-switch-protested").mousedown(function(){
 
-        var btn      = $(this);
-        var url      = btn.attr('href');
-        var manif_id = btn.attr('data-manif_id');
-        var user_id  = $("body").attr('data-user_id');
+		var manif_id = $(this).attr('data-protest');
 
-        btn.prepend(spanLoader);
-                    
+		//if not yes protesting
+		if(!$(this).is(':checked')){
+			//get add user url
+			var url = $(this).attr('data-url-protest');
+		}
+		else { //else get remove user url
+			var url = $(this).attr('data-url-cancel');
+		}
 
-        $.ajax({
-            type:'POST',
-            url: url,
-            data: { manif_id : manif_id, user_id:user_id},
-            success : function(data){
-            	
-                if( data.success ){
-                	
-                    btn.css('display','none');
-                    $("#btn-cancel-"+manif_id).css('display','inline-block');
-                    $('#numerus'+manif_id).text( parseInt( $('#numerus'+manif_id).text() ) + 1);
+		//ajax query
+		$.ajax({
+			type:'POST',
+			url : url,
+			data: { manif_id: manif_id},
+			success : function(data){
 
-                    var manifflash = document.getElementById('manifflash');
-                    if(manifflash) manifflash.addBonhomToManif(data.bonhom, data.login);
+				if(!data.error){
+					//if success
+					if(data.success=='added'){
 
-                    $(ajaxLoader).remove();
-                }
-                else {                 	
-                    alert( data.error );
-                }
-               
-            },
-            dataType: 'json'
-        });
-        return false;
-    });
+						//add +1 to numerus and a bonhom in flash	
+						var num = $('#numerus'+manif_id).text();
+						num = plus(num,1);
+						num = number_format(num,0,' ',' ');										
+						$('#numerus'+manif_id).text( num );
+                    	addBonhomToManif(data.bonhom, data.login);
+                    	$(this).val(true);
+
+					}
+					else if(data.success=='remove'){
+
+						//remove -1 to numerus and remove bonhom in flash
+						var num = $('#numerus'+manif_id).text();
+						num = minus( num, 1);	
+						num = number_format(num,0,' ',' ');							
+						$('#numerus'+manif_id).text( num );
+						removeBonhomFromManif(data.bonhom, data.login);						
+                    	$(this).val(false);
+					}
+				}
+				else
+					alert(data.error);
+			},
+			dataType : 'json'
+		});
+		return false;
+	});
+
 
 
 
@@ -104,54 +119,6 @@ $(document).ready(function(){
     $("#CC1").select2({ formatResult: addCountryFlagToSelectState, formatSelection: addCountryFlagToSelectState});
 
 
-
-	/*===========================================================
-		ON CANCEL button, SHOW and CANCEL
-	============================================================*/
-		$('.btn-cancel').livequery(function(){
-
-			 $(this).hover(function() {
-			 	$(this).removeClass('btn-red').addClass('btn-inverse').html('<i class="icon-remove icon-white"></i> Cancel');
-			 }, function() {
-			 	$(this).removeClass('btn-inverse').addClass('btn-red').html('<i class="icon-user icon-white"></i> You Protest');
-			 });
-
-			 $(this).click(function(){
-
-				var btn      = $(this);
-				var url      = btn.attr('href');
-				var manif_id = btn.attr('data-manif_id');
-				var user_id  = $("body").attr('data-user_id');
-
-				btn.prepend(spanLoader);
-
-			 	$.ajax({
-			 		type:'POST',
-			 		url:url,
-			 		data:{ manif_id : manif_id, user_id: user_id},
-			 		success : function(data){
-			 			if(data.success){
-			 				
-			 				btn.css('display','none');
-				 			$("#btn-protest-"+manif_id).show();
-				 			$('#numerus'+manif_id).text( parseInt( $('#numerus'+manif_id).text() ) - 1);
-
-				 			$(ajaxLoader).remove();		 				
-			 			}
-			 			else 
-			 				alert(data.error);
-			 		},
-			 		dataType:'json'
-			 	});
-			 	return false;
-			 });
-		 }, function() {
-		     $(this).unbind('mouseover').unbind('mouseout');
-	 	});
-	 	//-- 
-
-		
-	
 
 
     	/*===========================================================
@@ -459,225 +426,242 @@ $(document).ready(function(){
 
 		    });
 
+		} //end jquery listener
 
-        }   
 
+	    /*===========================================================	        
+	    SHOW COMMENTS
+	    @param use params in Global_showComments_params[]
+	    @param use $arguments[] , string clear,newer,start
+	    ============================================================*/ 
+	    
+		function show_comments(){
+			
+			$("#ajaxLoader").show();
+			$("#showMoreComments").hide();
+			$("#loadingComments").show();
 
-    /*===========================================================	        
-    SHOW COMMENTS
-    @param use params in Global_showComments_params[]
-    @param use $arguments[] , string clear,newer,start
-    ============================================================*/ 
-    
-	function show_comments(){
-		
-		$("#refresh_com").prepend(spanLoader);
-		$("#showMoreComments").hide();
-		$("#loadingComments").show();
+	        var arg = (arguments[0]) ? arguments[0] : 'clear';
 
-        var arg = (arguments[0]) ? arguments[0] : 'clear';
+	        clean_params('newer','start'); 
 
-        clean_params('newer','start'); 
+	        if(arg=='new') 
+	             construct_params("?newer="+Global_newerCommentId);
+	        if(arg=='bottom')
+	            construct_params("?start="+Global_newerCommentId);    
 
-        if(arg=='new') 
-             construct_params("?newer="+Global_newerCommentId);
-        if(arg=='bottom')
-            construct_params("?start="+Global_newerCommentId);    
-
+	        
+	        console.log(JSON.stringify(Global_showComments_params));
+			$.ajax({
+			  type: 'GET',
+			  url: Global_showComments_url,
+			  data: arrayParams2string(Global_showComments_params),
+			  success: function( data ) 
+	          {	   
         
-        console.log(JSON.stringify(Global_showComments_params));
-		$.ajax({
-		  type: 'GET',
-		  url: Global_showComments_url,
-		  data: arrayParams2string(Global_showComments_params),
-		  success: function( html ) 
-          {	                
+	            //Jquery trick to decode html entities
+	            var html = $('<div />').html(data.html).text();
 
-            //Jquery trick to decode html entities
-            //var html = $('<div />').html(coms.content).text();
+	            if(arg=='new') {
+	                $("#badge").empty().hide();
+	                $('#comments').prepend(html);
+	                Global_tcheckComments_offset = 0;
+	            }                        
+	            else if(arg=='bottom') {                           
+	                $('#comments').append(html);                       
+	            }
+	            else if(!arg || arg=='clear'){
+	                $("#badge").empty().hide();                        
+	                $('#comments').empty().append(html);
+	                $("#noMoreComments").hide();
+	                Global_tcheckComments_offset = 0; 
+	                Global_newerCommentId = 0; 
+	            }
+	            //Get id of the first comment
+				if(arg=='new'){
+	                var first_id = $(html).first('.post').attr('id');
+	                first_id = first_id.replace('com','');
+	                Global_newerCommentId = first_id;
+	                //console.log('firstID'+Global_newerCommentId);
+	            }
 
-            if(arg=='new') {
-                $("#badge").empty().hide();
-                $('#comments').prepend(html);
-                Global_tcheckComments_offset = 0;
-            }                        
-            else if(arg=='bottom') {                           
-                $('#comments').append(html);                       
-            }
-            else if(!arg || arg=='clear'){
-                $("#badge").empty().hide();                        
-                $('#comments').empty().append(html);
-                $("#noMoreComments").hide();
-                Global_tcheckComments_offset = 0; 
-                Global_newerCommentId = 0; 
-            }
-            
+	            
+	           	    
+	           	$("#ajaxLoader").hide();	                
+	            $("#loadingComments").hide();
+	            Global_loadingComments = false;
 
-            Global_loadingComments = false;
-           	                    
-            $("#loadingComments").hide();
-            $("#showMoreComments").show();
-            $("#ajaxLoader").remove();	                
-             
-          	if(trim(html)==''){
-            	$("#loadingComments").hide();
-            	$("#showMoreComments").hide();
-            	$("#noMoreComments").show();
-            	return;
-            } 	                
-                   
-			//Get id of the first comment
-			if(arg=='new'){
-                var first_id = $(html).first('.comment').attr('id');
-                first_id = first_id.replace('com','');
-                Global_newerCommentId = first_id;
-                //console.log('firstID'+Global_newerCommentId);
-            }
-		},
-		  dataType: 'html'
-		});
-		return;
+	            //If there is no comment yet
+	            if(data.commentsTotal==0){
 
-	}
+	            	$("#noCommentYet").show();
+	            	return;
+	            }
 
-	/*===========================================================	        
-	INFINITE SCROLL
-	if scroll to the bottom of page
-	increment page and call show_comments
-	==========================================================*/								
-    function infiniteComment() {
+	            //fi there is no more comments to show
+	            if(data.commentsLeft>0){
+	            
+		       	     $("#showMoreComments").show();
+		       	     $("#commentsLefts").text(data.commentsLeft);
+		       	     $("#noMoreComments").hide();
+		       	     return;
+	       	    }
+	       	    else {
+	       	    	 $("#showMoreComments").hide();
+	       	     	$("#noMoreComments").hide();
+	       	    }
+	                                          
+	                   
+				
+			},
+			  dataType: 'json'
+			});
+			return;
 
-        $(window).scroll(function(){
-            
-            var ylastCom = $("#bottomComments").offset(); 
-            var scrollPos = parseInt($(window).scrollTop()+$(window).height());
-            console.log(ylastCom.top+' <= '+scrollPos);
-            if( (ylastCom.top <= scrollPos ) && Global_loadingComments===false ) 
-            {   
-            	
-                Global_loadingComments = true;
-                new_page        = Global_pageComments+1;
-                Global_pageComments   = new_page;
-                construct_params("?page="+new_page);                    
-                show_comments('bottom');		                    
-                
-            }
-
-        });
-    };
-    //infiniteComment();
-
-
-    /*===========================================================
-    	SHOW MORE COMMENTS
-    	add the next page of comments
-    ============================================================*/
-    function showMoreComments() {
-
-    	Global_loadingComments = true;
-    	new_page = Global_pageComments+1;
-    	Global_pageComments = new_page;
-    	construct_params("?page="+new_page);
-    	show_comments('bottom');
-
-    }
-
-    /*===========================================================
-    	CONSTRUCT PARAMS
-    	@param string ?param=value
-    ============================================================*/
-	function construct_params(param){
-		if(param!=''){
-			var p = [];
-			if(strpos(param,'?',0)==0){
-				param = str_replace('?','',param);
-				p = explode('=',param);
-				Global_showComments_params[p[0]] = p[1];	
-			}
-			else alert('href doit commencer par ?');                
-			return param;
 		}
-	}
 
-    /*===========================================================
-    	CLEAN PARAMS
-    ============================================================*/
-    function clean_params(){
-        for(var key in arguments) {   
-            for(var cle in Global_showComments_params){                    
-                //console.debug(' key:'+arguments[key]+'    cle:'+cle+'   value:'+Global_showComments_params[cle]);
-                if(arguments[key]==cle){
-                    Global_showComments_params[cle] = 0;
-                }                    
-            }
-        }                         
-    }
+		/*===========================================================	        
+		INFINITE SCROLL
+		if scroll to the bottom of page
+		increment page and call show_comments
+		==========================================================*/								
+	    function infiniteComment() {
 
-    /*===========================================================
-    	??
-    ============================================================*/
-    function arrayParams2string(array){            
-        var str ='';
-        for(key in array){  
+	        $(window).scroll(function(){
+	            
+	            var ylastCom = $("#bottomComments").offset(); 
+	            var scrollPos = parseInt($(window).scrollTop()+$(window).height());
+	            console.log(ylastCom.top+' <= '+scrollPos);
+	            if( (ylastCom.top <= scrollPos ) && Global_loadingComments===false ) 
+	            {   
+	            	
+	                Global_loadingComments = true;
+	                new_page        = Global_pageComments+1;
+	                Global_pageComments   = new_page;
+	                construct_params("?page="+new_page);                    
+	                show_comments('bottom');		                    
+	                
+	            }
 
-                str += key+'='+array[key]+'&';
-                
-        }
-        str = str.substring(0,str.length-1);
-        return str;
-    }
+	        });
+	    };
+	    //infiniteComment();
 
-    /*===========================================================
-    	SET INTERVAL REFRESH
-    ============================================================*/
-    function setIntervalRefresh(second){
 
-        if(Global_refreshComments!=false) clearInterval(Global_refreshComments);            
-        Global_refreshComments = setInterval( function() { show_comments('new');} ,second*1000);        
-    }
-    /*===========================================================
-    	SET INTERVAL TCHECK
-    ============================================================*/
-    function setIntervalTcheck(second){
+	    /*===========================================================
+	    	SHOW MORE COMMENTS
+	    	add the next page of comments
+	    ============================================================*/
+	    function showMoreComments() {
 
-        if(Global_tcheckComments!=undefined) clearInterval(Global_tcheckComments);            
-        Global_tcheckComments = setInterval(tcheckcomments,second*1000);        
-    }
+	    	Global_loadingComments = true;
+	    	new_page = Global_pageComments+1;
+	    	Global_pageComments = new_page;
+	    	construct_params("?page="+new_page);
+	    	show_comments('bottom');
 
-    /*===========================================================
-    	TCHECK COMMENTS
-    ============================================================*/
-    function tcheckcomments(){
+	    }
 
-        
-        var obj = $('#refresh_com');
-        var badge = obj.find('#badge');
-        var url = obj.attr('data-url-count-com');
-        Global_tcheckComments_offset = Number(Global_tcheckComments_offset) + Number(Global_tcheckComments_interval);
-        var second = Global_tcheckComments_offset;
+	    /*===========================================================
+	    	CONSTRUCT PARAMS
+	    	@param string ?param=value
+	    ============================================================*/
+		function construct_params(param){
+			if(param!=''){
+				var p = [];
+				if(strpos(param,'?',0)==0){
+					param = str_replace('?','',param);
+					p = explode('=',param);
+					Global_showComments_params[p[0]] = p[1];	
+				}
+				else alert('href doit commencer par ?');                
+				return param;
+			}
+		}
 
-        url += second;
+	    /*===========================================================
+	    	CLEAN PARAMS
+	    ============================================================*/
+	    function clean_params(){
+	        for(var key in arguments) {   
+	            for(var cle in Global_showComments_params){                    
+	                //console.debug(' key:'+arguments[key]+'    cle:'+cle+'   value:'+Global_showComments_params[cle]);
+	                if(arguments[key]==cle){
+	                    Global_showComments_params[cle] = 0;
+	                }                    
+	            }
+	        }                         
+	    }
 
-        $.ajax({
-            type: 'GET',
-            url: url,
-            success: function(data){
-                //$('#manifeste').empty().html(data);
-                if(is_numeric(data.count)){
-                    if(data.count>0){
-                        badge.empty().html(trim(data.count));
-                        badge.show();
-                    }
-                    else {
-                        badge.hide();
-                    }
-                }
-                else alert(data);
+	    /*===========================================================
+	    	??
+	    ============================================================*/
+	    function arrayParams2string(array){            
+	        var str ='';
+	        for(key in array){  
 
-            },
-            dataType: 'json'
-        });
-    }
+	                str += key+'='+array[key]+'&';
+	                
+	        }
+	        str = str.substring(0,str.length-1);
+	        return str;
+	    }
+
+	    /*===========================================================
+	    	SET INTERVAL REFRESH
+	    ============================================================*/
+	    function setIntervalRefresh(second){
+
+	        if(Global_refreshComments!=false) clearInterval(Global_refreshComments);            
+	        Global_refreshComments = setInterval( function() { show_comments('new');} ,second*1000);        
+	    }
+	    /*===========================================================
+	    	SET INTERVAL TCHECK
+	    ============================================================*/
+	    function setIntervalTcheck(second){
+
+	        if(Global_tcheckComments!=undefined) clearInterval(Global_tcheckComments);            
+	        Global_tcheckComments = setInterval(tcheckcomments,second*1000);        
+	    }
+
+	    /*===========================================================
+	    	TCHECK COMMENTS
+	    ============================================================*/
+	    function tcheckcomments(){
+
+	        
+	        var obj = $('#refresh_com');
+	        var badge = obj.find('#badge');
+	        var url = obj.attr('data-url-count-com');
+	        Global_tcheckComments_offset = Number(Global_tcheckComments_offset) + Number(Global_tcheckComments_interval);
+	        var second = Global_tcheckComments_offset;
+
+	        url += second;
+
+	        $.ajax({
+	            type: 'GET',
+	            url: url,
+	            success: function(data){
+	                //$('#manifeste').empty().html(data);
+	                if(is_numeric(data.count)){
+	                    if(data.count>0){
+	                        badge.empty().html(trim(data.count));
+	                        badge.show();
+	                    }
+	                    else {
+	                        badge.hide();
+	                    }
+	                }
+	                else alert(data);
+
+	            },
+	            dataType: 'json'
+	        });
+	    }
+ 
+
+
+    
 
 	/*===========================================================
 		FORM AJAX
@@ -717,7 +701,7 @@ $(document).ready(function(){
 		CHECK DUPLICATE MAIL AND LOGIN
 	============================================================*/
 
-		$("#inputlogin,#inputemail").bind('keyup',function(){
+		$("#inputlogin,#inputemail").bind('keyup blur',function(){
 
 			var input = $(this);
 			var control = input.parent().parent();
@@ -779,10 +763,20 @@ $(document).ready(function(){
 nameProtesters = ['Barry White','Mike Jagger','Elvis Presley','Joe Coker','John Lennon','Johny Cash','Jon Baez','Bob Dylan','Bob Marley','Jimmy Hendrix'];
 function addBonhomToManif(bonhom,name){
 
-    if(bonhom==undefined) bonhom = 'bonhom_'+Math.floor(Math.random()*10);
-    if(name==undefined) name = nameProtesters[Math.floor(Math.random()*10)];
+	if(document.getElementById('manifflash')){
+	    if(bonhom==undefined) bonhom = 'bonhom_'+Math.floor(Math.random()*10);
+	    if(name==undefined) name = nameProtesters[Math.floor(Math.random()*10)];
 
-    document.getElementById('manifflash').addHimToManif(bonhom,name);
+	    document.getElementById('manifflash').addBonhomToManif(bonhom,name);
+	}
+}
+
+
+function removeBonhomFromManif(bonhom,name){
+
+	if(document.getElementById('manifflash')){
+		document.getElementById('manifflash').removeBonhomFromManif(bonhom,name);
+	}
 }
 
 /*==============================================================*/
@@ -853,6 +847,8 @@ function showRegion(value,region)
 
 	$("#"+region).nextAll('select').empty().remove();
 	$("#"+region).next('.select2-container').nextAll('.select2-container').empty().remove();
+
+	if(region=='city') return false;
 
 	if(value!='')
 	{		
