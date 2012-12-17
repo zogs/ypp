@@ -24,6 +24,13 @@ class Conf {
 
 	static $cacheLocation = 'D:/wamp/www/ypp/webroot/cache';
 
+	static $reserved = array(
+		'login'=>array(
+			'array'=>array('admin','administrator','administrateur'),
+			'errorMsg'=>'This login is reserved'
+			)
+		);
+
 
 }
 

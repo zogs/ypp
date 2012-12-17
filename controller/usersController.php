@@ -656,19 +656,29 @@ class UsersController extends Controller{
 		if($this->request->data){
 			$data = $this->request->data;
 			$type = $data->type;
-			$value = $data->value;			
-			$user = $this->Users->findFirst(array(
-				'fields'=> $type,
-				'conditions' => array($type=>$value))
-			);
-			if(!empty($user)) {
-				$d['error'] = '<strong>'.$value."</strong> is already in use!";
+			$value = $data->value;	
+
+			if(empty($value)){
+
+				$d['error'] = 'Must not be empty';
 			}
 			else {
-				$d['available'] = "Available !";
-			}
-		}
-	
+				if(in_array($value,Conf::$reserved[$type]['array'])){
+
+					$d['error'] = Conf::$reserved[$type]['errorMsg'];
+				}
+				else {
+					$user = $this->Users->findFirst(array('fields'=> $type,'conditions' => array($type=>$value)));
+
+					if(!empty($user)) {
+						$d['error'] = '<strong>'.$value."</strong> is already in use!";
+					}
+					else {
+						$d['available'] = "Available !";
+					}
+				}	
+			}	
+		}	
 		$this->set($d);	
 	}
 
