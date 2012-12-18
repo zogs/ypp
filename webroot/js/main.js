@@ -701,7 +701,7 @@ $(document).ready(function(){
 		CHECK DUPLICATE MAIL AND LOGIN
 	============================================================*/
 
-		$("#inputlogin,#inputemail").bind('keyup blur',function(){
+		$("#inputlogin,#inputemail").bind('blur',function(){
 
 			var input = $(this);
 			var control = input.parent().parent();
@@ -720,7 +720,7 @@ $(document).ready(function(){
 				help.addClass('hide').empty();
 
 				$.ajax({
-					type: 'POST',
+					type: 'GET',
 					url: url,
 					data: {type : type, value : value},
 					success: function(data){

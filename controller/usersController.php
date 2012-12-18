@@ -653,22 +653,38 @@ class UsersController extends Controller{
 
 		$d = array();
 
-		if($this->request->data){
-			$data = $this->request->data;
+		if($this->request->get){
+
+			$data = $this->request->get;
 			$type = $data->type;
 			$value = $data->value;	
 
+			//if empty
 			if(empty($value)){
 
 				$d['error'] = 'Must not be empty';
 			}
 			else {
+				
+				//check validation model
+				$check = new stdClass();
+				$check->$type = $value;
+				if(!$this->Users->validates($check,'account_info',$type)){
+					
+					$d['error'] = $this->Users->errors[$type];
+				}
+
+				//check reserved words
 				if(in_array($value,Conf::$reserved[$type]['array'])){
 
 					$d['error'] = Conf::$reserved[$type]['errorMsg'];
 				}
-				else {
-					$user = $this->Users->findFirst(array('fields'=> $type,'conditions' => array($type=>$value)));
+			}
+
+			//if no error check existing
+			if(empty($d['error'])){
+
+				$user = $this->Users->findFirst(array('fields'=> $type,'conditions' => array($type=>$value)));
 
 					if(!empty($user)) {
 						$d['error'] = '<strong>'.$value."</strong> is already in use!";
@@ -676,8 +692,9 @@ class UsersController extends Controller{
 					else {
 						$d['available'] = "Available !";
 					}
-				}	
-			}	
+
+			}
+				
 		}	
 		$this->set($d);	
 	}

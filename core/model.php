@@ -313,7 +313,7 @@
  		return $pre->fetch(PDO::FETCH_OBJ);
  	}
 
-	public function validates($data, $rules = null){
+	public function validates($data, $rules = null, $field = null){
 
 
 		$errors = array();
@@ -323,11 +323,16 @@
 			$validates = $this->validates;
 		}
 		else {
-			$validates = $this->validates[$rules];
+
+			if($field==null)
+				$validates = $this->validates[$rules];
+			else
+				$validates = array($field=>$this->validates[$rules][$field]);
 		}
 		
 		//Vérifie les regles de validation pour chaque champs
 		foreach ($validates  as $k => $v) { 
+
 
  				//Si la donnée correspondant est manquante -> erreur				
  				if(!isset($data->$k)){
@@ -342,9 +347,10 @@
  						
  						 $errors[$k] = $v['message'];
  					}
+ 					
  				}
  				else{
- 					
+ 				
 				//Si il y a plusiers regles
 				if(isset($v['rules'])){
 					$rules = $v['rules']; 						
@@ -354,6 +360,7 @@
 					
 					 $rules = array($v);
 				}
+
 				//Pour toutes les regles correspondante
 				foreach ($rules as $rule) {
 					

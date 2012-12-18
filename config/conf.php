@@ -28,7 +28,10 @@ class Conf {
 		'login'=>array(
 			'array'=>array('admin','administrator','administrateur'),
 			'errorMsg'=>'This login is reserved'
-			)
+			),
+		'email'=>array(
+			'array'=>array(),
+			'errorMsg'=>'This email is reserved')
 		);
 
 
