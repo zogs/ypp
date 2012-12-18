@@ -13,20 +13,20 @@
 
 	<div class="form-block">
 		<div class="form-title">
-			<span class="number">1</span><span class="text">choose <strong>account</strong> type</span>
+			<span class="number">1</span><h1 class="text"><span>Choose <strong>account</strong> type</span></h1>
 		</div>
 
 		<div class="form-fields">
 
 			<div class="account_type">
-				<input type="radio" name="account_type" id="public_type" value="public" <?php echo (isset($data)&&$data->account_type=="public")? 'checked="checked"':'';?> >
+				<input type="radio" name="account" id="public_type" value="public" <?php echo (is_object($data)&&$data->account_type=="public")? 'checked="checked"':'';?> >
 				<label for="public_type">
 				<strong>Public</strong>
 				<p>participate and create protest. Can comment all protest.</p>
 				</label>
 			</div>
 			<div class="account_type">
-				<input type="radio" name="account_type" id="pseudo_type" value="pseudo" <?php echo (isset($data)&&$data->account_type=="pseudo")? 'checked="checked"':'';?> >
+				<input type="radio" name="account" id="pseudo_type" value="pseudo" <?php echo (is_object($data)&&$data->account_type=="pseudo")? 'checked="checked"':'';?> >
 				<label for="pseudo_type">				
 				<strong>Pseudonym</strong>
 				<p>can protest and comment open protest</p>
@@ -34,7 +34,7 @@
 			</div>
 			
 			<div class="account_type">
-				<input type="radio" name="account_type" id="anonym_type" value="anonym" <?php echo (isset($data)&&$data->account_type=="anonym")? 'checked="checked"':'';?> >
+				<input type="radio" name="account" id="anonym_type" value="anonym" <?php echo (is_object($data)&&$data->account_type=="anonym")? 'checked="checked"':'';?> >
 				<label name="account_type" for="anonym_type">				
 				<strong>ANONYM</strong>
 				<p>can protest but can't comment</p>
@@ -46,7 +46,7 @@
 
 	<div class="form-block">
 		<div class="form-title">
-			<span class="number">2</span><span class="text">choose a <strong>protester</strong></span>			
+			<span class="number">2</span><h1 class="text"><span>Choose a <strong>protester</strong></span></h1>			
 		</div>
 
 		<div class="form-fields">
@@ -64,7 +64,7 @@
 								
 								echo '<div class="bonhom_pick">';
 								echo '<input type="radio" name="bonhom" id="'.$name.'" value="'.$name.'" ';
-								echo (isset($data)&&$data->bonhom==$name)? ' checked="checked" ' : '';
+								echo (is_object($data)&&$data->bonhom==$name)? ' checked="checked" ' : '';
 								echo ' >';
 								echo '<label class="label_bonhom" for="'.$name.'">';
 								echo '<img src="'.Router::webroot($path).'" alt="'.$name.'">';												
@@ -79,7 +79,7 @@
 
 	<div class="form-block">
 		<div class="form-title">
-			<span class="number">3</span><span class="text">fill your <strong>information</strong> </span>
+			<span class="number">3</span><h1 class="text"><span>Fill <strong>your</strong> information</span></h1>
 		</div>
 
 		<div class="form-fields">

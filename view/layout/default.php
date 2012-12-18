@@ -64,7 +64,7 @@
 						<input type="submit" value="OK" />
 					</form>
 					<li><a href="<?php echo Router::url('users/login');?>">Login</a></li>	
-					<li><a class="callModal" href="<?php echo Router::url('users/register');?>" >Inscription</a></li>
+					<li><a href="<?php echo Router::url('users/register');?>" >Inscription</a></li>
 
 
 				<?php endif ?>
