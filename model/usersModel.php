@@ -20,6 +20,14 @@ class Users extends Model{
 			'confirm' => array(
 				'rule' => 'confirmPassword',
 				'message' => "Vos mots de passe ne sont pas identiques"
+				),
+			'prenom'=>array(
+				'rule'=>'notEmpty',
+				'message'=>"Indiquer votre prénom"
+				),
+			'nom'=>array(
+				'rule'=>'notEmpty',
+				'message'=>"Indiquer votre nom de famille"
 				)
 		),
 		'account_info' => array(

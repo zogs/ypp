@@ -541,6 +541,8 @@ Inscription
 .register .intro .charly img{ height: 300px; }
 .register .intro .charly strong { position:absolute; top:20%; left:2%; width:100%; text-align: center; font-family: 'Newsflash',Impact, Arial, Serif; font-weight: bold text-transform: uppercase; font-size: 45px;}
 
+.register fieldset { display:block; width:100%;}
+
 .register .form-block { position:relative; width: 100%; text-align: center; padding-top:30px; }
 .register .form-title { width:100%; text-align: center; overflow: hidden;}
 .register .form-title .number { display:block; position:absolute; top:10px; left:0; width:80px; height:80px; font-family:"Alba",Arial, sans-serif; color:#2892a6; line-height:50px; font-weight: bold; font-size:25px; background:#FFF; padding:10px 15px; border-radius: 50px; border:4px solid #dfdddd;}
@@ -561,7 +563,7 @@ Inscription
 .account_type input:checked ~ label strong { font-size: 18px;}
 .account_type label:hover { border-color:#AAA;}
 
-.bonhom_pickup { width:60%; margin:0 20%; text-align: center;}
+.bonhom_pickup { width:60%; margin:0 auto; text-align: center;}
 .bonhom_pickup .bonhom_pick { position:relative; display:inline-block ;margin:5px 5px; text-align:center; cursor:pointer;}
 .bonhom_pickup .bonhom_pick .label_bonhom { padding:0; margin:0; cursor:pointer; border:4px solid #DBDBDB; }
 .bonhom_pickup .bonhom_pick .label_bonhom img { width:80px; }
@@ -574,11 +576,13 @@ Inscription
 .account_info .control-group .controls { position: relative; width:100%;}
 .account_info .control-group .control-label { color:#999; font-weight:bold; font-size:110%;}
 .account_info .control-group .controls i.icon-form { position:absolute; display:block; margin-top:12px; margin-left:7px;}
+.account_info .control-group .controls p.help-inline {display:inline; padding:0;}
 .account_info .control-group .controls input, .account_info .control-group .controls select { 
-    padding-left:30px; width:100%; padding-top:8px; padding-bottom:8px; color:#980202; font-size: 14px; font-weight: bold; border:3px solid #AAA;}
+    margin:0; padding-left:30px; width:100%; padding-top:8px; padding-bottom:8px; color:#980202; font-size: 14px; font-weight: bold; border:3px solid #AAA;}
 .account_info .control-group .controls input:hover, .account_info .control-group .controls select:hover { 
     border-color:#707070;}
 .account_info .control-group .controls input:focus, .account_info .control-group .controls select:focus { border-color:#980202; } 
+.account_info .fields_public .control-group .controls .select2-container { margin:5px 0; }
 .account_info .fields_public .control-group .controls .select2-container .select2-choice { height:35px; border:3px solid #AAA; background-color:white; background-image: none; }
 .account_info .control-group#control-accept .controls { text-align: left; margin:15px 0; }
 .account_info .control-group#control-accept .controls input { width:20px; }
@@ -628,9 +632,9 @@ Inscription
 Account
 */
 #account { margin-top:20px;}
-#account .account-form { float:right; width:500px; padding-left:50px; padding-right:50px; overflow:visible}
+#account .account-form { float:right; width:580px; padding-left:50px; padding-right:50px; overflow:visible}
 #account .account-form .control-label { float:left; width:20%; display:block; text-align:left; font-weight: normal ;font-size:95%;}
-#account .account-form .controls { float:left; width:60%; }
+#account .account-form .controls { float:left; width:70%; }
 #account .account-form input[type=submit] { float:left; margin-top:20px; margin-bottom:30px;}
 #account .account-form div.geo-select {width:100%}
 #account .account-form div.geo-select .select2-choice { padding:4px 5px; width:100%; height:auto; outline:none; border:0; border-radius:0; border:1px solid #CCC; border-radius:3px ; background-color:white; background-image:none; text-align:left; line-height:inherit; }
@@ -639,6 +643,9 @@ Account
 #account .account-form div.geo-select .select2-choice div b { background-position:0 -2px;}
 #account .account-form div.geo-select .select2-drop { left:0; margin-top: 0; padding:5px 0 2px 5px; width:200px;}
 #account .account-form div.geo-select .select2-results { max-height:300px; text-align:left; }
+#account .account-form .label_bonhom { float:left; margin:0 5px; width:50px; text-align:center; cursor:pointer;}
+#account .account-form .label_bonhom img { width:50px; border:1px solid #BBB;}
+#account .account-form .label_bonhom input[type=radio] { display:inline;}
 #changeavatar { float:left; width:230px; }
 #changeavatar .avatar { margin-bottom:10px; width:100%; text-align:left;}
 #changeavatar .avatar img { width:120px; height:120px; }

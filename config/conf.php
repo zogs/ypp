@@ -32,7 +32,8 @@ class Conf {
 
 	static $js_main = 'js/main.js';
 	static $js_dependency = array(	
-									'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
+									'http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js',
+									'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js',
 									'js/jquery/jquery.livequery.min.js',
 									'bootstrap/js/bootstrap.js',
 									'js/phpfunctions.js',

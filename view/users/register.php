@@ -11,7 +11,8 @@
 
 	<form id="form_register" autocomplete="on" action="<?php echo Router::url('users/register'); ?>" method="post" <?php echo (isset($Success))? 'class="hide"':''; ?>>	
 
-	<div class="form-block">
+	<fieldset>
+		<div class="form-block">
 		<div class="form-title">
 			<span class="number">1</span><h1 class="text"><span>Choose <strong>account</strong> type</span></h1>
 		</div>
@@ -19,14 +20,14 @@
 		<div class="form-fields">
 
 			<div class="account_type">
-				<input type="radio" name="account" id="public_type" value="public" <?php echo (is_object($data)&&$data->account_type=="public")? 'checked="checked"':'';?> >
+				<input type="radio" name="account" id="public_type" value="public" <?php echo (is_object($data)&&$data->account=="public")? 'checked="checked"':'';?> >
 				<label for="public_type">
 				<strong>Public</strong>
 				<p>participate and create protest. Can comment all protest.</p>
 				</label>
 			</div>
 			<div class="account_type">
-				<input type="radio" name="account" id="pseudo_type" value="pseudo" <?php echo (is_object($data)&&$data->account_type=="pseudo")? 'checked="checked"':'';?> >
+				<input type="radio" name="account" id="pseudo_type" value="pseudo" <?php echo (is_object($data)&&$data->account=="pseudo")? 'checked="checked"':'';?> >
 				<label for="pseudo_type">				
 				<strong>Pseudonym</strong>
 				<p>can protest and comment open protest</p>
@@ -34,7 +35,7 @@
 			</div>
 			
 			<div class="account_type">
-				<input type="radio" name="account" id="anonym_type" value="anonym" <?php echo (is_object($data)&&$data->account_type=="anonym")? 'checked="checked"':'';?> >
+				<input type="radio" name="account" id="anonym_type" value="anonym" <?php echo (is_object($data)&&$data->account=="anonym")? 'checked="checked"':'';?> >
 				<label name="account_type" for="anonym_type">				
 				<strong>ANONYM</strong>
 				<p>can protest but can't comment</p>
@@ -44,7 +45,11 @@
 		</div>
 	</div>
 
-	<div class="form-block">
+	</fieldset>
+
+
+	<fieldset>
+		<div class="form-block">
 		<div class="form-title">
 			<span class="number">2</span><h1 class="text"><span>Choose a <strong>protester</strong></span></h1>			
 		</div>
@@ -77,46 +82,63 @@
 
 	</div>
 
-	<div class="form-block">
-		<div class="form-title">
-			<span class="number">3</span><h1 class="text"><span>Fill <strong>your</strong> information</span></h1>
-		</div>
+	</fieldset>	
+	
 
-		<div class="form-fields">
+	<fieldset>
+		<div class="form-block">
+			<div class="form-title">
+				<span class="number">3</span><h1 class="text"><span>Fill <strong>your</strong> information</span></h1>
+			</div>
 
-			<div class="account_info">
-				<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>	
-				<?php echo $this->Form->input('login','',array('icon'=>'icon-user','required'=>'required','placeholder'=>"Votre pseudo",'data-url'=>Router::url('users/check'))) ?>
-				<?php echo $this->Form->input('email',"",array('type'=>'email', 'icon'=>"icon-envelope","required"=>"required","placeholder"=>"Votre email",'data-url'=>Router::url('users/check'))) ?>
-				<?php echo $this->Form->input('password','',array('type'=>"password",'icon'=>'icon-lock','required'=>'required','placeholder'=>'Votre mot de passe')) ?>
-				<?php echo $this->Form->input('confirm','', array('type'=>'password','icon'=>'icon-lock','required'=>'required','placeholder'=>'Confirmer votre mot de passe')) ?>
-				<?php echo $this->Form->input('prenom',"",array('icon'=>'icon-user','required'=>'required','placeholder'=>'Votre prénom')) ?>
-				<?php echo $this->Form->input('nom',"",array('icon'=>'icon-user','required'=>'required','placeholder'=>'Votre nom')) ?>
-				<div class="fields_public">
+			<div class="form-fields">
+
+				<div class="account_info">
+					<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>	
+					<?php echo $this->Form->input('login','',array('icon'=>'icon-user','required'=>'required','placeholder'=>"Votre pseudo",'data-url'=>Router::url('users/check'))) ?>
+					<?php echo $this->Form->input('email',"",array('type'=>'email', 'icon'=>"icon-envelope","required"=>"required","placeholder"=>"Votre email",'data-url'=>Router::url('users/check'))) ?>
+					<?php echo $this->Form->input('password','',array('type'=>"password",'icon'=>'icon-lock','required'=>'required','placeholder'=>'Votre mot de passe')) ?>
+					<?php echo $this->Form->input('confirm','', array('type'=>'password','icon'=>'icon-lock','required'=>'required','placeholder'=>'Confirmer votre mot de passe')) ?>
+					<?php echo $this->Form->input('prenom',"",array('icon'=>'icon-user','required'=>'required','placeholder'=>'Votre prénom')) ?>
+					<?php echo $this->Form->input('nom',"",array('icon'=>'icon-user','required'=>'required','placeholder'=>'Votre nom')) ?>
+					<div class="fields_public">
+						
+						<div class="control-group">
+							<div class="controls">
+							<?php
+
+							$this->request('world','locate',array());
+							 ?>				 
+							</div>
+						</div>	
+					</div>
+
+					<?php echo $this->Form->checkbox('accept','',array('1'=>'I agree with the <a href="">terms of use</a>'));?>
 					
-					<div class="control-group">
-						<div class="controls">
-						<?php
+					<input class="btn btn-inverse btn-large" type="submit" value="Register"/>
 
-						$this->request('world','locate',array());
-						 ?>				 
-						</div>
-					</div>	
-				</div>
 
-				<?php echo $this->Form->checkbox('accept','',array('1'=>'I agree with the <a href="">terms of use</a>'));?>
+				</div>	
 				
-				<input class="btn btn-inverse btn-large" type="submit" value="Register"/>
+			</div>
 
-
-			</div>	
-			
 		</div>
-
-	</div>
+	</fieldset>
+	
 	
 	</form>
 
 </div>
 
 <div class="bottom-vizu-protest"></div>
+
+<script type="text/javascript">
+	
+
+$(document).ready(function(){
+
+
+
+});
+
+</script>
