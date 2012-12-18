@@ -1,17 +1,52 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" lang="fr">
 <head>
-	<link rel="stylesheet" style="text/css" href="<?php echo Router::webroot('bootstrap/css/bootstrap.css'); ?>" />
-	<link rel="stylesheet" style="text/css" href="<?php echo Router::webroot('css/style.css'); ?>" />
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script type="text/javascript" src="<?php echo Router::webroot('js/jquery/jquery.livequery.min.js'); ?>"></script>
-	<script type="text/javascript" src="<?php echo Router::webroot('bootstrap/js/bootstrap.js'); ?>"></script>
-	<script type="text/javascript" src="<?php echo Router::webroot('js/phpfunctions.js');?>"></script>
-	<script type="text/javascript" src="<?php echo Router::webroot('js/jquery/select2-2.1/select2.min.js') ?>"></script>
-	<link rel="stylesheet" style="text/css" href="<?php echo Router::webroot('js/jquery/select2-2.1/select2.css');?>" />
-	<script type="text/javascript" src="<?php echo Router::webroot('js/jquery/jquery.expander.min.js');?>"></script>
-	<script type="text/javascript" src="<?php echo Router::webroot('js/main.js'); ?>"></script>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8" />		
+	<?php
+
+/**
+* INCLUDE CSS
+* array Conf::$css
+* array Controller $css_load
+*/
+	$css = array();
+	if(isset(Conf::$css)) $css = array_merge(Conf::$css,$css);
+	
+	if(isset($css_load)){
+		if(is_string($css_load)) $css_load = array($css_load);
+		if(is_array($css_load)) $css = array_merge($css,$css_load);
+	}
+	foreach ($css as $name => $url) {
+		if(strpos($url,'http')!==0) $url = Router::webroot($url);
+		echo '<link rel="stylesheet" style="text/css" href="'.$url.'" />';		
+	}
+
+
+/**
+ * INCLUDE JAVASCRIPT
+ * array Conf::$js 
+ * array Conf::$js_dependency
+ * array Controller $js_load
+ */
+	$js = array();
+	if(isset(Conf::$js_dependency))	$js = array_merge(Conf::$js_dependency,$js);
+	
+	if(isset($this->loadJS)){
+		if(is_string($this->loadJS)) $this->loadJS = array($this->loadJS);
+		if(is_array($this->loadJS)) $js = array_merge($js,$this->loadJS);
+	}
+	if(isset(Conf::$js_main)){
+		if(is_string(Conf::$js_main)) $js[] = Conf::$js_main;
+		if(is_array(Conf::$js_main)) $js = array_merge($js,$js_main);
+	}
+	foreach ($js as $name => $url) {
+		
+		if(strpos($url,'http')===0) $url = $url;
+		else $url = Router::webroot($url);		
+		echo '<script type="text/javascript" src="'.$url.'"></script>';
+	}
+
+	?>
 	<title><?php echo isset($title_for_layout)?$title_for_layout : 'Ypp';?></title>
 	
 </head>

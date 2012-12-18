@@ -24,6 +24,23 @@ class Conf {
 
 	static $cacheLocation = 'D:/wamp/www/ypp/webroot/cache';
 
+	static $css = array(						
+						'bootstrap/css/bootstrap.css',
+						'css/style.css',
+						'js/jquery/select2-2.1/select2.css'
+						);
+
+	static $js_main = 'js/main.js';
+	static $js_dependency = array(	
+									'https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js',
+									'js/jquery/jquery.livequery.min.js',
+									'bootstrap/js/bootstrap.js',
+									'js/phpfunctions.js',
+									'js/jquery/select2-2.1/select2.min.js',
+									'js/jquery/jquery.expander.min.js'
+								);
+
+
 	static $reserved = array(
 		'login'=>array(
 			'array'=>array('admin','administrator','administrateur'),
