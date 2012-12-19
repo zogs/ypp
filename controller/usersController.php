@@ -687,7 +687,7 @@ class UsersController extends Controller{
 						$d['error'] = '<strong>'.$value."</strong> is already in use!";
 					}
 					else {
-						$d['available'] = "Available !";
+						$d['available'] = "";
 					}
 
 			}

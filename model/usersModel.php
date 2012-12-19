@@ -21,26 +21,36 @@ class Users extends Model{
 				'rule' => 'confirmPassword',
 				'message' => "Vos mots de passe ne sont pas identiques"
 				),
-			'prenom'=>array(
-				'rule'=>'notEmpty',
-				'message'=>"Indiquer votre prénom"
+			'prenom' => array(
+				'rule'=> 'optionnal',
 				),
-			'nom'=>array(
-				'rule'=>'notEmpty',
-				'message'=>"Indiquer votre nom de famille"
+			'nom' => array(
+				'rule' => 'optionnal',
+				),
+			'age' => array(
+				'rules'=> array(
+							array(
+								'rule'=> '19[0-9]{1}[0-9]{1}',
+								'message'=> "Between 1900 and 1999..."
+							),
+							array(
+								'rule'=>'optionnal',
+								'message'=>''
+							)
+						)
 				)
 		),
 		'account_info' => array(
 			'login' => array(
 				'rules'=> array(
-					array(
-						'rule' => 'notEmpty',
-						'message' => 'Your login is empty'
-							),
-					array('rule' => '.{5,20}',
-						'message' => 'Login between 5 and 20 caracters'
-						)
-					)
+							array(
+								'rule' => 'notEmpty',
+								'message' => 'Your login is empty'
+									),
+							array('rule' => '.{5,20}',
+								'message' => 'Login between 5 and 20 caracters'
+								)
+							)
 				),
 			'email' => array(
 				'rule' => '[_a-zA-Z0-9-+]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-z]{2,4})',

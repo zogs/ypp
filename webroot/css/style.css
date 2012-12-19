@@ -576,9 +576,10 @@ Inscription
 .account_info .control-group .controls { position: relative; width:100%;}
 .account_info .control-group .control-label { color:#999; font-weight:bold; font-size:110%;}
 .account_info .control-group .controls i.icon-form { position:absolute; display:block; margin-top:12px; margin-left:7px;}
-.account_info .control-group .controls p.help-inline {display:inline; padding:0;}
+.account_info .control-group .controls p.help-inline {display:inline; padding:0; text-align: left;}
+.account_info .control-group .controls p.help-error { color:#980202; }
 .account_info .control-group .controls input, .account_info .control-group .controls select { 
-    margin:0; padding-left:30px; width:100%; padding-top:8px; padding-bottom:8px; color:#980202; font-size: 14px; font-weight: bold; border:3px solid #AAA;}
+    height:auto; margin:0; padding-left:30px; width:100%; padding-top:8px; padding-bottom:8px; color:#980202; font-size: 14px; font-weight: bold; border:3px solid #AAA; border-radius: 5px;}
 .account_info .control-group .controls input:hover, .account_info .control-group .controls select:hover { 
     border-color:#707070;}
 .account_info .control-group .controls input:focus, .account_info .control-group .controls select:focus { border-color:#980202; } 

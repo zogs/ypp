@@ -332,25 +332,36 @@
 		
 		//Vérifie les regles de validation pour chaque champs
 		foreach ($validates  as $k => $v) { 
+				
+			//Si la donnée correspondant est manquante -> erreur				
+			if(empty($data->$k)){
 
+				//Si il y a plusiers regles
+				if(isset($v['rules'])){
+					$rules = $v['rules']; 						
+					foreach ($rules as $r) {
+						if($r['rule']=='optionnal') $optionnal=true;
 
- 				//Si la donnée correspondant est manquante -> erreur				
- 				if(!isset($data->$k)){
- 					//Si il y a plusiers regles
- 					if(isset($v['rules'])){
- 						$rules = $v['rules'];
- 						$rule = $rules[0];
- 						$errors[$k] = $rule['message'];
- 					}
- 					//Si il y a qu'une regle
- 					if(isset($v['rule'])){
- 						
- 						 $errors[$k] = $v['message'];
- 					}
- 					
- 				}
- 				else{
- 				
+					}
+					//if not optionnal
+					if(!isset($optionnal)){
+						$rule = $rules[0];
+						$errors[$k] = $rule['message'];
+					}
+					
+				}
+				//Si il y a qu'une regle
+				if(isset($v['rule'])){
+					
+					//Si le champ est optionnel, sauter au prochain champ
+					if($v['rule']=='optionnal') continue;
+					
+					$errors[$k] = $v['message'];
+				}
+				
+			}
+			else{
+			
 				//Si il y a plusiers regles
 				if(isset($v['rules'])){
 					$rules = $v['rules']; 						
@@ -364,20 +375,25 @@
 				//Pour toutes les regles correspondante
 				foreach ($rules as $rule) {
 					
-				if($rule['rule']=='notEmpty'){
+
+					if($rule['rule']=='notEmpty'){
 						if(empty($data->$k)) $errors[$k] = $rule['message'];				
 					}
 					elseif($rule['rule']=='confirmPassword'){
 						if($data->$k != $data->password) $errors[$k] = $rule['message'];
 					}
+					elseif($rule['rule']=='optionnal'){
+
+					}
 					elseif(!preg_match('/^'.$rule['rule'].'$/',$data->$k)){
 						$errors[$k] = $rule['message'];
 					}
-				}
-				
+				}				
 			}
-
+			//reset optionnal
+			$optionnal=false;
 		}
+
 
 
 		//Vérifie les fichiers uploadé

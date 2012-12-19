@@ -20,25 +20,25 @@
 		<div class="form-fields">
 
 			<div class="account_type">
-				<input type="radio" name="account" id="public_type" value="public" <?php echo (is_object($data)&&$data->account=="public")? 'checked="checked"':'';?> >
+				<input type="radio" name="account" id="public_type" value="public" <?php echo (isset($data->account)&&$data->account=="public")? 'checked="checked"':'';?> >
 				<label for="public_type">
 				<strong>Public</strong>
-				<p>participate and create protest. Can comment all protest.</p>
+				<p>Can protest, create protest, and comment all protests.</p>
 				</label>
 			</div>
 			<div class="account_type">
-				<input type="radio" name="account" id="pseudo_type" value="pseudo" <?php echo (is_object($data)&&$data->account=="pseudo")? 'checked="checked"':'';?> >
+				<input type="radio" name="account" id="pseudo_type" value="pseudo" <?php echo (isset($data->account)&&$data->account=="pseudo")? 'checked="checked"':'';?> >
 				<label for="pseudo_type">				
 				<strong>Pseudonym</strong>
-				<p>can protest and comment open protest</p>
+				<p>Can protest and comment open protests.</p>
 				</label>
 			</div>
 			
 			<div class="account_type">
-				<input type="radio" name="account" id="anonym_type" value="anonym" <?php echo (is_object($data)&&$data->account=="anonym")? 'checked="checked"':'';?> >
+				<input type="radio" name="account" id="anonym_type" value="anonym" <?php echo (isset($data->account)&&$data->account=="anonym")? 'checked="checked"':'';?> >
 				<label name="account_type" for="anonym_type">				
 				<strong>ANONYM</strong>
-				<p>can protest but can't comment</p>
+				<p>Can protest but can't comment. Noboby can see your profil</p>
 				</label>
 			</div>
 			
@@ -69,7 +69,7 @@
 								
 								echo '<div class="bonhom_pick">';
 								echo '<input type="radio" name="bonhom" id="'.$name.'" value="'.$name.'" ';
-								echo (is_object($data)&&$data->bonhom==$name)? ' checked="checked" ' : '';
+								echo (isset($data->bonhom)&&$data->bonhom==$name)? ' checked="checked" ' : '';
 								echo ' >';
 								echo '<label class="label_bonhom" for="'.$name.'">';
 								echo '<img src="'.Router::webroot($path).'" alt="'.$name.'">';												
@@ -99,20 +99,21 @@
 					<?php echo $this->Form->input('email',"",array('type'=>'email', 'icon'=>"icon-envelope","required"=>"required","placeholder"=>"Votre email",'data-url'=>Router::url('users/check'))) ?>
 					<?php echo $this->Form->input('password','',array('type'=>"password",'icon'=>'icon-lock','required'=>'required','placeholder'=>'Votre mot de passe')) ?>
 					<?php echo $this->Form->input('confirm','', array('type'=>'password','icon'=>'icon-lock','required'=>'required','placeholder'=>'Confirmer votre mot de passe')) ?>
-					<?php echo $this->Form->input('prenom',"",array('icon'=>'icon-user','required'=>'required','placeholder'=>'Votre prénom')) ?>
-					<?php echo $this->Form->input('nom',"",array('icon'=>'icon-user','required'=>'required','placeholder'=>'Votre nom')) ?>
-					<div class="fields_public">
-						
-						<div class="control-group">
-							<div class="controls">
-							<?php
+					<div id="public_info" class="<?php echo (isset($data->account)&&$data->account!='public')? 'hide':'' ?>">
+						<?php echo $this->Form->input('prenom',"",array('icon'=>'icon-user','placeholder'=>'Votre prénom')); ?>
+						<?php echo $this->Form->input('nom',"",array('icon'=>'icon-user','placeholder'=>'Votre nom')); ?>
+						<?php echo $this->Form->input('age',"",array('icon'=>'icon-gift','placeholder'=>'Votre année de naissance')); ?>
+						<div class="fields_public" id="control-location">						
+							<div class="control-group">
+								<div class="controls">
+								<?php
 
-							$this->request('world','locate',array());
-							 ?>				 
-							</div>
-						</div>	
+								$this->request('world','locate',array());
+								 ?>				 
+								</div>
+							</div>	
+						</div>
 					</div>
-
 					<?php echo $this->Form->checkbox('accept','',array('1'=>'I agree with the <a href="">terms of use</a>'));?>
 					
 					<input class="btn btn-inverse btn-large" type="submit" value="Register"/>
@@ -136,6 +137,27 @@
 	
 
 $(document).ready(function(){
+
+	var publicinfo = $('#public_info');
+
+	$("#public_type").bind('click',function(){
+
+		publicinfo.show().find('input,select').removeAttr('disabled');
+
+	});
+
+	$("#pseudo_type").bind('click',function(){
+
+		publicinfo.hide().find('input,select').attr('disabled','disabled');
+
+	});
+
+	$("#anon_type").bind('click',function(){
+
+		publicinfo.hide().find('input,select').attr('disabled','disabled');	
+
+	});
+
 
 
 
