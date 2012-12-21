@@ -36,20 +36,23 @@ class UsersController extends Controller{
 					unset($_SESSION['token']);
 
 					$this->user = $user;
+					debug($user);
 
+					
 					$this->session->write('user', $user);
 					$this->session->setToken();				
 					$this->session->setFlash('Vous êtes maintenant connecté');
-
+					/*
 					$loc = $_SERVER['HTTP_REFERER'];
-					if(strpos($loc,'users/login')&&strpos($loc,'users/validate')){
-				
-						//$this->redirect('users/thread');
+					if(strpos($loc,'users/login')||strpos($loc,'users/validate')){
+
+						$this->redirect('users/thread');
 					}				
-					//else
-						//$this->reload(); 
-									
-	
+					else {
+
+						$this->reload(); 
+					}				
+					*/
 
 				}
 				else {
