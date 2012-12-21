@@ -48,6 +48,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#24050101', e
 
 }
 
+::selection {
+  background: #c00000; color:#FFF; /* Safari */
+  }
+::-moz-selection {
+  background: #c00000; color:#FFF; /* Firefox */
+}
+
+
+
 .mainContainer {margin-top:42px; padding-top:5px ; }
 
 
@@ -159,8 +168,9 @@ Index Manif
 .manif {  position:relative; float:left; margin:10px 0; padding:20px 2% 15px 4%; width:95%; border:1px solid #CCC; background:rgba(255, 255, 255, 0.6); box-shadow:3px 5px 5px rgba(0,0,0,0.1); border-radius: 3px;}
 .manif:nth-child(odd) { margin-left:0;}
 .manif:nth-child(even) { margin-left:5%;}
-.manif:hover { background-color: #F5F5F5;}
-.manif:hover .title .nommanif, .manif:hover .description { color:#005580;}
+.manif:hover { background-color: #2c2c2c;}
+.manif:hover .title .nommanif { color:#FFF}
+.manif:hover .description { color:#FFF; font-weight: normal;}
 .manif:hover .action { visibility: visible;}
 .manif .title {  line-height:0;}
 .manif a.nommanif:link { color:#434343; font:bold 130% Arial, Helvetica; }
@@ -171,12 +181,12 @@ Index Manif
 .manif .logo { float:right; overflow:hidden; margin-left:20px; }
 .manif .logo .image { width:100px; height:100px; border-radius:3px; background-color: #FFF;  }
 .manif .logo .image-default { position:relative; max-width:none; box-shadow:inset 0 0 30px #000; opacity: 0.9;-moz-opacity: 0.9;filter:alpha(opacity=9); }
-.manif .description { overflow: hidden; margin-top:3px; margin-left:20px; margin-bottom:10px; height:40px; color:#747474; text-shadow:0 1px 0 #FFF; font-size:14px; line-height:1.5em;}
+.manif .description { overflow: hidden; margin-top:3px; margin-left:20px; margin-bottom:10px; height:40px; color:#747474; text-shadow:0 1px 0 rgba(255,255,255,0.2); font-size:14px; line-height:1.5em;}
 .manif .description p:first-child { margin-top:0;}
 .mainf .description:after { content:'...';}
 .manif .actions { visibility: visible; margin-left:20px;}
-.manif .actions .numerus { float:left; margin:2px 10px 0 0; width:130px; text-align:right; height:20px; line-height: 22px; font-size:1.2em; font-weight: bold; color:white; letter-spacing:0.6em; font-family: Arial, Helvetica, sans-serif; background: #FFF url('../img/scoreboard_3digits.png') repeat 93% top; background-size: auto auto}
-.manif .actions .numerus span { position:relative; display:block; float:left; width:16px; height:inherit; line-height:inherit; text-align:center; background:#535353;  color:white; border-radius: 3px}
+.manif .actions .numerus { float:left; margin:2px 10px 0 0; width:130px; text-align:right; height:20px; line-height: 22px; font-size:1.2em; font-weight: bold; color:white; letter-spacing:0.6em; font-family: Arial, Helvetica, sans-serif; background: transparent url('../img/scoreboard_3digits.png') repeat 93% top; background-size: auto auto}
+.manif .actions .numerus span { position:relative; display:block; float:left; width:16px; height:inherit; line-height:inherit; text-align:center;  color:white; border-radius: 3px}
 .manif .actions .numerus span:before { content:''; position: absolute; top:45%; left:0; width:100%; border-top:1px solid #F8F8F8; border-top:1px solid rgba(255,255,255,0.5); border-bottom:1px solid #EEE; border-bottom:1px solid rgba(255,255,255,0.4);}
 .manif .actions .numerus i { float:left; display:block; width:5px; height:inherit;}
 .manif .actions .btn-toolbar { margin-bottom:0;}
@@ -211,9 +221,10 @@ View Manif
     border:6px solid #DDD;
 }
 #manif .info .meta .by .user { height:30px; display:inline-block; background:#ae3b46; padding: 0 20px; color:#feffff; font-size:14px; text-transform: capitalize;}
+#manif .info .meta .by .user:hover { cursor:pointer; }
 #manif .info .meta .by .date { padding:3px 15px; color:#aba9a9; font-size:12px; font-weight: normal; text-transform: capitalize; }
 #manif .info .meta .by span:affter { display:inline-block; content:""; width:5px; height: 5px; box-shadow:3px 3px 0px #666;border-right:2px solid #CCC; border-bottom:2px solid #CCC; margin:0 10px; ms-transform:rotate(-45deg);  -o-transform:rotate(-45deg);  -moz-transform:rotate(-45deg);  -webkit-transform:rotate(-45deg); filter:progid:DXImageTransform.Microsoft.BasicImage(rotation=0.5);}
-#manif .info .actions { float:left; width:75%; padding-bottom:10px }
+#manif .info .actions { float:left; width:75%; }
 
 
 /* Mini switch button */
@@ -368,6 +379,16 @@ View Manif
       background:#a92a2a;
     }
 
+section { overflow: hidden;}
+.sections { width:100%; position:relative; border:1px solid #EEE; padding-top:-20px;}
+.sections:after {content:''; width: 150px; position:absolute; top:0; left:0; z-index:-100; height:100%; background:#e7e7e7;}
+.section { overflow:hidden;}
+.sectionActive { margin:5px 0;}
+.section:first-child .sectionActive { margin-top:0;}
+.sectionTitle { width:150px; float:left; padding-right:15px; text-align:right; color:#777}
+.sectionContent { display:none; float:left; width:780px; padding:0 10px; }
+.sectionActive .sectionTitle { padding-top:10px; padding-bottom:10px; font-weight:bold; font-size:14px; color:#3c3c3c; background:#dbd9d9; border-bottom:5px solid #AE3B46;} 
+.sectionActive .sectionContent { display:block; }
 /* Protest description page */
 
 #manifeste { padding:15px; }
@@ -377,7 +398,6 @@ View Manif
 
 #manif .wall .onglets { float:left; width:70%;}
 #ypTab { margin-top:07px; }
-#commentaires { margin-top:20px;}
 
 .form_toggle { float:left; display:none; padding:15px 0;width:100%;}
 .form_toggle textarea {float:left; }

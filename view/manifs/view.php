@@ -38,38 +38,53 @@
         </header>
     </div>
 
+    <div class="sections">       
 
-    <div class="manifeste"> 
-        <div class="description expandable" data-maxlength="500" data-expandtext=" read more..." data-collapsetext=" reduce">
-            <?php echo $manif->description ?>
-        </div>               
-    </div>
-
-    <div class="wall">
-        <div class="onglets">
-            <ul class="nav nav-tabs" id="ypTab">
-                <li><a href="#commentaires" data-toggle="pill">Discussion</a></li>
-                <li><a href="#statistics" data-toggle="pill">Statistics</a></li>
-                <li><a href="#diffuse" data-toggle="pill">Diffuse</a></li>
-            </ul>
-            <div class="tab-content">
-
-                <!-- Mur de discussion -->
-                <div class="tab-pane active" id="commentaires">
-
-                    <?php $this->request('comments','show',array('manif',$manif->id)); ?>
-                    
-                </div>
-
-                <!-- Statistics -->
-                <div class="tab-pane" id="statistics">...</div>
-
-                <!-- Diffuse -->
-                <div class="tab-pane" id="diffuse">...</div>
-
+        <section>
+            <div class="section sectionActive sectionFixed"> 
+                <a href="#" class="sectionTitle">Description</a>
+                <div class="sectionContent rowDescription expandable" data-maxlength="500" data-expandtext=" read more..." data-collapsetext=" reduce"><?php echo $manif->description ?></div>               
             </div>
-        </div>    
+        </section>
+
+        <section>
+            <div class="section">
+                <a href="#" class="sectionTitle">Authors</a>
+                <a class="sectionContent">ae er zer erez arazer rz er</a>
+            </div>
+        </section>
+
+         <section>
+            <div class="section">
+                <a href="#" class="sectionTitle">Others protest</a>
+                <a class="sectionContent">fezfze ezf zef efef ezf </a>
+            </div>
+        </section>
+
+         <section>
+            <div class="section">
+                <a href="#" class="sectionTitle">Statistics</a>
+                <div class="sectionContent">gegreg erg reg reg erg er g</div>
+            </div>
+        </section>
+
+
+        <section>
+            <div class="section sectionActive">
+                <a href="#" class="sectionTitle">Wall</a>
+                <div class="sectionContent">
+                    <div id="commentaires">
+                        <?php $this->request('comments','show',array('manif',$manif->id)); ?>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
     </div>
+    
+
 </div>
 
 
@@ -82,7 +97,7 @@
 $(document).ready(function(){ 
             
 
-
+        // Button share 
         intervalRoutine = false;
         $('.btn-share').toggle(function(){            
             intervalRoutine = setInterval(addBonhomToManif,Math.floor(Math.random()*1000));
@@ -91,32 +106,26 @@ $(document).ready(function(){
             clearInterval(intervalRoutine);   
         });
 
+        //
+        $(".sectionTitle").not(".sectionFixed").toggle(function(){
+
+            $(this).parent('.section').addClass('sectionActive');
+        },
+        function(){
+
+            $(this).parent('.section').removeClass('sectionActive');
+        });
 
 
 
         /*
-        *   Onglets
-        */
-
+        *   Onglets       
         $('#ypTab a:first').tab('show');
         $('#ypTab a:first').on('shown', function (e) {
           e.target // activated tab
           e.relatedTarget // previous tab
         });
-  
-
-
-
-
-
-
-        //end========
-        //=====
-
-
-
-
-
+        */
 
 
 
