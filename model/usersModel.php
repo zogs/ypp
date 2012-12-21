@@ -215,12 +215,28 @@ class Users extends Model{
  		}
 
  		  // debug($sql);
-
  		$pre = $this->db->prepare($sql);
  		$pre->execute();
+ 		$results = $pre->fetchAll(PDO::FETCH_OBJ);
+ 		
+ 		$users = array();
+ 		foreach ($results as $result) { 			
+ 			$users[] = new User($result); 
+ 		}
 
- 		return $pre->fetchAll(PDO::FETCH_OBJ);
+ 		return $users;
 	}
+
+	public function __autoload($class){
+
+    	echo $class;
+	}
+
+	public function findFirst($req){
+
+		return current($this->findUsers($req));
+	}
+
 
 	public function findParticipations( $fields, $user_ids ){
 
@@ -289,5 +305,17 @@ class Users extends Model{
 	}
 
 	
+}
+
+
+class User {
+
+	public function __construct( $fields ){
+
+		foreach ($fields as $field => $value) {
+			
+			$this->$field = $value;
+		}
+	}
 }
  ?>

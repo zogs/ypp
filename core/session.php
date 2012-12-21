@@ -5,6 +5,8 @@ class Session {
 
 		$this->controller = $controller;
 
+		require_once(ROOT.DS.'model'.DS.'usersModel.php');
+
 		if(!isset($_SESSION)){
 			session_start();
 
@@ -17,7 +19,7 @@ class Session {
 				$user->user_id = 0;
 				$user->avatar = 'img/logo_yp.png';
 				$user->lang = $this->get_client_language(array_keys(Conf::$languageAvailable,Conf::$languageDefault));
-				$_SESSION['user'] = $user;
+				$this->write('user',$user);
 			}			
 			
 		}
@@ -76,7 +78,6 @@ class Session {
 
 	public function read($key = null){
 
-
 		if($key){
 
 			if(isset($_SESSION[$key])){
@@ -118,7 +119,7 @@ class Session {
 	}
 
 	public function user($key = null){
-		
+
 		if($this->read('user')){
 
 			if($key){
@@ -192,6 +193,8 @@ class Session {
 	    }
 	    return $default;
     }
+
+    
 }
 
 ?>

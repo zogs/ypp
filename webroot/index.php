@@ -2,6 +2,8 @@
 
 //$debut = microtime(true);
 
+
+
 define('WEBROOT',dirname(__FILE__));
 define('ROOT',dirname(WEBROOT));
 define('DS',DIRECTORY_SEPARATOR);

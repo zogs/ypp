@@ -143,9 +143,13 @@ class Controller {
 
 	public function reload(){
 
-		header("Location: ".$_SERVER['HTTP_REFERER']);
-		exit();
-
+		if(isset($_SERVER['HTTP_REFERER'])){
+			header("Location: ".$_SERVER['HTTP_REFERER']);				
+		}
+		else{
+			$this->redirect('/');
+		}
+		exit();	
 	}
 
 	public function getCountryCode(){
