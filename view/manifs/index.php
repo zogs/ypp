@@ -185,7 +185,7 @@
                    			</div>                   			
                    		<?php endif; ?>
 							<div class="btn-group dropup fright">
-							  <a class="btn" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><i class="icon-eye-open"></i>  Voir </a>					      		
+							  
 							  <button class="btn dropdown-toggle" data-toggle="dropdown">
 							    <span class="caret"></span>
 							  </button>

@@ -41,7 +41,7 @@
     <div class="sections">       
 
         <section>
-            <div class="section sectionActive sectionFixed"> 
+            <div class="section sectionActive sectionFixed" style="margin-top:0"> 
                 <a href="#" class="sectionTitle">Description</a>
                 <div class="sectionContent rowDescription expandable" data-maxlength="500" data-expandtext=" read more..." data-collapsetext=" reduce"><?php echo $manif->description ?></div>               
             </div>

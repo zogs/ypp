@@ -220,8 +220,10 @@ class Users extends Model{
  		$results = $pre->fetchAll(PDO::FETCH_OBJ);
  		
  		$users = array();
- 		foreach ($results as $result) { 			
- 			$users[] = new User($result); 
+ 		foreach ($results as $user) {
+
+ 			$user = $this->JOIN('groups',array('group_id','logo as avatar','slug'),array('user_id'=>$user->user_id),$user); 			
+ 			$users[] = new User($user); 
  		}
 
  		return $users;
@@ -317,5 +319,19 @@ class User {
 			$this->$field = $value;
 		}
 	}
+
+	public function getLogin(){
+
+		if($this->account=='anonym') return 'Anonym'.$this->user_id;
+		else return $this->login;
+	}
+
+	public function getAvatar(){
+
+		if(isset($this->avatar)&&!empty($this->avatar)) return $this->avatar;
+		else return 'img/bonhom/'.$this->bonhom.'.gif';
+	}
+
+
 }
  ?>

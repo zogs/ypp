@@ -1,57 +1,49 @@
  <?php 
 
+    function show_comments($coms,$user,$context,$context_id){
 
-    //Fonction récursive qui affiche les commentaires avec les réponses
-    function show_comment_or_replies($coms,$user,$context,$context_id){
+        $html='';
+        if(!is_array($coms)) $coms = array($coms);
+        foreach ($coms as $com) {            
 
-        $html = '';
-        foreach ($coms as $com)
-        {   
+            if(isset($com->thread )){
 
-            //Si c'est un objet , c'est un commentaire donc on affiche un commentaire
-            if(is_object($com)){                                                       
-                
-                //On recupere l'id de l'element
-                $c_com = $com->id;
+                if($com->thread == 'manifNews'){
 
-                //Si c'est un element du thread user
-                if(isset($com->thread )){
-
-                    if($com->thread == 'manifNews'){
-
-                        $html .= html_comment( $com , $user);
-                    }
-
-                    if($com->thread == 'joinProtest'){
-
-                        $html .= html_joinProtest( $com , $user);
-                    }
-
-
-                }
-                //Sinon c'est que c'est un simple commentaire
-                elseif(!isset($com->thread)){
-                    
-                    $html .= html_comment( $com, $user);
+                    $html .= html_comment( $com , $user);
                 }
 
-                
-                   
-            }         
-            //Si cest un tableau , c'est les réponses a un commentaire , on ouvre une div replies et on affiche les commentaires dedans
-            
-            if(is_array($com)){
+                if($com->thread == 'joinProtest'){
 
-                $reply_to = $c_com;
-                
-                $html .= '<div class="replies">';            
-                $html .= show_comment_or_replies($com,$user,$context,$context_id); 
-                //formulaire de réponse
-                //if user is logged
-                if($user->user_id!=0){
+                    $html .= html_joinProtest( $com , $user);
+                }
+            }
+
+            else {
+
+                $html.= html_comment($com, $user);
+
+                if($com->haveReplies()){
+
+                    //$html.= show_replies($com,$user,$context,$context_id);
+                }
+            }
+        }
+
+        return $html;
+    }
+
+
+    function show_replies($com,$user,$context,$context_id){
+        
+        $html = '<div class="replies">';     
+
+        $html .= show_comments($com->replies,$user,$context,$context_id);
+
+        if($user->user_id!=0){
 
                     $html.= "<form class='formCommentReply' action='".Router::url('comments/reply')."' method='POST'>                
-                                <img class='userAvatarCommentForm' src='".Router::webroot($user->avatar)."' />
+                                <img class='userAvatarCommentForm' src='".Router::webroot($user->getAvatar())."' />
                             ";
                         if($user->user_id!=0){
                         $html .= "<textarea name='content' class='formComment' placeholder='Reply here'></textarea> 
@@ -65,19 +57,17 @@
                     $html .= "  <input type='hidden' name='context' value='".$context."' />
                                 <input type='hidden' name='context_id' value='".$context_id."'/>
                                 <input type='hidden' name='type' value='com' />
-                                <input type='hidden' name='reply_to' value='".$reply_to."' />                            
+                                <input type='hidden' name='reply_to' value='".$com->reply_to."' />                            
                                 
                             </form>" ;
-                }
-                 $html .= '</div>';  
-                          
-            } 
-                   
-                
         }
-        return $html; 
-    }
 
+        $html .= '</div>';  
+
+        return $html;
+
+    }
+    
 
     function html_joinProtest($protester,$cuser){
 
@@ -113,10 +103,10 @@
                 <?php if($com->type=='news'): ?> 
                 <img class="logo" src="<?php echo Router::webroot($com->logoManif) ?>" alt="image avatar" />             
                 <?php else: ?>
-                <img class="logo" src="<?php echo Router::webroot($com->avatar) ?>" alt="image avatar" />
+                <img class="logo" src="<?php echo Router::webroot($com->user->getAvatar()) ?>" alt="image avatar" />
                 <?php endif; ?>
                 <div>                    
-                    <div class="user"><?php echo $com->login;?></div>
+                    <div class="user"><?php echo $com->user->getLogin();?></div>
                     <abbr class="date" title="<?php echo $com->date;?>"><?php echo $com->date;?></abbr>
                     <?php if($com->type=='news'): ?>
                     <div class="title"><?php echo $com->head; ?></div>                                

@@ -138,7 +138,14 @@ class Comments extends Model
 				if(isset($comment_id)) {
 							$sql .= "
 								C.id=".$comment_id." ";	
-				} else {
+				} 
+				elseif(isset($reply_to)){
+
+							$sql .= "
+								C.reply_to=".$reply_to." ";
+
+				}
+				else {
 							$sql .= "
 								C.context='".$context."'
 								AND
@@ -160,133 +167,71 @@ class Comments extends Model
 				LIMIT ".$limit."
 			";
 
-		
+		//debug($sql);
 		$res = $this->db->prepare($sql);
 		$res->execute();
-		$coms = $res->fetchAll(PDO::FETCH_OBJ);		
+		$res = $res->fetchAll(PDO::FETCH_OBJ);		
+		
+		//foreach comment make an object	
+		$comments = array();
+		foreach ($res as $com) {
+			
+			$comments[] = new Comment($com);
 
+		}
+		//foreach comment join replies if exist
+		$comments = $this->joinReplies($comments);
+		$comments = $this->joinUserData($comments);
  		//$timeend=microtime(true);
 		//$time=$timeend-$timestart;
 		//debug('temps d\'execution sans les JOIN:'.$time);
 
-		return $coms;
+		return $comments;
 	}
+
+
 
 	/*
 	Associe les réponses aux commentaires
 	@param array/objet of comments
 	@return array of comments
 	**/
-	public function findReplies($comments){
+	public function joinReplies($comments){
 
-		$array = array();
-
-
-
-		if(is_object($comments)){
-
-			if($comments->replies > 0){
-
-				$q = "SELECT * FROM manif_comment WHERE reply_to = ".$comments->id." ORDER BY date ASC";
-				$res = $this->db->prepare($q);
-				$res->execute();
-				if($res->rowCount() != 0) {
-
-					$replies = $res->fetchAll(PDO::FETCH_OBJ);
-
-					foreach ($replies as $reply) {
-
-						$array[] = $reply;
-							
-						if($reply->replies > 0 ){
-							
-							$array[] = $this->findReplies($reply);	
-						}									
-						
-					}
+		//put in a array if its not an array
+		if(is_object($comments)) $comments = array($comments);
 		
-				}
-
-				return $array;
-			}
-			else
-				return $comments;
-
+		//loop the array of comments
+		foreach ($comments as $comment) {
+			
+			if($comment->haveReplies()){
+				//this will find all replies in Comment object
+				$replies = $this->findCommentsWithoutJOIN(array('reply_to'=>$comment->id,'order'=>'dateasc'));								
+				$comment->replies = $replies;
+							
+			}			
 		}
-		elseif(is_array($comments)) {
 
-			foreach ($comments as $com) {
-	
-				$array[] = $com;
-
-				if($com->replies > 0){				 
-					
-					$q = "SELECT C.* FROM manif_comment as C WHERE C.reply_to =".$com->id." ORDER BY C.date ASC";
-					$res = $this->db->prepare($q);
-					$res->execute();
-
-					if($res->rowCount() != 0) {
-
-						$replies = $res->fetchAll(PDO::FETCH_OBJ);
-
-						$tab = array();
-
-						foreach ($replies as $reply) {
-
-							$tab[] = $reply;
-								
-							if($reply->replies > 0 ){
-								
-								$tab[] = $this->findReplies($reply);	
-							}									
-							
-						}
-
-						$array[] = $tab;
-		
-					}
-				}
-				
-			}
-		} 		
-
-		
-
-		return $array;
-
+		return $comments;
 	}
 
+
 	public function getComments($comments_id){
-
-		$sql = 'SELECT * FROM manif_comment WHERE id = :comment_id';
-		$pre = $this->db->prepare($sql);
-		
+	
 		$array = array();
-
 		if(is_array($comments_id)){
-
-			
 
 			foreach($comments_id as $comment_id){
 
-				$pre->bindValue(':comment_id',$comments_id);
-				$pre->execute();
-				$res = $pre->fetch(PDO::FETCH_OBJ);
+
+				$res = $this->findCommentsWithoutJOIN(array('comment_id'=>$comment_id));
 				$array[] = $res;
-
-			}			
-
-			
+			}					
 		}
-
 		elseif(is_numeric($comments_id)){
 
-			$pre->bindValue(':comment_id',$comments_id);
-			$pre->execute();
-			$res = $pre->fetch(PDO::FETCH_OBJ);
-			$array[] = $res;			
-
-			
+			$res = $res = $this->findCommentsWithoutJOIN(array('comment_id'=>$comment_id));
+			$array[] = $res;					
 		}
 
 		return $array;
@@ -295,14 +240,10 @@ class Comments extends Model
 
 
 	public function joinUserData($data){
-
-		$data = $this->JOIN('users',array('user_id','login','avatar'),array('user_id'=>':user_id'),$data);
+		
+		$data = $this->joinUser($data);
 		$data = $this->JOIN('manif_comment_voted','id as voted',array('comment_id'=>':id','user_id'=>$this->session->user('user_id')),$data);
 		$data = $this->JOIN('manif_info','logo as logoManif',array('manif_id'=>':context_id'),$data);
-
-		
-		//LEFT JOIN manif_info as I ON I.manif_id = C.context_id
-
 		return $data;
 	}
 
@@ -492,4 +433,30 @@ class Comments extends Model
 
 
 
-} ?>
+} 
+
+
+class Comment {
+
+	public function __construct($params){
+
+		foreach ($params as $key => $param) {
+			
+			$this->$key = $param;
+		}
+	}
+
+	public function haveReplies(){
+
+		return ($this->replies!=0)? true : false;
+	}
+
+	public function userHaveVoted(){
+
+		return (isset($this->voted)&&is_numeric($this->voted))? true : false;
+	}
+
+
+
+
+}?>

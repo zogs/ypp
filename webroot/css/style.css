@@ -165,9 +165,9 @@ Index Manif
 .nav-timeline-a:hover { border-left:6px solid #888; color:#005580; text-decoration:none; font-weight:bold;}
 
 .listed { width:78%; }
-.manif {  position:relative; float:left; margin:10px 0; padding:20px 2% 15px 4%; width:95%; border:1px solid #CCC; background:rgba(255, 255, 255, 0.6); box-shadow:3px 5px 5px rgba(0,0,0,0.1); border-radius: 3px;}
-.manif:nth-child(odd) { margin-left:0;}
-.manif:nth-child(even) { margin-left:5%;}
+.manif {  position:relative; float:left; margin:10px 0; padding:20px 2% 15px 4%; border:1px solid #CCC; background:rgba(255, 255, 255, 0.6); box-shadow:3px 5px 5px rgba(0,0,0,0.1); border-radius: 3px;}
+.manif:nth-child(odd) { margin-left:0; width:100%;}
+.manif:nth-child(even) { margin-left:5%; width:95%; }
 .manif:hover { background-color: #2c2c2c;}
 .manif:hover .title .nommanif { color:#FFF}
 .manif:hover .description { color:#FFF; font-weight: normal;}
@@ -218,7 +218,6 @@ View Manif
     background-image: -o-linear-gradient(#414040,#2b2b2b);
     background-image: -ms-linear-gradient(#414040,#2b2b2b);
     background-image: linear-gradient(#414040,#2b2b2b);
-    border:6px solid #DDD;
 }
 #manif .info .meta .by .user { height:30px; display:inline-block; background:#ae3b46; padding: 0 20px; color:#feffff; font-size:14px; text-transform: capitalize;}
 #manif .info .meta .by .user:hover { cursor:pointer; }
@@ -380,13 +379,13 @@ View Manif
     }
 
 section { overflow: hidden;}
-.sections { width:100%; position:relative; border:1px solid #EEE; padding-top:-20px;}
+.sections { width:100%; position:relative;}
 .sections:after {content:''; width: 150px; position:absolute; top:0; left:0; z-index:-100; height:100%; background:#e7e7e7;}
 .section { overflow:hidden;}
-.sectionActive { margin:5px 0;}
+.sectionActive { margin:15px 0;}
 .section:first-child .sectionActive { margin-top:0;}
 .sectionTitle { width:150px; float:left; padding-right:15px; text-align:right; color:#777}
-.sectionContent { display:none; float:left; width:780px; padding:0 10px; }
+.sectionContent { display:none; float:left; width:780px; padding:0 20px; }
 .sectionActive .sectionTitle { padding-top:10px; padding-bottom:10px; font-weight:bold; font-size:14px; color:#3c3c3c; background:#dbd9d9; border-bottom:5px solid #AE3B46;} 
 .sectionActive .sectionContent { display:block; }
 /* Protest description page */

@@ -146,6 +146,7 @@ $(document).ready(function(){
 	        $("a#refresh_com").on('click',function(){            
 	            clean_params('page','order','type','newer','bottom');
 	            Global_pageComments = 1;
+	            construct_params('?page=1');
 	            show_comments('clear');
 	            return false;
 	        });
@@ -555,7 +556,7 @@ $(document).ready(function(){
 	    function showMoreComments() {
 
 	    	Global_loadingComments = true;
-	    	new_page = Global_pageComments+1;
+	    	new_page = parseFloat(Global_pageComments)+1;
 	    	Global_pageComments = new_page;
 	    	construct_params("?page="+new_page);
 	    	show_comments('bottom');

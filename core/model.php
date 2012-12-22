@@ -533,7 +533,6 @@
 	 	return $c;
  	}
 
-
  	public function JOIN($table,$fields,$conds,$obj){
 
 	 	$array = array();
@@ -580,6 +579,26 @@
 		
 
 	}
+
+	public function joinUser($objects){
+
+		if(!is_array($objects)) $objects = array($objects);
+
+		foreach ($objects as $obj) {
+			
+			if(is_object($obj)){
+				if(isset($obj->user_id)){
+
+					$user = $this->findFirst(array('table'=>'users','fields'=>'*','conditions'=>array('user_id'=>$obj->user_id)));
+					$user = new User($user);
+					$obj->user = $user;
+				}
+			}
+		}
+
+		return $objects;		
+	}
+
 }
 
 

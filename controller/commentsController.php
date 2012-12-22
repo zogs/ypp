@@ -98,8 +98,7 @@
 
 			//$d['coms']     = $this->Comments->findComments($params);
 			$coms       = $this->Comments->findCommentsWithoutJOIN($params);
-			$coms       = $this->Comments->findReplies($coms);
-			$coms       = $this->Comments->joinUserData($coms);
+
 			$d['coms']  = $coms;
 			$d['commentsTotal'] = $this->Comments->totalComments($context,$context_id);
 			$d['commentsDisplayed'] = $perPage*$this->request->page;
@@ -110,10 +109,7 @@
 
 
 			$com_id          = $context_id;
-			$com             = $this->Comments->getComments($com_id);
-			$com             = $this->Comments->findReplies($com);		
-			$com             = $this->Comments->joinUserData($com);	
-			
+			$com             = $this->Comments->getComments($com_id);			
 			$d['context']    = $com[0]->context;
 			$d['context_id'] = $com[0]->context_id;
 			$d['coms']       = $com;
@@ -279,8 +275,7 @@
 
 	 			//Enfin , on renvoi la vue du commentaire
 				$coms       = $this->Comments->findCommentsWithoutJOIN(array('comment_id'=>$comment_id));
-				$coms       = $this->Comments->findReplies($coms);
-				$coms       = $this->Comments->joinUserData($coms);
+
 				$d['coms']  = $coms;
 				$d['context']    = $this->request->data->context;
 				$d['context_id'] = $this->request->data->context_id;

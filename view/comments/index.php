@@ -17,7 +17,7 @@
     if(!empty($coms)){
 
         //Create the html 
-        $html = utf8_decode(show_comment_or_replies($coms,$this->session->user('obj'),$context,$context_id) );
+        $html = utf8_decode(show_comments($coms,$this->session->user('obj'),$context,$context_id) );
 
         $html = htmlentities($html);
 

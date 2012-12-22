@@ -23,8 +23,7 @@ class UsersController extends Controller{
 				'fields'=> 'user_id,login,bonhom,avatar,hash,salt,status,pays,lang',
 				'conditions' => array($field=>$login))
 			);
-
-			$user = $this->Users->JOIN('groups',array('group_id','logo as avatar','slug'),array('user_id'=>$user->user_id),$user);
+			
 			
 			if(!empty($user)){
 
@@ -36,13 +35,11 @@ class UsersController extends Controller{
 					unset($_SESSION['token']);
 
 					$this->user = $user;
-					debug($user);
-
 					
 					$this->session->write('user', $user);
 					$this->session->setToken();				
 					$this->session->setFlash('Vous êtes maintenant connecté');
-					/*
+					
 					$loc = $_SERVER['HTTP_REFERER'];
 					if(strpos($loc,'users/login')||strpos($loc,'users/validate')){
 
@@ -52,7 +49,7 @@ class UsersController extends Controller{
 
 						$this->reload(); 
 					}				
-					*/
+					
 
 				}
 				else {
