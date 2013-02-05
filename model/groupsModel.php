@@ -1,5 +1,5 @@
 <?php 
-class Groups extends Model {
+class GroupsModel extends Model {
 
 
 	public $primaryKey = 'group_id';

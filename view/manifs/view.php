@@ -13,7 +13,7 @@
                 <div class="by">                    
                     <span><a class="user">par <strong><?php echo $manif->user; ?></strong></a></span>
                     <span><a class="category"></a></span>
-                    <span class="date">Since <?php echo datefr($manif->date_creation); ?></span>
+                    <span class="date">Since <?php echo Date::datefr($manif->date_creation); ?></span>
                 </div>
 
                 <div class="actions">

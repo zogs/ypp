@@ -7,7 +7,7 @@
 		$javascript = '';
 		if($lvl!='city') $javascript = 'onchange="showRegion(this.value,\''.$lvl.'\')"';						
 					
-		echo $this->Form->_select($lvl,$state['list'],array('placeholder'=>$state['title'],"class"=>'geo-select',"default"=>$obj->$lvl,"javascript"=>$javascript));
+		echo $this->Form->_select($lvl,$state['list'],array('placeholder'=>$state['title'],"class"=>'geo-select',"default"=>$obj->$lvl,"style"=>"width:100%;","javascript"=>$javascript));
 
 	}
  ?>		

@@ -5,15 +5,16 @@
 
 <div id="top-toolbar" class="btn-toolbar">
 	<form id="search-manif" class="form-search" action="<?php echo Router::url('manifs/index/'); ?>" method="GET">
+
 	<div class="btn-group">
 		<button type="submit" class="btn btn-inverse disabled" disabled="disabled">Search</button>
   		<input type="text" class="btn" name="rch" placeholder="Ex: Occupy" value="<?php echo $this->CookieRch->read('rch'); ?>">
 	  	<button type="submit" class="btn" >OK</button>
 	</div>
-	<div class="btn-group">
+
+	<div class="btn-group" style="width:300px;">
 		<button class="btn btn-inverse disabled" disabled="disabled">Location</button>									
 			<?php 
-
 				//debug($this->CookieRch->read());
 				$arr = $this->CookieRch->arr();
 				$arr['selectClass'] = 'btn';
@@ -22,17 +23,16 @@
 			?>				
 		<button type="submit" class="btn" id="submit-state" data-url="<?php echo Router::url('world/getStates'); ?>">OK</button>		
 	</div>
+
 	<div class="btn-group">
-			<button class="btn btn-inverse disabled" disabled="disabled">Category</button>	
-			<?php echo $this->Form->_select('cat2',$cat2,array('placeholder'=>'Select category',"class"=>'btn cat-select',"default"=>$this->CookieRch->read('cat2'),"javascript"=>'onchange="showCategory(this.value,3)"')); ?>
-			<?php if($this->CookieRch->read('cat3')): ?>
-			<?php echo $this->Form->_select('cat3',$cat3,array('placeholder'=>'Select category',"class"=>'btn cat-select',"default"=>$this->CookieRch->read('cat3'))); ?>
-			<?php endif; ?>
+		<button class="btn btn-inverse disabled" disabled="disabled">Category</button>	
+		<?php echo $this->Form->_select('cat2',$cat2,array('placeholder'=>'Select category',"class"=>'btn cat-select',"default"=>$this->CookieRch->read('cat2'),"javascript"=>'onchange="showCategory(this.value,3)"')); ?>
+		<?php if($this->CookieRch->read('cat3')): ?>
+		<?php echo $this->Form->_select('cat3',$cat3,array('placeholder'=>'Select category',"class"=>'btn cat-select',"default"=>$this->CookieRch->read('cat3'))); ?>
+		<?php endif; ?>
+		<button type="submit" class="btn" id="submit-category" data-url="<?php echo Router::url('manifs/getCategory'); ?>">OK</button>	
+	</div>	
 
-
-			<button type="submit" class="btn" id="submit-category" data-url="<?php echo Router::url('manifs/getCategory'); ?>">OK</button>
-		
-		</div>	
 	<div class="arianne">
 		<?php 
 			$rch = $this->CookieRch->read('rch');
@@ -227,15 +227,6 @@
 
 	$(function(){
 
-		//Format select form
-	     
-	    $(".geo-select").select2();
-
-	    $("#CC1").select2({ formatResult: addCountryFlagToSelectState, formatSelection: addCountryFlagToSelectState});
-
-	   
-		
-		
 
 		//Bootstrap spyscroll (dont work?)
 		$('body').attr('data-spy', 'scroll').attr('data-target', '#nav-timeline').attr('data-offset', '50');

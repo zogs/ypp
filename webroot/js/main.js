@@ -881,7 +881,7 @@ function showRegion(value,region)
 //Function for select2 plugin
 function addCountryFlagToSelectState(state) {
 	
-	return "<img class='flag flag-"+state.id.toLowerCase()+"' />"+state.text;
+	return "<i class='flag flag-"+state.id.toLowerCase()+"'></i>"+state.text;
 }
 
 /*============================

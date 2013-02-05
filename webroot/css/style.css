@@ -133,7 +133,7 @@ Index Manif
 #search-manif .btn-group .btn { text-align:left;}
 #search-manif .btn-group .geo-select { width:150px; float:left;}
 #search-manif .btn-group .cat-select { width:100px;}
-
+/*
 .geo-select .select2-choice { padding:0; height:auto; outline:none; border:0; border-radius:0; background-color:transparent; background-image:none; text-align:left; line-height:inherit; }
 .geo-select .select2-choice:focus { outline:none;}
 .geo-select .select2-choice span { margin-right:16px;}
@@ -141,7 +141,16 @@ Index Manif
 .geo-select .select2-choice div b { background-position:0 -2px;}
 .geo-select .select2-drop { left:0; margin-top: 0; padding:5px 0 2px 5px; width:200px;}
 .geo-select .select2-results { max-height:300px; text-align:left; }
-
+*/
+div.geo-select { margin-bottom:8px;}
+div.geo-select .select2-choice { padding:4px 5px; width:100%; height:auto; outline:none; border:0; border-radius:0; border:1px solid #CCC; border-radius:3px ; background-color:white; background-image:none; text-align:left; line-height:inherit; }
+div.geo-select .select2-choice:focus { outline:none;}
+div.geo-select .select2-choice span { margin-right:16px; color:#999;}
+div.geo-select .select2-choice div { border:0; background:white; background-image:none;}
+div.geo-select .select2-choice div b { background-position:0 -2px;}
+div.geo-select .select2-drop { left:0; margin-top: 0; padding:5px 0 2px 5px; }
+div.geo-select .select2-results { max-height:300px; text-align:left; }
+div.geo-select .select2-result { padding:5px 0; }
 
 .ajaxLoader { padding:0 10px; background-image:url('../img/ajax-loader.gif'); background-repeat: no-repeat; }
 
@@ -755,11 +764,13 @@ top: 40%;
     // code from flag-sprites.com modified to fit database country id... dont change !!
 ===============*/
 .flag {
+    display:inline-block;
     margin-right:3px;
     width: 16px;
     height: 11px;
-    background:url(../img/flags/flags.png) no-repeat;
+    background: url(../img/flags/flags.png) no-repeat;
 }
+.flag.flag- { background:url(../img/flags/globe.png) no-repeat; height:13px; margin-right:9px;}
 .flag.flag-ad {background-position: -16px 0;}
 .flag.flag-ae {background-position: -32px 0;}
 .flag.flag-af {background-position: -48px 0;}

@@ -1,5 +1,5 @@
 <?php 
-class Users extends Model{
+class UsersModel extends Model{
 
 	public $primaryKey = 'user_id';
 
@@ -183,7 +183,7 @@ class Users extends Model{
  			else
  				$sql .= $req['fields'];
  		}
- 		else $sql .= 'U.*, P.* ';
+ 		else $sql .= '*';
 
 
  		$sql .= " FROM users									
@@ -214,7 +214,7 @@ class Users extends Model{
 			$sql .= ' LIMIT '.$req['limit'];
  		}
 
- 		  // debug($sql);
+ 		//debug($sql);
  		$pre = $this->db->prepare($sql);
  		$pre->execute();
  		$results = $pre->fetchAll(PDO::FETCH_OBJ);
@@ -322,7 +322,7 @@ class User {
 
 	public function getLogin(){
 
-		if($this->account=='anonym') return 'Anonym'.$this->user_id;
+		if($this->account=='anonym') return 'anonym_'.$this->user_id;
 		else return $this->login;
 	}
 

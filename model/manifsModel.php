@@ -1,5 +1,5 @@
 <?php 
-class Manifs extends Model {
+class ManifsModel extends Model {
 
 	public $table = 'manif_info';
 	public $primaryKey = 'manif_id';

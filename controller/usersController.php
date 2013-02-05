@@ -106,9 +106,9 @@ class UsersController extends Controller{
 					//user object
 					$user = new stdClass();
 					$user = $data;
-					$user->salt = randomString(10);
+					$user->salt = String::random(10);
 					$user->hash = md5($user->salt.$data->password);
-					$user->codeactiv = randomString(25);
+					$user->codeactiv = String::random(25);
 					$user->password = '';
 					$user->confirm = '';
 					$user->lang = $this->session->user('lang');
@@ -524,7 +524,7 @@ class UsersController extends Controller{
 
 					//save new password
 					$new = new stdClass();
-					$new->salt = randomString(10);
+					$new->salt = String::random(10);
 					$new->hash = md5($new->salt.$data->password);
 					$new->user_id = $user->user_id;
 					if($this->Users->save($new)){
@@ -601,7 +601,7 @@ class UsersController extends Controller{
 				}
 
 				//create new recovery data
-				$code = randomString(100);
+				$code = String::random(100);
 
 				$rec = new stdClass();				
 				$rec->user_id = $user->user_id;
@@ -703,15 +703,8 @@ class UsersController extends Controller{
 
 		$lien = "http://localhost/ypp/users/recovery?c=".urlencode(base64_encode($code))."&u=".urlencode(base64_encode($user_id));
 
-        //Création d'une instance de swift transport (SMTP)
-        $transport = Swift_SmtpTransport::newInstance()
-          ->setHost('smtp.manifeste.info')
-          ->setPort(25)
-          ->setUsername('admin@manifeste.info')
-          ->setPassword('XSgvEPbG');
-
         //Création d'une instance de swift mailer
-        $mailer = Swift_Mailer::newInstance($transport);
+        $mailer = Swift_Mailer::newInstance(Conf::getTransportSwiftMailer());
        
         //Récupère le template et remplace les variables
         $body = file_get_contents('../view/email/recoveryPassword.html');
@@ -742,19 +735,9 @@ class UsersController extends Controller{
 
 		$lien = "http://localhost/ypp/users/validate?c=".urlencode(base64_encode($codeactiv))."&u=".urlencode(base64_encode($user_id));
 
-        //Création d'une instance de swift transport (SMTP)
-        $transport = Swift_SmtpTransport::newInstance()
-          ->setHost('smtp.manifeste.info')
-          ->setPort(25)
-          ->setUsername('admin@manifeste.info')
-          ->setPassword('XSgvEPbG');
-
         //Création d'une instance de swift mailer
-        $mailer = Swift_Mailer::newInstance($transport);
-       
-        //Genère un mot de passe aléatoire
-        $pass = randomString(10);
-       
+        $mailer = Swift_Mailer::newInstance(Conf::getTransportSwiftMailer());
+
         //Récupère le template et remplace les variables
         $body = file_get_contents('../view/email/validateAccount.html');
         $body = preg_replace("~{site}~i", Conf::$Website, $body);

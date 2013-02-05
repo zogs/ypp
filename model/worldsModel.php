@@ -1,7 +1,7 @@
 <?php /**
 * 
 */
-class Worlds extends Model
+class WorldsModel extends Model
 {
 	private $cacheSystem = true;
 

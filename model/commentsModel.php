@@ -1,7 +1,7 @@
 <?php /**
 * 
 */
-class Comments extends Model
+class CommentsModel extends Model
 {
 	public $table = 'manif_comment';	
 

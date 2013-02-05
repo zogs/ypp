@@ -80,13 +80,11 @@ class Controller {
 	//Permet de charger un model
 	public function loadModel($name){
  	
-		$file = ROOT.DS.'model'.DS.$name.'Model.php';
-		
-		require_once($file);
+		$classname = $name.'Model';
 		
 		if(!isset($this->$name)) {
 				
-			$this->$name = new $name();
+			$this->$name = new $classname();
 
 			if(isset($this->Form)){
 				$this->$name->Form = $this->Form;	

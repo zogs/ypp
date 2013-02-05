@@ -16,7 +16,7 @@
 
  		//Initialisation de la table sql du model
 		if($this->table===false){
- 			$this->table = strtolower(get_class($this));
+ 				$this->table = strtolower(str_replace('Model','',get_class($this))); 
  		}
 
  		//Initalisation de la base sql a utilsier

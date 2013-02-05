@@ -5,8 +5,6 @@ class Session {
 
 		$this->controller = $controller;
 
-		require_once(ROOT.DS.'model'.DS.'usersModel.php');
-
 		if(!isset($_SESSION)){
 			session_start();
 
