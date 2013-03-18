@@ -102,8 +102,7 @@ class UsersModel extends Model{
 			'ban_php_code'=>true
 			)
 	);
-
-
+			
 	public function saveUser($user,$user_id = null){
 
 		//unset action value
