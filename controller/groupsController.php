@@ -88,9 +88,9 @@ class GroupsController extends Controller{
 
 
 				//check if user is admin of the group
-				$admin = $this->Groups->isAdmin($this->session->user('user_id'),$group_id);
+				$admin = $this->Groups->isAdmin(Session::user()->getID(),$group_id);
 				if(!$admin) {
-					$this->session->setFlash("You are not admin of this group","warning");
+					Session::setFlash("You are not admin of this group","warning");
 					$this->redirect('/');
 				}					
 
@@ -112,11 +112,11 @@ class GroupsController extends Controller{
 					));
 					//get category
 					$d['cats2'] = $this->Manifs->findCategory(array(
-					'lang'     =>$this->getLanguage(),
+					'lang'     =>$this->getLang(),
 					'level'    =>2
 					));	
 					$d['cats3'] = $this->Manifs->findCategory(array(
-					'lang'     =>$this->getLanguage(),
+					'lang'     =>$this->getLang(),
 					'level'    =>3
 					));	
 
@@ -124,10 +124,10 @@ class GroupsController extends Controller{
 					$d['group'] = unescape($group);
 					$d['submit_tx'] = 'Save';
 
-					$this->session->setFlash("You are admin of ".$group->name,"success");
+					Session::setFlash("You are admin of ".$group->name,"success");
 				}
 				else{
-					$this->session->setFlash('This group does not exist','error');
+					Session::setFlash('This group does not exist','error');
 					return $this->account_view();
 				}
 			}
@@ -140,7 +140,7 @@ class GroupsController extends Controller{
 		else {
 
 
-			$this->session->setFlash("As a group, you can create protests, spread news, schedule events ! ",'warning');
+			Session::setFlash("As a group, you can create protests, spread news, schedule events ! ",'warning');
 			//get geographical 
 			$d['states'] = $this->Worlds->findAllStates(array(
 				'CC1'=>$this->CookieRch->read('CC1'),
@@ -152,11 +152,11 @@ class GroupsController extends Controller{
 				));
 			//get category
 			$d['cats2'] = $this->Manifs->findCategory(array(
-			'lang'     =>$this->getLanguage(),
+			'lang'     =>$this->getLang(),
 			'level'    =>2
 			));	
 			$d['cats3'] = $this->Manifs->findCategory(array(
-			'lang'     =>$this->getLanguage(),
+			'lang'     =>$this->getLang(),
 			'level'    =>3
 			));	
 
@@ -260,15 +260,15 @@ class GroupsController extends Controller{
 				if($this->Groups->saveGroup($group)){
 
 					if($this->Groups->action=='insert')
-						$this->session->setFlash('Your group have been <strong>succefully created</strong>');
+						Session::setFlash('Your group have been <strong>succefully created</strong>');
 					elseif($this->Groups->action=='update')
-						$this->session->setFlash('<strong>Update successful</strong>');
+						Session::setFlash('<strong>Update successful</strong>');
 
 					$group_id = $this->Groups->id;
 
 				}
 				else{
-					$this->session->setFlash('Oups... error while saving group !','error');
+					Session::setFlash('Oups... error while saving group !','error');
 				}
 				
 
@@ -283,7 +283,7 @@ class GroupsController extends Controller{
 				
 			}
 			else {
-				$this->session->setFlash('Please check your information','error');
+				Session::setFlash('Please check your information','error');
 			}
 		}
 		else {

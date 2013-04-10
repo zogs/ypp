@@ -178,7 +178,7 @@ function file_get_contents_curl($url)
 	$info = curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
 
 	//checking mime types
-	if(strstr($info,'text/html')) {
+	if(strstr($info,'text/html') || strstr($info,'application/json') ) {
 		curl_close($ch);
 		return $data;
 	} else {
@@ -187,28 +187,25 @@ function file_get_contents_curl($url)
 }
 
 
-function getUrlDomain($_url, $_extension = false, $_scheme = false){
+function parseURL($_url, $_extension = false, $_scheme = false){
     
-
-	$parsed_url = parse_url($_url);
-
-	if($_scheme)	
-		$domain = $parsed_url['host'];
-	else
-		$domain = str_replace('www.','',$parsed_url['host']);
-
-	$ext = pathinfo($_url, PATHINFO_EXTENSION);
-
-	$return = '';
-	if($_scheme)
-		$return = $parsed_url['scheme'].'://';
+	$parsed = parse_url($_url);
+	$parse = array();
 	
-	$return .= $domain;
+	$parse['protocol'] = $parsed['scheme'].'://';
+	$parse['www'] = '';
+	if(strpos($parsed['host'],'www.')===0){
+		$parse['www'] = 'www.';
+		$parsed['host'] = str_replace('www.','',$parsed['host']);
+	}
+	$host = explode('.',$parsed['host']);
+	$ln = count($host);
+	$parse['extension'] = $host[$ln-1];
+	$parse['domain'] = $host[$ln-2];
+	$parse['subdomain'] = ($ln>2)? $host[$ln-3].'.' : '';
+	$parse['all'] = $parse['protocol'].$parse['www'].$parse['subdomain'].$parse['domain'].'.'.$parse['extension'];
 
-	if($_extension)
-		$return .= $ext;
-
-	return $return;
+	return $parse;
 
 	}
 

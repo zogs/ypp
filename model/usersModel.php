@@ -123,7 +123,7 @@ class UsersModel extends Model{
 											'conditions'=>array('login'=>$user->login)
 											));
 			if(!empty($check)){
-				$this->session->setFlash("Sorry this login is in use.","error");
+				Session::setFlash("Sorry this login is in use.","error");
 				return false;
 			}
 
@@ -133,7 +133,7 @@ class UsersModel extends Model{
 												'conditions'=>array('mail'=>$user->mail)
 												));
 			if(!empty($checkmail)){
-				$this->session->setFlash("This email is already in use. Please try to recovery your password","error");
+				Session::setFlash("This email is already in use. Please try to recovery your password","error");
 				return false;
 			}
 		}		
@@ -172,6 +172,55 @@ class UsersModel extends Model{
 
 	}
 
+	public function updateLastConnexion($user_id){
+		$sql = 'UPDATE '.$this->table.' SET last_visite = NOW() WHERE user_id='.$user_id;
+		$this->query($sql);
+	}
+
+
+	public function admin_avertUser($user_id){
+
+		//secu
+		if(!Session::user()->isLog() || !Session::user()->isSuperAdmin()) $this->redirect('users/login');
+		$this->increment(array('field'=>'avert','id'=>$user_id));
+	}
+
+	public function admin_totalUsers(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table;
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+	public function admin_totalTodayRegistration(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table.' WHERE date >= CURDATE()';
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+	public function admin_totalWeekRegistration(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table.' WHERE Date > NOW() - INTERVAL 1 WEEK';
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+	public function admin_totalMonthRegistration(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table.' WHERE Date > NOW() - INTERVAL 1 MONTH';
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+	public function admin_totalTodayConnexion(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table.' WHERE last_visite > NOW() - INTERVAL 1 DAY';
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+	public function admin_totalWeekConnexion(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table.' WHERE last_visite > NOW() - INTERVAL 1 WEEK';
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+	public function admin_totalMonthConnexion(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table.' WHERE last_visite > NOW() - INTERVAL 1 MONTH';
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+
 	public function findUsers($req){
 
 		$sql = 'SELECT ';
@@ -193,13 +242,7 @@ class UsersModel extends Model{
  			if(!is_array($req['conditions']))
  				$sql .= $req['conditions']; 				
  			else {
-	 			$cond = array();
-		 			foreach ($req['conditions'] as $k => $v) {
-		 				if(!is_numeric($v))
-		 					$v = '"'.mysql_escape_string($v).'"';	 							 				
-		 				$cond[] = "$k=$v";	 			
-		 			}
-		 			$sql .= implode(' AND ',$cond);
+	 			$sql .= $this->sqlConditions($req['conditions']);
  			}
  			
  		}
@@ -214,30 +257,32 @@ class UsersModel extends Model{
  		}
 
  		//debug($sql);
- 		$pre = $this->db->prepare($sql);
- 		$pre->execute();
- 		$results = $pre->fetchAll(PDO::FETCH_OBJ);
- 		
+ 		$results = $this->query($sql);
+
+ 		if(empty($results)) return new User();
+
+
  		$users = array();
  		foreach ($results as $user) {
-
- 			$user = $this->JOIN('groups',array('group_id','logo as avatar','slug'),array('user_id'=>$user->user_id),$user); 			
- 			$users[] = new User($user); 
+ 	
+ 			$user = new User($user);
+ 			$user = $this->JOIN('groups',array('group_id','logo as avatar','slug'),array('user_id'=>$user->getID()),$user); 		
+ 			$users[] = $user;
  		}
+ 		 		
 
  		return $users;
 	}
 
-	public function __autoload($class){
-
-    	echo $class;
-	}
-
-	public function findFirst($req){
+	public function findFirstUser($req){
 
 		return current($this->findUsers($req));
 	}
 
+	public function findUserByID($user_id, $fields = '*'){
+
+		return current($this->findUsers(array('fields'=>$fields,'conditions'=>array($this->primaryKey=>$user_id))));
+	}
 
 	public function findParticipations( $fields, $user_ids ){
 
@@ -245,7 +290,7 @@ class UsersModel extends Model{
 
 		$sql = "SELECT $fields FROM manif_participation as P 
 				LEFT JOIN manif_info as M ON M.manif_id = P.manif_id
-				LEFT JOIN manif_descr as D ON D.manif_id = P.manif_id AND D.lang='".$this->session->user('lang')."'
+				LEFT JOIN manif_descr as D ON D.manif_id = P.manif_id AND D.lang='".Session::user()->getLang()."'
 				WHERE user_id = :user_id";
 
 		foreach ($user_ids as $user_id) {
@@ -273,7 +318,7 @@ class UsersModel extends Model{
 	                 I.logo     as relatedLogo
 
         		FROM manif_participation as P
-        		LEFT JOIN manif_descr as D ON D.manif_id=P.manif_id AND D.lang='".$this->session->user('lang')."'	
+        		LEFT JOIN manif_descr as D ON D.manif_id=P.manif_id AND D.lang='".Session::user()->getLang()."'	
         		LEFT JOIN manif_info as I ON I.manif_id=P.manif_id
            		WHERE P.user_id = $user_id
       		UNION
@@ -292,7 +337,7 @@ class UsersModel extends Model{
                   	I.logo     as relatedLogo
               	FROM manif_comment AS C
               	LEFT JOIN manif_participation AS P ON P.user_id = $user_id
-              	LEFT JOIN manif_descr as D ON D.manif_id=P.manif_id AND D.lang='".$this->session->user('lang')."'
+              	LEFT JOIN manif_descr as D ON D.manif_id=P.manif_id AND D.lang='".Session::user()->getLang()."'
               	LEFT JOIN manif_info as I ON I.manif_id=P.manif_id	
              	WHERE C.context_id = P.manif_id AND C.context='manif' AND C.type='news'
 			ORDER BY date DESC
@@ -311,7 +356,15 @@ class UsersModel extends Model{
 
 class User {
 
-	public function __construct( $fields ){
+
+	public $user_id = 0;
+	public $login   = 'Unknow';
+	public $status  = 'visitor';
+	public $avatar  = 'img/logo_yp.png';
+	public $bonhom  = '';
+	public $account = 'visitor';
+
+	public function __construct( $fields = array() ){
 
 		foreach ($fields as $field => $value) {
 			
@@ -319,16 +372,88 @@ class User {
 		}
 	}
 
-	public function getLogin(){
+	public function getID(){
 
+		return $this->user_id;
+	}
+
+	public function getLogin(){
+		
 		if($this->account=='anonym') return 'anonym_'.$this->user_id;
 		else return $this->login;
+	}
+
+	public function getLinkedLogin(){
+
+		if($this->account=='anonym') return 'anonym_'.$this->user_id;
+		else return '<a href="'.Router::url('users/view/'.$this->user_id).'" >'.$this->login.'</a>';
 	}
 
 	public function getAvatar(){
 
 		if(isset($this->avatar)&&!empty($this->avatar)) return $this->avatar;
 		else return 'img/bonhom/'.$this->bonhom.'.gif';
+	}
+
+	public function getBonhom(){
+
+		return $this->bonhom;
+	}
+
+	public function getRole(){
+		return $this->account;
+	}
+
+	public function getFullName(){
+
+		return $this->prenom.' '.$this->nom;
+	}
+
+	public function getAge(){
+		if(!empty($this->age)) return date('Y') - $this->age;
+	}
+
+	public function isLog(){
+		if($this->user_id!==0) return true;
+	}
+
+	public function setLang($lang){
+		$this->lang = $lang;
+	}
+
+	public function getLang(){
+		if(!empty($this->lang)) return $this->lang;
+		return false;		
+	}
+
+	public function getFullLocateArray(){
+		$loc = array();
+		if(!empty($this->CC1)) $loc['CC1'] = $this->CC1;
+		if(!empty($this->ADM1)) $loc['ADM1'] = $this->ADM1;
+		if(!empty($this->ADM2)) $loc['ADM2'] = $this->ADM2;
+		if(!empty($this->ADM3)) $loc['ADM3'] = $this->ADM3;
+		if(!empty($this->ADM4)) $loc['ADM4'] = $this->ADM4;
+
+		return $loc;
+	}
+
+	public function getFullLocateString(){
+		$arr = $this->getFullLocateArray();
+		$arr = array_values($arr);
+		if(!empty($arr)) return implode(', ',$arr);
+		return '';
+	}
+
+	public function isSuperAdmin(){
+
+		if($this->status=='admin') return true;
+		else return false;
+	}
+
+	public function exist(){
+
+		if($this->user_id==0) return false;
+		return true;
 	}
 
 

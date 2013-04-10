@@ -1,1 +1,1 @@
-<?php echo $this->Form->_select('cat3',$category,array('placeholder'=>'Select category',"class"=>'btn cat-select')); ?>
+<?php echo $this->Form->_select('cat3',$category,array('placeholder'=>'',"class"=>'cat-select')); ?>

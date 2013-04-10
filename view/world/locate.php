@@ -1,13 +1,32 @@
 <input type="hidden" id="submit-state" data-url="<?php echo Router::url('world/nextStateLevel'); ?>">
 <?php 
-
-	foreach($states as $lvl=>$state){
+		
+	foreach($states as $ADMlvl=>$state){
 			
-		//Add javascript 
-		$javascript = '';
-		if($lvl!='city') $javascript = 'onchange="showRegion(this.value,\''.$lvl.'\')"';						
-					
-		echo $this->Form->_select($lvl,$state['list'],array('placeholder'=>$state['title'],"class"=>'geo-select',"default"=>$obj->$lvl,"style"=>"width:100%;","javascript"=>$javascript));
+		//init javascript 
+		if(!isset($javascript)){
+
+			$javascript = '';
+			if($ADMlvl!='city') $javascript = 'onchange="showRegion(this.value,\''.$ADMlvl.'\')"';						
+		}
+		//init class
+		if(!isset($class)) $class = 'geo-select';
+		//init style
+		if(!isset($style)) $style = 'width:180px';
+		
+		//display select box			
+		echo $this->Form->_select(
+									$ADMlvl,
+									$state['list'],
+									array('placeholder'=>$state['title'],
+											"class"=>$class,
+											"default"=>$obj->$ADMlvl,
+											"style"=>$style,
+											"javascript"=>$javascript));
+
+
+		//reset javascript
+		unset($javascript);
 
 	}
  ?>		

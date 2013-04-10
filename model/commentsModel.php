@@ -3,12 +3,13 @@
 */
 class CommentsModel extends Model
 {
-	public $table = 'manif_comment';	
+	public $table = 'comments';	
+	public $table_vote = 'comments_voted';
 
 
 	public function findComments($req){
 
-
+		
 		foreach ($req as $k => $v) {
 			
 			$$k = $v;
@@ -42,14 +43,13 @@ class CommentsModel extends Model
         	}           
         }
 
-        $user_id = $this->session->user('user_id');
+        $user_id = Session::user()->getID();
         
 
-		$q = " SELECT C.*, U.user_id, U.login, U.avatar, V.id as voted, I.logo 
-				FROM manif_comment as C
+		$q = " SELECT C.*, U.user_id, U.login, U.avatar, V.id as voted 
+				FROM $this->table as C
 				LEFT JOIN users as U ON U.user_id = C.user_id
-				LEFT JOIN manif_info as I ON I.manif_id = C.context_id
-				LEFT JOIN manif_comment_voted as V ON (V.comment_id = C.id AND V.user_id = ".$user_id." )
+				LEFT JOIN $this->table_vote as V ON (V.comment_id = C.id AND V.user_id = ".$user_id." )
 				WHERE ";
 				if(isset($comment_id)) {
 							$q .= "
@@ -68,9 +68,12 @@ class CommentsModel extends Model
 				if (isset($start) && $start!="0")
 								$q .='
 								AND C.id <= "'.$start.'"';
-				if( isset($newer) && $newer!="0")
+				if( isset($newest) && $newest!="0")
 								$q .='
-								AND C.id > "'.$newer.'"';
+								AND C.id > "'.$newest.'"';
+				if(isset($lang) && !empty($lang))
+								$q .=' AND lang="'.$lang.'" ';
+
 				$q.=" 
 				ORDER BY ".$order."
 				LIMIT ".$limit."
@@ -100,92 +103,101 @@ class CommentsModel extends Model
 			$$k = $v;
 		}
 
+		$val = array();
+
 		if(isset($order)){
 
         	if ($order == "datedesc" || $order == '' || $order == '0')
-            	$order=" date DESC ";
+            	$order="date DESC";
 	        elseif ($order == "dateasc")
-	            $order=" date ASC ";
+	            $order="date ASC";
 	        elseif ($order == "noteasc")
-	            $order=" note ASC ";
+	            $order="note ASC";
 	        elseif ($order == "notedesc")
-            	$order=" note DESC ";
+            	$order="note DESC";
         }
         else {
-        	$order= " date DESC ";
+        	$order = "date DESC";
         }
 
-		if(isset($limit) && !empty($limit)){
+		if(!empty($limit) && is_numeric($limit)){
 
-			if(!isset($page)) $page = 1;
-			 $limit = (($page-1)*$limit).','.$limit;
-
+			if(!isset($page) || empty($page)) $page = 1;
+				$limit = (($page-1)*$limit).','.$limit;
 		}
 		else $limit = 165131654;
-        
+       
+
+
         if (isset($rch) && $rch != "0") {
         	if( trim( $rch != "" ) ) {
         		$rch =" ( U.login LIKE '%" . $rch . "%' OR X.content LIKE '%" . $rch . "%' )";
+        		$rch =" ( U.login LIKE '%:rch%' OR X.content LIKE '%:rch%' )";
         	}           
         }
 
-        $user_id = $this->session->user('user_id');
+        $user_id = Session::user()->getID();
 
 		$sql = " SELECT C.*
-				FROM manif_comment as C
+				FROM $this->table as C
 				
 				WHERE ";
-				if(isset($comment_id)) {
-							$sql .= "
-								C.id=".$comment_id." ";	
+				if(isset($comment_id) && is_numeric($comment_id)) {
+							$sql .= " C.id=$comment_id ";	
+							
 				} 
-				elseif(isset($reply_to)){
-
-							$sql .= "
-								C.reply_to=".$reply_to." ";
-
+				elseif(isset($reply_to) && is_numeric($reply_to)){
+							$sql .= " C.reply_to=$reply_to ";							
 				}
 				else {
-							$sql .= "
-								C.context='".$context."'
-								AND
-								C.context_id=".$context_id." 
-								AND 
-								C.reply_to=0 ";
+							$sql .= " C.context=:context AND C.context_id=:context_id AND C.reply_to=0 ";
+							$val['context'] = $context;
+							$val['context_id'] = $context_id;
 				}			
-				if (isset($type) && $type != "all" && $type != "0" )
-								$sql .='
-								AND C.type="'.$type.'"';
-				if (isset($start) && $start!="0")
-								$sql .='
-								AND C.id <= "'.$start.'"';
-				if( isset($newer) && $newer!="0")
-								$sql .='
-								AND C.id > "'.$newer.'"';
-				$sql.="  
-				ORDER BY ".$order."
-				LIMIT ".$limit."
-			";
+				if (isset($type) && $type != "all" && $type != "0" ){
 
-		//debug($sql);
-		$res = $this->db->prepare($sql);
-		$res->execute();
-		$res = $res->fetchAll(PDO::FETCH_OBJ);		
+							$sql .=' AND C.type=:type ';
+							$val['type'] = $type;
+
+				}
+				if (!empty($start) && is_numeric($start)){
+
+							$sql .=' AND C.id <= '.$start.' ';			
+				}
+				if( !empty($newest) && is_numeric($newest)){
+
+							$sql .=' AND C.id > '.$newest.' ';
+					
+				}
+				if(isset($lang) && !empty($lang)!=''){
+
+							$sql .= ' AND lang=:lang ';
+							$val['lang'] = $lang;
+					
+				}
+				$sql.=" ORDER BY ".$order." LIMIT ".$limit." ";
+
+
+		$res = $this->query($sql,$val);		
 		
 		//foreach comment make an object	
 		$comments = array();
 		foreach ($res as $com) {
 			
-			$comments[] = new Comment($com);
+			$com = new Comment($com);
+			$com = $this->JOIN_CONTEXT($com);
+			$comments[] = $com;
 
 		}
+
 		//foreach comment join replies if exist
 		$comments = $this->joinReplies($comments);
-		$comments = $this->joinUserData($comments);
+		$comments = $this->JOIN_COM_DATA($comments);
+
  		//$timeend=microtime(true);
 		//$time=$timeend-$timestart;
 		//debug('temps d\'execution sans les JOIN:'.$time);
-
+		//debug($comments);
 		return $comments;
 	}
 
@@ -205,6 +217,7 @@ class CommentsModel extends Model
 		foreach ($comments as $comment) {
 			
 			if($comment->haveReplies()){
+
 				//this will find all replies in Comment object
 				$replies = $this->findCommentsWithoutJOIN(array('reply_to'=>$comment->id,'order'=>'dateasc'));								
 				$comment->replies = $replies;
@@ -218,65 +231,127 @@ class CommentsModel extends Model
 
 	public function getComments($comments_id){
 	
-		$array = array();
 		if(is_array($comments_id)){
 
-			foreach($comments_id as $comment_id){
+			foreach($comments_id as $key => $comment_id){
 
-
-				$res = $this->findCommentsWithoutJOIN(array('comment_id'=>$comment_id));
-				$array[] = $res;
+				$comments_id[$key] = $this->findCommentsWithoutJOIN(array('comment_id'=>$comment_id));				
 			}					
+			return $comments_id;
 		}
 		elseif(is_numeric($comments_id)){
 
-			$res = $res = $this->findCommentsWithoutJOIN(array('comment_id'=>$comment_id));
-			$array[] = $res;					
+			$res = $this->findCommentsWithoutJOIN(array('comment_id'=>$comments_id));
+			return $res[0];				
 		}
-
-		return $array;
 
 	}
 
+	public function saveComment($com){
 
-	public function joinUserData($data){
+		$c = new stdClass();
+		$c = $com;
+
 		
-		$data = $this->joinUser($data);
-		$data = $this->JOIN('manif_comment_voted','id as voted',array('comment_id'=>':id','user_id'=>$this->session->user('user_id')),$data);
-		$data = $this->JOIN('manif_info','logo as logoManif',array('manif_id'=>':context_id'),$data);
+		$c->content = str_replace(array("\\n","\\r"),array("<br />",""),$c->content); 
+
+		if(!empty($c->media) && !empty($c->media_url)){
+			$c->content = str_replace($c->media_url,'',$c->content);
+			$c->media = $c->media;
+			$c->media = html_entity_decode($c->media,ENT_NOQUOTES|'ENT_XHTML', 'UTF-8' );
+		}
+
+		if(!empty($title)){
+			$c->title = $c->title;
+			$c->news = 1;
+		}
+
+		if(!empty($c->reply_to) && is_numeric($c->reply_to)){
+
+			$this->increment(array('field'=>'replies','id'=>$c->reply_to));
+		}
+
+		if($id = $this->save($c)){
+
+			return $id;
+		}
+		else
+			return false;
+	}
+
+	public function admin_moderate($id){
+
+		//secu
+		if(!Session::user()->isLog() || !Session::user()->isSuperAdmin()) $this->redirect('users/login');
+		$sql = 'UPDATE '.$this->table.' SET valid=0 WHERE id='.$id;
+		$this->query($sql);
+	}
+	public function admin_delete($id){
+		$sql = 'UPDATE '.$this->table.' SET online=0 WHERE id='.$id;
+		$this->query($sql);
+	}
+	public function admin_totalComments(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table;
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+	public function admin_totalOnlineComments(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table.' WHERE online=1';
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+	public function admin_totalOfflineComments(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table.' WHERE online=0';
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+	public function admin_totalModerateComments(){
+		$sql = 'SELECT count(*) as total FROM '.$this->table.' WHERE valid=0';
+		$res = $this->query($sql);
+		return $res[0]->total;
+	}
+
+	public function JOIN_COM_DATA($data){
+
+		$data = $this->JOIN_USER($data);
+		$data = $this->JOIN_USER_VOTE($data);
+
 		return $data;
+	}
+
+	public function JOIN_USER_VOTE($data){
+
+		return $this->JOIN($this->table_vote,'id as voted',array('comment_id'=>':id','user_id'=>Session::user()->getID()),$data);
+	}
+
+	public function JOIN_CONTEXT($com){
+		
+		if($com->context=='manif') return $this->JOIN('manif_descr','manif_id as context_id,nommanif as contextTitle,logo as contextLogo,slug as contextSlug,lang as contextLang',array('manif_id'=>':context_id','lang'=>':lang'),$com);
+		return $com;
 	}
 
 	public function totalComments($context,$context_id){
 
-		$sql = "SELECT COUNT(id) as count FROM manif_comment WHERE context='$context' AND context_id=$context_id AND reply_to=0";
-		$pre = $this->db->prepare($sql);
-		$pre->execute();
-		return $pre->fetchColumn();
+		$sql = "SELECT COUNT(id) as count FROM $this->table WHERE context='$context' AND context_id=$context_id AND reply_to=0";		
+		return $this->query($sql);
 	}
 
 	public function userTotalComments($user_id){
 
-		$sql = 'SELECT COUNT(id) as count FROM manif_comment WHERE user_id='.$user_id;
-		$res = $this->db->prepare($sql);
-		$res->execute();
-		return $res->fetchColumn();
+		$sql = "SELECT COUNT(id) as count FROM $this->table WHERE user_id=$user_id";
+		return $this->query($sql);
 	}
 
 	public function userTotalManifsComments($user_id,$manif_id){
 
-		$sql = 'SELECT COUNT(id) as count FROM manif_comment WHERE user_id='.$user_id.' AND context="manif" AND context_id='.$manif_id;
-		$res = $this->db->prepare($sql);
-		$res->execute();
-		return $res->fetchColumn();
+		$sql = "SELECT COUNT(id) as count FROM $this->table WHERE user_id=$user_id AND context='manif' AND context_id=$manif_id";
+		return $this->query($sql);
 	}
 
 	public function alreadyVoted($id,$user_id){
 
-		$sql = "SELECT COUNT(id) FROM manif_comment_voted WHERE comment_id=$id AND user_id=$user_id";
-		$pre = $this->db->prepare($sql);
-		$pre->execute();
-		return (bool)$pre->fetchColumn();
+		$sql = "SELECT COUNT(id) FROM $this->table_vote WHERE comment_id=$id AND user_id=$user_id";
+		return (bool) $this->query($sql);		
 	}
 
 	public function haveVoted($data){
@@ -284,40 +359,29 @@ class CommentsModel extends Model
  		foreach ($data as $k => $v) {
 	 			$tab[":$k"] = $v; //tableau des valeurs pour la fonction execute de PDO	 		
  		}
-		$sql = "INSERT INTO manif_comment_voted SET user_id = :user_id , comment_id = :comment_id";
-		$pre = $this->db->prepare($sql);
-		$pre->execute($tab);			
-		return true;
+		$sql = "INSERT INTO $this->table_vote SET user_id = :user_id , comment_id = :comment_id";
+
+		if($this->query($sql,$tab))			
+			return true;
+		return false;
 	}
 
-	public function findUserComments($req){
+	public function findUserComments($req = array()){
 
 		$sql = 'SELECT ';
  		if(isset($req['fields']))
-			if(is_array($req['fields']))
- 				$sql .= implode(', ',$req['fields']); 			
- 			else
- 				$sql .= $req['fields']; 			 		
+ 			$sql .= $this->sqlFields($req['fields']);
  		else
- 			$sql .= 'C.*, U.*'; 		
+ 			$sql .= ' * ';		
 
-		$sql .= " FROM manif_comment as C
+		$sql .= " FROM $this->table as C
 					JOIN users as U ON U.user_id=C.user_id
 				  	WHERE ";
 
 		if(isset($req['conditions'])){ 			
- 			if(!is_array($req['conditions']))
- 				$sql .= $req['conditions']; 				
- 			else {
- 				$cond = array();
-	 			foreach ($req['conditions'] as $k => $v) {
-	 				if(!is_numeric($v)){ 
-	 					$v = '"'.mysql_escape_string($v).'"';	 					
-	 				}
-	 				$cond[] = "$k=$v";	 			
-	 			}
-	 			$sql .= implode(' AND ',$cond);
- 			} 			
+ 			
+ 			$sql .= $this->sqlConditions($req['conditions'])	;
+ 			
  		}
 
 		if(isset($req['order'])){
@@ -330,18 +394,9 @@ class CommentsModel extends Model
  		}
 
  		// debug($sql);
-		$res = $this->db->prepare($sql);
-		$res->execute();
-		return $res->fetchAll(PDO::FETCH_OBJ);
+		return $this->query($sql);
 	}
 
-	public function threadUser($params){
-
-		$thread = $this->getThreadUser($params); //get the order list
-		$thread = $this->fillThreadUser($thread);	//fill the list
-
-		return $thread;
-	}
 
 	public function getThreadUser($params){
 
@@ -354,80 +409,48 @@ class CommentsModel extends Model
 
 		//request
 		$sql = "SELECT 
-					'joinProtest' as thread,
+					'joinProtest' as type,
 					id as id,
 					date as date
 				FROM 
 					manif_participation
 				WHERE 
 					user_id = ".$params['context_id']."
+
+				UNION
+				SELECT
+					'manifStep' as type,
+					S.id as id,
+					S.date as date
+				FROM
+					manif_step as S
+					
+				WHERE
+					S.manif_id=2
+
 				UNION
 				SELECT 
-					'manifNews' as thread,
+					'manifNews' as type,
 					C.id as id,
 					C.date as date
 				FROM
-					manif_comment as C
+					comments as C
 					LEFT JOIN manif_participation AS P ON P.user_id = ".$params['context_id']."
 				WHERE
-					C.context = 'manif' AND C.type='news' AND C.context_id = P.manif_id 
+					C.context = 'manif' AND C.news=1 AND C.context_id = P.manif_id AND C.lang ='".$params['lang']."'
 				ORDER BY date DESC
 				LIMIT ".$limit." 
 
 				";
-
-		$pre = $this->db->prepare($sql);
-		$pre->execute();
-		$res = $pre->fetchAll(PDO::FETCH_OBJ);
+		
+		$res = $this->query($sql);
 
 		return $res;
 
+
+
 	}
 
-	public function fillThreadUser($list){
-
-		$array = array();
-
-		foreach ($list as $thread) {
-			
-			if($thread->thread == 'joinProtest'){
-				
-				$protester = $this->session->controller->Manifs->findProtesters(array(
-																					'fields'=>array('U.user_id','U.login','P.manif_id','P.date','P.id'),
-																					'conditions'=>array('P.id'=>$thread->id)
-																				));
-
-				$sql = "SELECT manif_id, nommanif, slug, logo FROM manif_descr WHERE manif_id=".$protester->manif_id;
-				$pre = $this->db->prepare($sql);
-				$pre->execute();
-				$manif = $pre->fetch(PDO::FETCH_OBJ);
-				
-				$protester = (object) array_merge((array) $protester, (array) $manif);
-				$protester->thread = $thread->thread;
-				$array[] = $protester;
-
-			}
-			elseif($thread->thread == 'manifNews'){
-
-				$com = $this->getComments($thread->id);
-				$com = $this->joinUserData($com);
-				$com = $com[0];
-				$com->thread = $thread->thread;
-				$array[] = $com;
-
-				if($com->replies > 0){
-
-					$replies = $this->findReplies($com);
-					$replies = $this->joinUserData($replies);
-					$array[] = $replies;
-
-				}
-			}
-		}
-
-
-		return $array;
-	}
 
 
 
@@ -438,6 +461,8 @@ class CommentsModel extends Model
 
 class Comment {
 
+	public $id = 0;
+
 	public function __construct($params){
 
 		foreach ($params as $key => $param) {
@@ -446,9 +471,20 @@ class Comment {
 		}
 	}
 
+	public function getID(){
+
+		return $this->id;
+	}
+
+	public function exist(){
+
+		if($this->id!=0) return true;
+		return false;
+	}
+
 	public function haveReplies(){
 
-		return ($this->replies!=0)? true : false;
+		return (!empty($this->replies))? true : false;
 	}
 
 	public function userHaveVoted(){
@@ -456,7 +492,43 @@ class Comment {
 		return (isset($this->voted)&&is_numeric($this->voted))? true : false;
 	}
 
+	public function isModerate( $msg = false){
 
+		if($this->note<-10) {
+			$msg = 'Ce commentaire a reçu trop de vote négatif...';
+		}
+		if($this->valid==0) {		
+			$msg = 'Ce commentaire a été modéré.';
+		}
+		if($this->online==0) {
+			$msg = 'Ce commentaire a été modéré et va être supprimé.';
+		}
+ 
+		return $msg;
+	}
 
+	public function isNews(){
+		if(isset($this->news) && $this->news==1) return true;
+		return false;
+	}
+
+	public function contextTitle(){
+		if(isset($this->contextTitle)) return $this->contextTitle;
+		return 'No title for this context';
+	}
+
+	public function contextLogo(){
+		if(isset($this->contextLogo)) return $this->contextLogo;
+		if(isset($this->avatar)) return $this->avatar;
+		return '/img/logo_yp.png';
+	}
+
+	public function debugContent(){
+		$r = '';
+		if(!empty($this->title)) $r .= $this->title.'<br>';
+		if(!empty($this->content)) $r .= $this->content.'<br>';
+		if(!empty($this->media)) $r .= $this->media.'<br>';
+		return $r;
+	}
 
 }?>

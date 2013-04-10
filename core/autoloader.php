@@ -1,7 +1,5 @@
 <?php
 
-namespace JK;
-
 class Autoloader {
 
 	protected static $instance;
@@ -38,7 +36,7 @@ class Autoloader {
 		$this->exploratedFiles = $this->includes = array();
 	}
 
-	public function getInstance(){
+	public static function getInstance(){
 		if( empty(self::$instance) ){
 			self::$instance = new Autoloader;
 		}
@@ -212,12 +210,17 @@ class JsonFileCache implements AutoloadCacheManager {
 	private $cache = array();
 	private $loaded = false;
 
-	private $filelocation = '..\webroot\cache\autoloader';
+	private $filelocation = '../webroot/cache/autoloader';
 	const FILENAME = 'class_loader_cache.json';	
 
+	public function __construct(){
+
+		$this->filelocation = str_replace('/',DIRECTORY_SEPARATOR,$this->filelocation);
+	}
+
 	protected function init(){
-		if( !$this->loaded && file_exists( $this->filelocation . DS . self::FILENAME ) ){			
-			$this->cache = json_decode( file_get_contents($this->filelocation . DS . self::FILENAME ), true );
+		if( !$this->loaded && file_exists( $this->filelocation . DIRECTORY_SEPARATOR . self::FILENAME ) ){			
+			$this->cache = json_decode( file_get_contents($this->filelocation . DIRECTORY_SEPARATOR . self::FILENAME ), true );
 		}
 		$this->loaded = true;
 	}
@@ -236,11 +239,17 @@ class JsonFileCache implements AutoloadCacheManager {
 		return $this;
 	}
 	public function save(){				
-		file_put_contents( __DIR__.DS.$this->filelocation. DS .self::FILENAME, json_encode( $this->cache ) );
+		file_put_contents( __DIR__.DIRECTORY_SEPARATOR.$this->filelocation. DIRECTORY_SEPARATOR .self::FILENAME, json_encode( $this->cache ) );
 	}
 }
 
 
 //Exceptions
-class NotStandardInclude extends \Exception {}
-class UnfoundClass extends \Exception {}
+class NotStandardInclude extends Exception {}
+class UnfoundClass extends zException {
+	public function __construct($classname){
+
+		$msg = 'Class -'.$classname.'- has not been found';
+		parent::__construct($msg,'00009998');
+	}
+}

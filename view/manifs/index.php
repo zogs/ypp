@@ -1,71 +1,79 @@
-<?php echo $this->session->flash(); ?>
 
 
-<!-- Top bar -->
+<div class="container-fluid band-stripped-left">
 
-<div id="top-toolbar" class="btn-toolbar">
-	<form id="search-manif" class="form-search" action="<?php echo Router::url('manifs/index/'); ?>" method="GET">
+	<!-- Top bar -->
+	<div class="container">
+		<div id="top-toolbar" class="btn-toolbar">
+			<form id="search-manif" class="form-search" action="<?php echo Router::url('manifs/index/'); ?>" method="GET">
 
-	<div class="btn-group">
-		<button type="submit" class="btn btn-inverse disabled" disabled="disabled">Search</button>
-  		<input type="text" class="btn" name="rch" placeholder="Ex: Occupy" value="<?php echo $this->CookieRch->read('rch'); ?>">
-	  	<button type="submit" class="btn" >OK</button>
+			<div class="btn-group">
+				<button type="submit" class="btn btn-inverse disabled" disabled="disabled">Search</button>
+		  		<input type="text" name="rch" placeholder="Ex: Occupy" value="<?php echo $this->CookieRch->read('rch'); ?>">
+			  	<button type="submit" class="btn" ><span class="icon-white icon-refresh"></span></button>
+			</div>
+
+			<div class="btn-group">
+				<button class="btn btn-inverse disabled" disabled="disabled">Location</button>									
+					<?php 
+						//debug($this->CookieRch->read());
+						$arr = $this->CookieRch->arr();
+						$arr['selectClass'] = '';
+						$this->request('world','locate',array(array('obj'=>$arr)));
+
+					?>				
+				<button type="submit" class="btn" id="submit-state" data-url="<?php echo Router::url('world/getStates'); ?>"><span class="icon-white icon-refresh"></span></button>		
+			</div>
+
+			<div class="btn-group">
+				<button class="btn btn-inverse disabled" disabled="disabled">Category</button>	
+				<?php echo $this->Form->_select('cat2',$cat2,array('placeholder'=>'',"class"=>'cat-select',"default"=>$this->CookieRch->read('cat2'),"javascript"=>'onchange="showCategory(this.value,3)"')); ?>
+				<?php if($this->CookieRch->read('cat3')): ?>
+				<?php echo $this->Form->_select('cat3',$cat3,array('placeholder'=>'',"class"=>'cat-select',"default"=>$this->CookieRch->read('cat3'))); ?>
+				<?php endif; ?>
+				<button type="submit" class="btn" id="submit-category" data-url="<?php echo Router::url('manifs/getCategory'); ?>"><span class="icon-white icon-refresh"></span></button>	
+			</div>	
+
+			<div class="btn-group">
+				<button class="btn btn-inverse disabled" disabled="disabled">Order</button>
+				<?php 
+					echo $this->Form->_select('order',$order,array('placeholder'=>'',"default"=>$this->CookieRch->read('order'))); ?>			
+				<button type="submit" class="btn" ><span class="icon-white icon-refresh"></span></button>
+				
+			</div>
+
+			<div class="btn-group">					
+				<input type="hidden" name="token" value="<?php echo Session::token(); ?>" />		
+				<input type="submit" class="btn btn-primary" value="SEARCH"/>
+			</div>
+			</form>
+
+				
+		</div>
 	</div>
 
-	<div class="btn-group" style="width:300px;">
-		<button class="btn btn-inverse disabled" disabled="disabled">Location</button>									
-			<?php 
-				//debug($this->CookieRch->read());
-				$arr = $this->CookieRch->arr();
-				$arr['selectClass'] = 'btn';
-				$this->request('world','locate',array($arr));
+</div>
+<div class="container protest-list">
 
-			?>				
-		<button type="submit" class="btn" id="submit-state" data-url="<?php echo Router::url('world/getStates'); ?>">OK</button>		
-	</div>
-
-	<div class="btn-group">
-		<button class="btn btn-inverse disabled" disabled="disabled">Category</button>	
-		<?php echo $this->Form->_select('cat2',$cat2,array('placeholder'=>'Select category',"class"=>'btn cat-select',"default"=>$this->CookieRch->read('cat2'),"javascript"=>'onchange="showCategory(this.value,3)"')); ?>
-		<?php if($this->CookieRch->read('cat3')): ?>
-		<?php echo $this->Form->_select('cat3',$cat3,array('placeholder'=>'Select category',"class"=>'btn cat-select',"default"=>$this->CookieRch->read('cat3'))); ?>
-		<?php endif; ?>
-		<button type="submit" class="btn" id="submit-category" data-url="<?php echo Router::url('manifs/getCategory'); ?>">OK</button>	
-	</div>	
-
+	<?php echo Session::flash(); ?>
+	
 	<div class="arianne">
 		<?php 
+
 			$rch = $this->CookieRch->read('rch');
 			$rch = '<a href="?rch='.$rch.'" title="Search for '.$rch.'">'.$rch.'</a>';
 			$cat = '';				
 			if(!empty($Ccat2)) $cat = '<a href="?cat2='.$Ccat2[0]->id.'" title="Search for category '.utf8_encode($Ccat2[0]->name).'">'.utf8_encode($Ccat2[0]->name).'</a>';
 			if(!empty($Ccat3)) $cat = '<a href="?cat2='.$Ccat3[0]->id.'" title="Search for category '.utf8_encode($Ccat3[0]->name).'">'.utf8_encode($Ccat3[0]->name).'</a>';
-			if(!empty($rch) && !empty($cat) ) echo '<a href="?">reset</a>';
+			if(!empty($rch) && !empty($cat) ) echo '<a href="?reset=1">reset</a>';
 			if(!empty($rch)) echo "<span>".$rch."</span>";
 			if(!empty($cat)) echo "<span>".$cat."</span>";
 		?>
-	</div>		
-</div>
-
-
-<div class="row-fluid">
+	</div>	
 
 	<!-- Right Bar -->
 	<div id="rightbar">	
-		
-		
-
-		<div class="btn-group">
-			<button class="btn btn-inverse disabled" disabled="disabled">Order</button>
-			<?php 
-
-			echo $this->Form->_select('order',$order,array('class'=>'btn',"default"=>$this->CookieRch->read('order'))); ?>			
-			<button type="submit" class="btn" >OK</button>
-			
-		</div>
-		<input type="hidden" name="token" value="<?php echo $this->session->token(); ?>" />		
-		<input type="submit" class="btn btn-large btn-primary" value="SEARCH"/>
-		</form>
+						
 		
 		<div class="nav-timeline">
 			<ul class="nav-timeline-ul">
@@ -85,7 +93,7 @@
 			}
 
 			if(isset($metas['month']) && $metas['month'] != $c_month || $metas['year'] != $c_year) {
-				echo '<li class="nav-timeline-li"><a class="nav-timeline-a nav-timeline-month" href="#'.$metas['year'].$metas['month'].'">'.Date::month($metas['month']) .'</a></li>';
+				echo '<li class="nav-timeline-li"><a class="nav-timeline-a nav-timeline-month" href="#'.$metas['year'].$metas['month'].'">'.Date::month($metas['month'],$this->getLang()) .'</a></li>';
 			}
 
 			$c_year = $metas['year'];
@@ -164,23 +172,23 @@
 ?>
 					<div class="manif" id="<?php echo $id;?>">
 
-						<?php if($manif->logo != $this->logo_default): ?>
+						<?php if($manif->getLogo() != $this->logo_default): ?>
 						<div class="logo">
 				 			<img class="image" src="<?php echo Router::webroot($manif->logo); ?>" />	
 				 		</div>	
 				 		<?php endif; ?>
 
 				 		<div class="title">
-				 			<a class="nommanif" href="<?php echo Router::url('manifs/view/'.$manif->id.'/'.$manif->slug); ?>" ><?php echo $manif->nommanif; ?></a>														
+				 			<a class="nommanif" href="<?php echo Router::url('manifs/view/'.$manif->getID().'/'.$manif->getSlug()); ?>" ><?php echo $manif->getTitle(); ?></a>														
 				 		</div>	
 
-				 		<div class="description"><?php echo $manif->description; ?></div>			 					 	
+				 		<div class="description"><?php echo $manif->getDescription(); ?></div>			 					 	
 				 		<div class="actions">
-				 			<div class="numerus" id="numerus<?php echo $manif->id;?>"><?php echo number_format($manif->numerus,0,' ',' '); ?></div>
+				 			<div class="numerus" id="numerus<?php echo $manif->getID();?>"><?php echo number_format($manif->getNumerus(),0,' ',' '); ?></div>
 
-				 			<?php if($this->session->islogged()): ?>
+				 			<?php if(Session::user()->isLog()): ?>
 				 			<div class="switchProtest mini">
-		                        <input type="checkbox" <?php echo ($manif->doesUserProtest>0)? 'checked="checked"' : '';?> class="btn-switch-protested" data-protest="<?php echo $manif->id;?>" data-url-protest="<?php echo Router::url('manifs/addUser');?>" data-url-cancel="<?php echo Router::url('manifs/removeUser');?>">
+		                        <input type="checkbox" <?php echo ($manif->isUserProtesting())? 'checked="checked"' : '';?> class="btn-switch-protested" data-protest-id="<?php echo $manif->getID();?>" data-url-protest="<?php echo Router::url('manifs/addUser');?>" data-url-cancel="<?php echo Router::url('manifs/removeUser');?>">
 		                        <label><i></i></label>
                    			</div>                   			
                    		<?php endif; ?>
@@ -190,8 +198,8 @@
 							    <span class="caret"></span>
 							  </button>
 							  <ul class="dropdown-menu">
-							  		<?php if(isset($manif->doesUserAdmin)): ?>
-						      	<li><a href="<?php echo Router::url('manifs/create/'.$manif->id.'/'.$manif->slug); ?>">Administrer</a></li>
+							  		<?php if($manif->isUserAdmin( Session::user()->getID() )): ?>
+						      	<li><a href="<?php echo Router::url('manifs/create/'.$manif->getID().'/'.$manif->getSlug()); ?>">Administrer</a></li>
 					    			<?php endif;?>
 							    <li><a href="#">Signaler</a></li>							    
 							  </ul>
@@ -199,7 +207,7 @@
 				 		</div>
 				 	</div>
 
-<?php			
+				<?php			
 										
 				}
 									
@@ -220,8 +228,11 @@
 	<div class="span3">
 		
 	</div>
+
 </div>
 
+
+<script type="text/javascript" src="http://localhost:1337/socket.io/socket.io.js"></script>
 <script type="text/javascript">
 
 

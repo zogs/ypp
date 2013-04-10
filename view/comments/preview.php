@@ -1,21 +1,26 @@
 <?php 
+header ('Content-type: text/html; charset=utf-8');
 
-if($type!='404'):
 
-	$html ='<div class="previewMedia">';
-		$html .='<div class="previewMedia-img">';
-		if(count($thumbnails)>1):
-			$html .='<div class="previewMedia-totalImage">
+if($type!='404'){
+	
+	$html ='<div class="previewMedia previewMedia-'.$type.'">';
+
+
+		$html .='<div class="previewMedia-thumbnails">';
+
+		if(count($thumbnails)>1){
+			$html .='<div class="previewMedia-totalthumbnails">
 						Choose a thumbnail<br />
 						<a href="" id="prev_thumb">Previous</a> Total '.count($thumbnails).' images <a href="" id="next_thumb">Next</a>
 					</div>';
-		endif;
+		}
 
 		foreach ($thumbnails as $key) {
 			if($key == $thumbnails_first)
-			$html .='<img src="'.$key.'" alt="" class="previewMedia-thumbnail" data-type="'.$type.'" data-comid="01" data-url="'.$contentURL.'">';
+			$html .="<div class='previewMedia-thumbnail' data-type='".$type."' data-comid='01' data-media-url='".$media."'><span></span><img src='".$key."' alt=''></div>";
 			else
-			$html .='<img src="'.$key.'" alt="" class="previewMedia-thumbnail hide" data-type="'.$type.'" data-comid="01" data-url="'.$contentURL.'">';
+			$html .="<div class='previewMedia-thumbnail hide' data-type='".$type."' data-comid='01' data-media-url='".$media."'><span></span><img src='".$key."' alt='' ></div>";
 		}
 		$html .='</div>';
 
@@ -25,13 +30,9 @@ if($type!='404'):
 			$html .='<div class="previewMedia-desc">'.$description.'</div>';
 		$html .='</div>';
 	$html .='</div>';
-else :
-	$html = '';
-endif;
+}
 
-
-$html = utf8_decode($html); // json_encode ne fonctionne qu'avec des donnees utf8
-$html = htmlentities($html); // json_encode ne fonctionne pas avec les balises html
+//echo $html;
 
 $array = array(
 	"type" => $type,
@@ -40,7 +41,7 @@ $array = array(
 
 
 
-echo json_encode($array);
+echo json_encode($array,JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT);
 
 
 

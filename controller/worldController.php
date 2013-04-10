@@ -12,14 +12,15 @@ class WorldController extends Controller
  	Display states fields that locate an object
  	$param objet or array that may contain location fields ( as CC1, ADM1, ADM..., city)
  	========================================*/
-	public function locate($obj = null){
+	public function locate($params = null){
 
 		$this->loadModel('Worlds');
 		$this->layout='none';
 
 		//if object is not null
-		if($obj){
+		if(isset($params['obj'])){
 
+			$obj = $params['obj'];
 			if(is_array($obj))
 				$obj = (object) $obj; //convert array into obj
 			elseif(is_object($obj))
@@ -33,10 +34,9 @@ class WorldController extends Controller
 		//create empty location parameter if they don't exist
 		$lvl = array('CC1','ADM1','ADM2','ADM3','ADM4','city');
 		foreach ($lvl as $key) {
-			if(!isset($obj->$key))
+			if(!isset($obj->$key) || $obj->$key =='')
 				$obj->$key = '';
 		}
-		
 	
 		//find states that correspond to the object parameters
 		$states = $this->Worlds->findAllStates(array(
@@ -50,6 +50,11 @@ class WorldController extends Controller
 
 		$d['states'] = $states;
 		$d['obj'] = $obj;
+
+		if(isset($params['style'])) $d['style'] = $params['style'];
+		if(isset($params['class'])) $d['class'] = $params['class'];
+		if(isset($params['javascript'])) $d['javascript'] = $params['javascript'];
+		
 
 		$this->set($d);
 		$this->view = 'world/locate';
@@ -112,13 +117,36 @@ class WorldController extends Controller
 		$this->set($json);
 	}
 
+	public function citiesArround(){
+
+		$this->view = "none";
+		$this->layout ="default";
+		$this->loadModel('Worlds');
+		
+		if($this->request->get('cityID') && $this->request->get('arround')){
+
+			$city = $this->Worlds->findFirst(array('table'=>'world_cities','fields'=>array('LATITUDE','LONGITUDE'),'conditions'=>array('UNI'=>$this->request->get('cityID'))));		
+
+			$params = array();
+			$params['arround'] = $this->request->get('arround');
+			$params['Lat'] = $city->LATITUDE;
+			$params['Lon'] = $city->LONGITUDE;
+			$params['location'] = array('CC1'=>'FR','ADM1'=>'A1');
+			$params['km'] = true;
+
+			$cities = $this->Worlds->findCitiesArround($params);
+
+			return $cities;
+		}
+	}
+
 	public function nextStateLevel(){
 
  		$this->loadModel('Worlds');
  		$this->layout = 'none';
- 		 
- 		$ADM = $this->request->get('ADM'); 	
- 		if($ADM == 'city') return false;	
+
+ 		$ADM = $this->request->get('ADM'); 
+ 		if($ADM=='city') return false;		
  		$ADM1 = '';
  		$ADM2 = '';
  		$ADM3 = '';
@@ -157,6 +185,12 @@ class WorldController extends Controller
  			$ADM4 = $this->request->get('ADM4');
  			$ADM_PARENT = $this->request->get('ADM4');
  		}	
+ 		if($this->request->get('cssstyle')) 
+ 			$d['style'] = $this->request->get('cssstyle');
+
+ 		if($this->request->get('cssclass'))
+ 			$d['class'] = $this->request->get('cssclass');
+
 
  		//debug('CC1:'.$CC1. ' ADM:'.$ADM.' ADM_PARENT:'.$ADM_PARENT);
 		
@@ -190,6 +224,8 @@ class WorldController extends Controller
 
 		//Instanciation de la variable du niveau d'ADM
  		$d['ADM'] = $ADM;
+
+ 		
  		
  		//debug($d);
  		$this->set($d);

@@ -37,7 +37,7 @@ class Form{
 
 		//Bootstrap html
 		$html = '<div class="control-group '.$classError.'" id="control-'.$id.'">';
-		$html .= '<label class="control-label">'.$label.'</label>';
+		$html .= '<label class="control-label" for="'.$id.'">'.$label.'</label>';
 		$html .= '<div class="controls">';
 
 		//Icon
@@ -97,6 +97,7 @@ class Form{
 		}
 		else{ //Sinon on recupere la valeur dans les données passé en post dans l'objet request
 			$value = $this->controller->request->data->$id;
+
 		}
 
 		//return if submit button
@@ -243,7 +244,7 @@ class Form{
 					if(isset($selected)&&$selected==$value) $if_selected = 'selected="selected"';
 					else $if_selected = '';
 
-					$html .='<option value="'.$value.'" '.$if_selected.'>'.utf8_encode($name).'</option>';								
+					$html .='<option value="'.$value.'" '.$if_selected.'>'.$name.'</option>';								
 				
 			}
 			$html .='</select>';
@@ -273,7 +274,7 @@ class Form{
 
 			foreach ($options as $line) {
 				if(is_object($line)) {				
-					$html .='<option value="'.$line->$value.'" '.($line->$value === $selected ? $attr:'').'>'.utf8_encode($line->$name).'</option>';								
+					$html .='<option value="'.$line->$value.'" '.($line->$value === $selected ? $attr:'').'>'.$line->$name.'</option>';								
 				}				
 				elseif(is_array($line))	{
 					if($line[$value] == $selected) $attr='selected="selected';		
@@ -322,8 +323,10 @@ class Form{
 			else $checked = '';
 
 			(isset($params['openwrap']))? $html .= $params['openwrap'] : $html .= '';
+			$html .= '<label class="radio">';
 			$html .= '<input type="radio" '.$class.' name="'.$id.'" value="'.$value.'" id="'.$value.'" style="'.$style.'" '.$checked.' '.$javascript.'>';
-			$html .= '<label class="radio" for="'.$value.'">'.$text.'</label>';
+			$html .= $text;
+			$html .= '</label>';
 			(isset($params['closewrap']))? $html .= $params['closewrap'] : $html .= '';
 		}
 

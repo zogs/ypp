@@ -4,12 +4,6 @@
  */
  class Date
  {
- 	private $Session;
-
- 	public function __construct($session)
- 	{
- 		$this->session = $session;
- 	}
 
  	public static function MysqlNow(){
 
@@ -42,7 +36,7 @@
  	}
 
  	public static function datefr($date) { 
-
+ 		
 		//tableau des mois de l'année en francais
 		$type_mois['00']='00';
 		$type_mois['01']='Janvier';   $type_mois['02']='Février';
@@ -62,12 +56,12 @@
 		return "$jour"." "."$mois"." "."$annee"; 
 	}		 
 
- 	public function month($num){
+ 	public static function month($num,$lang = 'fr'){
 
  		$array = array('fr' => array('Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre')
  				);
 
- 		return $array[$this->session->getLang()][$num - 1];
+ 		return $array[$lang][$num - 1];
 
  	}
  } ?>

@@ -5,6 +5,7 @@ class Router{
 		
 	static $routes = array();
 	static $prefixes = array();
+	static $request;
 
 	/**
 	 * Configure un prefixe
@@ -60,6 +61,7 @@ class Router{
 		}
 		$request->params = array_slice( $params , 2); //et tout le reste en parametres
 
+		self::$request = $request;
 
 		return true;
 
@@ -115,7 +117,7 @@ class Router{
 	*Permet de générer une url à partir d'une url originael
 	* controller/action(/:param/:param/:param...)
 	**/
-	static function url($url){
+	static function url($url, $lang=false, $token=false){
 
 		trim($url,'/');
 		foreach (self::$routes as $v ){
@@ -137,12 +139,31 @@ class Router{
 			}
 		}
 
+		//Add lang if set
+		if($lang) $url = Router::addLang($url);
+
 		//Security token
-		$url = Router::addToken($url);	
+		if($token) $url = Router::addToken($url);	
 
 		return  BASE_URL.'/'.$url;
 	}
 
+
+	static function addLang($url){
+
+		if(self::$request->get('lang')){
+
+			if(!strpos($url,'lang=')){
+
+				if(strpos($url,'?'))
+					$url .= '&lang='.self::$request->get('lang');
+				else
+					$url .= '?lang='.self::$request->get('lang');
+			}			
+		}
+		return $url;
+		
+	}
 	static function addToken($url){
 
 		//Security token
@@ -171,8 +192,8 @@ class Router{
 	}
 
 	static function url_get_param($url, $name) {
-    parse_str(parse_url($url, PHP_URL_QUERY), $vars);
-    return isset($vars[$name]) ? $vars[$name] : null;
+	    $d = parse_str(parse_url($url, PHP_URL_QUERY), $vars);
+	    return isset($vars[$name]) ? $vars[$name] : null;
 	}
 
 }

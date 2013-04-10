@@ -3,9 +3,17 @@
 */
 class WorldsModel extends Model
 {
-	private $cacheSystem = true;
+	private $cacheSystem = false;
+
+	public function __construct(){
+
+		parent::__construct();
+
+		//Cache for location system
+ 		$this->cacheLocation = new Cache(Conf::$cacheLocation,Conf::$cacheLocationDuration);
 
 
+	}
  	//Find all states in the database or the cache version
  	//@param array $ADM ['CC1'=>,'ADM1'=>...]
  	public function findAllStates($ADM){
@@ -44,7 +52,7 @@ class WorldsModel extends Model
 
 
  	private function writeCacheVersion($location, $content){
- 		
+
  		//If cache system is off 
  		if($this->cacheSystem == false) return false;
 
@@ -52,17 +60,17 @@ class WorldsModel extends Model
  		$content = serialize($content);
 
  		//Write file into cache location
- 		$this->cacheModel->write($location,$content);
+ 		$this->cacheLocation->write($location,$content);
 
  	}
 
  	private function findCacheVersion($location){
- 		
+
  		//If cache system is off 
  		if($this->cacheSystem == false) return false;
 
  		//If cache location existe return cache version
- 		if($content = $this->cacheModel->read($location)){
+ 		if($content = $this->cacheLocation->read($location)){
 
  			return unserialize($content);
  		}
@@ -109,7 +117,7 @@ class WorldsModel extends Model
  	//				level => niveau de la region
  	//				parent => code de la region pere
  	public function findStates($data){
-;
+
  		extract($data);
 
  		//cache location
@@ -119,21 +127,27 @@ class WorldsModel extends Model
  		if($cache = $this->findCacheVersion($location)){
  			return $cache; //if exist return cache version
  		}
- 		
+ 
+
  		//state query
  		$sql = "SELECT WR.ADM_CODE as code, WR.FULLNAME as name 
  				FROM world_states as WR
  				JOIN world_country as WC ON WC.CC1=WR.CC1";
 
-	 		if ($level == 'ADM1')
-			    $sql .= "	WHERE WR.CC1='" . $CC1 . "' AND WR.DSG='" . $level . "' AND WR.LC=WC.LO";
-			else
-			    $sql .= "	WHERE WR.CC1='" . $CC1 . "' AND WR.ADM_PARENT='" . $parent . "' AND WR.DSG='" . $level . "' AND WR.LC=WC.LO";
+	 		if ($level == 'ADM1'){
+
+			    $sql .= "	WHERE WR.CC1=:CC1 AND WR.DSG=:level AND WR.LC=WC.LO";
+			    $values = array(':CC1'=>$CC1,':level'=>$level);
+	 		}
+			else {
+			    $sql .= "	WHERE WR.CC1=:CC1 AND WR.ADM_PARENT=:parent AND WR.DSG=:level AND WR.LC=WC.LO";
+				$values = array(':CC1'=>$CC1,':parent'=>$parent,':level'=>$level);
+			}
 
 		$sql .= " GROUP BY WR.FULLNAME ORDER BY WR.FULLNAME";
 
-		 //debug($sql);
- 		$states = $this->query($sql);
+		 // debug($sql);
+ 		$states = $this->query($sql,$values);
 
  		$result = array(
  			'lvl'=>$level,
@@ -159,6 +173,10 @@ class WorldsModel extends Model
  	//				ADM..=>
  	public function findCities($CC1, $ADM){
 
+
+ 		//first, return false if there is no city
+ 		if(isset($ADM['city'])&&($ADM['city']==0||empty($ADM['city']))) return false;
+
  		//reformat ADM array 
 	 	$ADM = $this->formatADMArray($ADM);
 
@@ -175,29 +193,32 @@ class WorldsModel extends Model
 	 		return $cache; //return cache version
 	 	}
 
+	 	//the values for sql pdo
+	 	$values = array(':CC1'=>$CC1);
+
 	 	//City request
  		$sql = "SELECT C.UNI as code, C.FULLNAME as name
 				FROM world_cities as C	
 				JOIN world_country as WC ON C.CC1=WC.CC1				
-				WHERE C.CC1='".$CC1."' ";
+				WHERE C.CC1=:CC1 ";
 
 
 			$sql .= " AND (";
 			$cond = array();
  			foreach ($ADM as $k => $v) {
 
-				$parent = $v;
- 				$v = '"'.mysql_escape_string($v).'"';	 						 		
- 				$cond[] = "C.$k=$v";
+				$parent = $v;	 						 		
+ 				$cond[] = "C.$k=:$k";
+ 				$values[":$k"] = $v;
 
 	 				 				 				 			
  			}
  			$sql .= implode(' AND ',$cond);
  			$sql .= " ) ";
 			
-		$sql .=" AND ( C.LC=WC.LO OR C.LC='') ORDER BY C.FULLNAME";
-		
-		$cities = $this->query($sql);
+		$sql .=" AND ( C.LC=WC.LO OR C.LC='') ORDER BY C.FULLNAME";		
+
+		$cities = $this->query($sql,$values);
 
 		$result = array(
 			'lvl'=>'city',
@@ -224,16 +245,18 @@ class WorldsModel extends Model
  		
 
  			(isset($params['CC1']))? $CC1 = $params['CC1'] : $CC1 = Conf::$pays;
- 			(isset($params['limit']))? $nbResult = $params['limit'] : $nbResult = 10;
+ 			(isset($params['limit'])&&is_numeric($params['limit']))? $nbResult = $params['limit'] : $nbResult = 10;
  			if(isset($params['prefix'])) $queryString = $params['prefix'];
  			else return false;
 
- 			$sql = "SELECT DISTINCT City.UNI as city_id, City.FULLNAME as name, City.CC1, City.ADM1, City.ADM2, City.ADM3, City.ADM4 
+ 			$sql = "SELECT DISTINCT City.UNI as city_id, City.FULLNAME as name, City.CC1, City.ADM1, City.ADM2, City.ADM3, City.ADM4, City.LATITUDE, City.LONGITUDE 
  								FROM world_cities as City
 								LEFT JOIN world_country as Pays ON Pays.CC1=City.CC1
-								WHERE City.CC1='" . $CC1 . "' AND (City.LC=Pays.LO OR City.LC='') AND City.FULLNAME LIKE '" . $queryString . "%' LIMIT " . $nbResult;
+								WHERE City.CC1=:CC1 AND (City.LC=Pays.LO OR City.LC='') AND City.FULLNAME LIKE :queryString LIMIT ".$nbResult;
 
-			$cities = $this->query($sql);
+			$values = array(':CC1'=>$CC1,':queryString'=>$queryString.'%');
+
+			$cities = $this->query($sql,$values);
 
 			$array=array();
 			foreach ($cities as $city) {
@@ -250,6 +273,97 @@ class WorldsModel extends Model
 			return $array;
 
  		
+ 	}
+
+ 	/*
+		Find Cities arround a radius
+		@param {array} $params
+			arround :  radius in km or miles
+			Lat : Latitude of the point
+			Lon : Latitude of the point
+			location : array of location data
+			km : boolean
+			miles : boolean
+
+		ex : ['arround'=>10,Lat'=>16.4,'Lon'=>46.4,location=>array('CC1'=>,ADM1=>,...),'km'=>true,'miles'=>true]
+ 	*/
+
+ 	public function findCitiesArround($params){
+
+ 		extract($params);
+
+ 		debug($params);
+
+ 		//If extend arround a point
+		// set params to modified the query
+		if(!empty($arround)){
+
+			if(!empty($Lat) && !empty($Lon)){
+
+				$distance= $arround;
+				$onedegree = 111.045;
+				$earthradius = 6366.565;
+				if(!empty($km) && $km == true){ // in km
+					$onedegree = 111.045;
+					$earthradius = 6366.565;
+				}
+				if(!empty($miles) && $miles==true) {
+					$onedegree = 69;
+					$earthradius = 3956;
+				}				
+
+				//calcul of the box
+				$lon1 = $Lon-$distance/abs(cos(deg2rad($Lat))*$onedegree);
+				$lon2 = $Lon+$distance/abs(cos(deg2rad($Lat))*$onedegree);
+				$lat1 = $Lat-($distance/$onedegree);
+				$lat2 = $Lat+($distance/$onedegree);
+
+				//The Haversine Formula
+				$distance_field = ", $earthradius * 2 * ASIN(SQRT( POWER(SIN(($Lat - C.LATITUDE) *  pi()/180 / 2), 2) +COS($Lat * pi()/180) * COS(C.LATITUDE * pi()/180) * POWER(SIN(($Lon - C.LONGITUDE) * pi()/180 / 2), 2) )) as distance";
+				
+			}
+			else debug('city missing');
+		}
+
+ 		$sql = 'SELECT ';
+ 		if(!empty($fields))
+			$sql .= $this->sqlfields($fields);
+		else
+			$sql .= $this->sqlfields('*');
+
+		$sql .= $distance_field;
+
+		$sql .= " FROM world_cities as C ";
+
+		$sql .= ' WHERE 1=1';
+
+		//location speed up the search
+		if(!empty($location)){
+
+			$arr = array('city','CC1','ADM1','ADM2','ADM3','ADM4');
+			$ADM = array();
+			foreach ($arr as $key) {
+
+				if(!empty($location[$key]) && trim($location[$key])!=''){
+
+					$ADM[] = $key.'="'.$location[$key].'" ';
+				}								
+			}
+			if(count($ADM)>0)
+				$sql .= ' AND '.implode(' AND ',$ADM);
+		}
+
+		$sql .= ' AND C.LONGITUDE BETWEEN '.$lon1.' AND '.$lon2.' AND C.LATITUDE BETWEEN '.$lat1.' AND '.$lat2.' ';
+
+		$sql .= 'having distance < '.$distance;
+		
+		debug($sql);
+		$pre = $this->db->prepare($sql);
+		$pre->execute();
+		$cities = $pre->fetchAll(PDO::FETCH_OBJ);
+		
+		return $cities;		
+
  	}
 
  	public function formatADMArray($array){

@@ -4,7 +4,7 @@ Original context : <a href="<?php echo $context_link;?>"><?php echo $context_nam
 
 <?php 
     
-     $this->request('comments','show',array('comment',$comment_id));
+     $this->request('comments','show',array(array('context'=>'comment','context_id'=>$comment_id)));
 
 ?>
 

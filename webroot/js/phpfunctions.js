@@ -295,4 +295,32 @@ function minus( number, minus){
     return number;
 }
 
+
+function urldecode(url) {
+  return decodeURIComponent(url.replace(/\+/g, ' '));
+}
  
+function encode_utf8( s )
+{
+  return unescape( encodeURIComponent( s ) );
+}
+
+function decode_utf8( s )
+{
+  return decodeURIComponent( escape( s ) );
+}
+
+function addslashes(str) {
+    str=str.replace(/\\/g,'\\\\');
+    str=str.replace(/\'/g,'\\\'');
+    str=str.replace(/\"/g,'\\"');
+    str=str.replace(/\0/g,'\\0');
+    return str;
+}
+function stripslashes(str) {
+    str=str.replace(/\\'/g,'\'');
+    str=str.replace(/\\"/g,'"');
+    str=str.replace(/\\0/g,'\0');
+    str=str.replace(/\\\\/g,'\\');
+    return str;
+}
