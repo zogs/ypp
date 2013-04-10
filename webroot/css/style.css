@@ -404,31 +404,28 @@ a.sectionTitle:hover { text-decoration: none; color: #911111;}
 
 
 
-/* Description */
-.description {float:left; width:70%;}
-.actions {float:left; width:25%; margin-left:5%; padding:5px 0px 0 10px;}
-.actions ul { float:left; width:100%; margin:15px 0 0 50px; list-style:none; }
+            /* Description */
+.protest-sheet .description {float:left; width:70%;}
+.protest-sheet .actions {float:left; width:25%; margin-left:5%; padding:5px 0px 0 10px;}
+.protest-sheet .actions ul { float:left; width:100%; margin:15px 0 0 50px; list-style:none; }
 
-/* Authors */
-#authors {}
-#authors .author {}
-#authors .author img.logo { float:left; width:50px; margin-right:10px;}
-#authors .author a.login { text-transform: capitalize; font-weight: bold;}
-#authors .author span { color:#AAA; font-size: 90%}
+            /* Authors */
+.protest-sheet #authors {}
+.protest-sheet #authors .author {}
+.protest-sheet #authors .author img.logo { float:left; width:50px; margin-right:10px;}
+.protest-sheet #authors .author a.login { text-transform: capitalize; font-weight: bold;}
+.protest-sheet #authors .author span { color:#AAA; font-size: 90%}
 
-/* More Protest */
-.moreProtests {
-  float:left;
-  width:33%;
-}
-.moreProtests h3 { color:#AAA; font-size:10px; font-family: Times,serif; text-transform: uppercase; }
+            /* More Protest */
+.protest-sheet .moreProtests {  float:left;  width:33%;}
+.protest-sheet .moreProtests h3 { color:#AAA; font-size:10px; font-family: Times,serif; text-transform: uppercase; }
 
-/* Statistics */
-#statistics {}
-.charts .jqplot-title { padding:15px 0; font-size: 10px; font-weight: bold; font-family: Helvetica,sans-serif; text-transform: uppercase; color:#AAA;}
-.charts .jqplot-axis { font-size:10px; font-family: Helvetica,sans-serif; color:#AAA;}
-.charts .jqplot-yaxis { width:50px; text-align:right;}
-.charts .jqplot-xaxis { padding-top:10px; }
+            /* Statistics */
+.protest-sheet #statistics {}
+.protest-sheet .charts .jqplot-title { padding:15px 0; font-size: 10px; font-weight: bold; font-family: Helvetica,sans-serif; text-transform: uppercase; color:#AAA;}
+.protest-sheet .charts .jqplot-axis { font-size:10px; font-family: Helvetica,sans-serif; color:#AAA;}
+.protest-sheet .charts .jqplot-yaxis { width:50px; text-align:right;}
+.protest-sheet .charts .jqplot-xaxis { padding-top:10px; }
 
 
 /* Protest description page */
