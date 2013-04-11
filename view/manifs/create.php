@@ -145,7 +145,7 @@
 																						'bonhom_7'=>'Femme 2',
 																						'bonhom_8'=>'Femme 3',
 																						'bonhom_9'=>'Femme 4'),
-																				array('helper'=>'Choisir un type de bonhom','placeholder'=>'Tous','default'=>$manif->bonhoms)) ;?>						
+																				array('helper'=>'Afffiche un seul type de bonhom','placeholder'=>'Tous','default'=>$manif->bonhoms)) ;?>						
 
 							<?php echo $this->Form->radio("rain","Pluie de bonhommes",array(0=>"Désactivé",1=>"Activé"),array("default"=>$manif->rain)) ;?>
 							<?php echo $this->Form->radio("hover","Couleur au survol",array(0=>"Désactivé",1=>"Activé"),array("default"=>$manif->hover)) ;?>

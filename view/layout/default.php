@@ -89,24 +89,51 @@
 	</div>
 
 	<footer id="footer">
-		<div id="foo-one"></div>
-		<div id="foo-sign"><img src="<?php echo Router::webroot('img/sign.png');?>" alt=""></div>
+		<div id="foo-one">
+			<div class="container">
+				<div id="contact">
+					<form action="">
+						<textarea name="contact" id="contact" placeholder="Got an idea ? Have a question ? Want a sandwitch ? Let us know !"></textarea>
+						<input type="submit" value="envoyer">
+					</form>
+				</div>
+				<div class="footer-list">
+					<h4>GENERAL</h4>
+					<ul>
+						<li><a href="<?php echo Router::url('/');?>">Home</a></li>
+						<li><a href="<?php echo Router::url('manifs/index');?>">Protests</a></li>						
+						<li><a href="<?php echo Router::url('termsofuse');?>">Terms of use</a></li>
+						<li><a href="<?php echo Router::url('aboutus');?>">About us</a></li>
+					</ul>
+				</div>
+				<div class="footer-list">
+					<h4>ACTION</h4>
+					<ul>
+						<li><a href="<?php echo Router::url('manifs/create');?>">Create</a></li>
+						<li><a href="<?php echo Router::url('share');?>">Share</a></li>
+						<li><a href="<?php echo Router::url('report');?>">Report</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div id="foo-sign">
+			<div id="text-sign"></div>
+			<img src="<?php echo Router::webroot('img/sign-welcome.png');?>" alt="">
+		</div>
 		<div id="foo-two">
-			<div class="container foo-content">				
-				<div class="fright">YouProtest</div>
+			<div class="container">	
+				<div class="footer-menu">
+					<a href="<?php echo Router::url('/');?>">Home</a>
+					<a href="<?php echo Router::url('manifs/index');?>">Protests</a>						
+					<a href="<?php echo Router::url('termsofuse');?>">Terms of use</a>
+					<a href="<?php echo Router::url('termsofuse');?>">Privacy</a>
+					<a href="<?php echo Router::url('aboutus');?>">About us</a>
+				</div>			
+				<div class="footer-brand">YouProtestProject © 2013 <img src="<?php echo Router::webroot('img/logo_yp.png');?>"></div>
 			</div>
 		</div>
 	</footer>
 
-	<style>
-		#footer { position:fixed; bottom:-120px; height:150px; z-index:20;width:100%; background-color: rgba(0,0,0,0.1);}
-		#foo-one { position:absolute; top:30px; height:120px;  z-index:-20; width:100%; background-color: rgba(0,0,0,0.5);}
-		#foo-two { position:absolute; top:30px; z-index:-10; width:100%; background-color: rgba(0,0,0,1);}
-		#foo-sign {position:absolute; top:30px; height: 250px; left:30%; z-index:-15;}
-		#foo-sign img {height:200px;}
-
-		.foo-content{ padding:10px 0;}
-	</style>
 
 </body>
 
@@ -160,20 +187,20 @@
  	/*===========================================================
  		GOOGLE FONTS
  	============================================================*/
-      // WebFontConfig = {
-      //   google: { families: [ 'Bangers','Squada One','Oswald:300,400,700' ] },      
-      //   fontinactive: function(fontFamily, fontDescription) { /*alert('Font '+fontFamily+' is currently not available'); */}
-      // };
+       WebFontConfig = {
+         google: { families: [ 'Bangers','Squada One','Oswald:300,400,700' ] },      
+         fontinactive: function(fontFamily, fontDescription) { /*alert('Font '+fontFamily+' is currently not available'); */}
+       };
 
-      // (function() {
-      //   var wf = document.createElement('script');
-      //   wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
-      //       '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-      //   wf.type = 'text/javascript';
-      //   wf.async = 'true';
-      //   var s = document.getElementsByTagName('script')[0];
-      //   s.parentNode.insertBefore(wf, s);
-      // })();
+       (function() {
+         var wf = document.createElement('script');
+         wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+             '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+         wf.type = 'text/javascript';
+         wf.async = 'true';
+         var s = document.getElementsByTagName('script')[0];
+         s.parentNode.insertBefore(wf, s);
+       })();
 </script>
 
 

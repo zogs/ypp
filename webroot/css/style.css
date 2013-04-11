@@ -166,7 +166,7 @@ Index Manif
 .adaptive-title {display:inline;}
 .adaptive-title img.logo { height: 110px; width:110px; vertical-align: top; margin-right:5px;}
 .adaptive-title .title-container { display:inline-block; }
-.adaptive-title .title-container h1 { display:inline-block; float:left; color:#DEDEDE; text-align:left; text-transform:uppercase; font-weight:700; font-size:600%; font-family:'Oswald',sans-serif; line-height:1em; text-shadow:#fff 2px 2px 0; }
+.adaptive-title .title-container h1 { display:inline-block; float:left; color:#DEDEDE; text-align:left; text-transform:uppercase; font-weight:700; font-size:600%; font-family:'Oswald',Impact,sans-serif; line-height:1em; text-shadow:#fff 2px 2px 0; }
 .adaptive-title.title-dark .title-container h1 {color:#434141;}
 .adaptive-title .undertitle { display:inline-block; float:left; clear:left; text-align:left; margin-top:5px; width:100%; background:#434141;}
 .adaptive-title .undertitle div { display:inline-block; color:white; padding:4px 20px;}
@@ -799,6 +799,40 @@ Group View
 
 
 .uppercase { text-transform: uppercase; }
+
+
+#footer { position:fixed; bottom:-120px; height:150px; z-index:20;width:100%; background-color:#DDD; background-color: rgba(0,0,0,0.1); background-image:url('../webroot/img/logo_yp_alpha.png'); background-repeat: no-repeat; background-position: 80% 5px; background-size: 20px 20px}
+#footer:after { position:relative; top:-200px; left:0; content:''; background-color:red; background-image:url('../webroot/img/bkg/logo_yp_alpha.png');}
+#foo-one { position:absolute; top:30px; height:160px;  z-index:-2; width:100%; background-color:#3a3a3a; background-image:url('../webroot/img/bkg/footer-bkg-2.png');}
+#foo-one:after { content:''; position:absolute; top:0px; width:100%; height:100%; z-index:-10; background-image:url('../webroot/img/bkg/Lines3.png'); background-size: 50px 50px; }
+#foo-two { position:absolute; top:30px; z-index:0; width:100%; background-color:#323232; background-image:url('../webroot/img/bkg/footer-bkg-1.png'); border-top:1px solid #666; box-shadow: inset 1px 0 0 #FFF, -1px 0 0 #000;}
+#foo-sign { position:absolute; top:30px; height: 300px; left:25%; z-index:-1;}
+#foo-sign img {height:300px;}
+#foo-sign #text-sign { position:absolute; top:0; left:40px; width:150px; height: 100px; padding: 10px 15px; font-size: 30px; font-family:'Oswald',Impact,sans-serif; text-transform: uppercase;color:#666; }
+#foo-sign #text-sign:before { content:''; }
+
+.footer-brand { float:right; padding:10px 0; text-align: right; color:#666; font-size: 10px; }
+.footer-brand img { width:20px; height:20px; margin:-2px 0 0 5px;}
+.footer-menu { float:left; padding:8px 0; text-align: left; }
+.footer-menu a { color:#666; font-size: 10px; text-transform: uppercase; font-family: 'Helvetica Neue',Helvetica,Arial,Sans-serif; }
+.footer-menu a:hover {color:#AAA; text-decoration: none;}
+.footer-menu a:after {content:' - ';}
+
+#contact {float:right; width:25%; padding:10px 0 0 20px;}
+#contact textarea {width:100%; height : 70px ; padding:5px; border-radius: 5px; font-size: 10px; box-shadow:inset 5px 5px 5px rgba(0,0,0,0.2), 0 0 20px rgba(0,0,0,0.2);}
+#contact input[type=submit] { padding:2px 15px; font-size: 10px; text-transform: uppercase; color:#EEE; background-color:#911111; border:1px solid #46080a; border-radius:0; }
+#contact input[type=submit]:hover {color:#FFF;}
+
+.footer-list { display:none; float:right; width:25%; padding:10px 2% 0 2%; font-family: Times,serif;}
+.footer-list h4 { color:#DDD; text-transform: uppercase; font-size: 11px;  font-weight: normal; border-bottom:1px solid rgba(255,255,255,0.5);}
+.footer-list ul { color:#FFF; font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif; font-size: 10px; list-style:circle; }
+.footer-list ul a{ color:#DDD; }
+.footer-list ul a:hover { color:#FFF; text-decoration: none; }
+
+/*#foo-one { top:-130px; height:200px;}
+#foo-two {top:-8px;  }
+#foo-sign { top:-280px;}
+*/
 
 
 .flash{

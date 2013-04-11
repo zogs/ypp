@@ -706,7 +706,7 @@ class Manif extends Model{
 	public $table = 'manif_info';
 	public $primaryKey = 'manif_id';
 
-
+	
 	//default values
 	public $manif_id         = 0;
 	public $nommanif         = 'Create Protest';
@@ -716,6 +716,7 @@ class Manif extends Model{
 	public $description      = '';
 	public $date_creation    = '';
 	public $keywords         = '';
+	public $comments         = '';
 	public $logo             = '';
 	public $cat2             = '';
 	public $cat3             = '';
@@ -726,7 +727,7 @@ class Manif extends Model{
 	public $ADM4             = ''; 
 	public $city             = '';
 	public $colored          = 0;
-	public $bonhom           = '';
+	public $bonhoms          = '';
 	public $rain             = 0;
 	public $hover            = 0;
 	public $signs            = 0;
