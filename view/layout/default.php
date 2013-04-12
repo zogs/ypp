@@ -11,7 +11,7 @@
 <body data-user_id="<?php echo Session::user()->getID(); ?>">
 
 
-	<div class="navbar navbar-fixed-top navbar-inverse">
+	<div class="navbar navbar-fixed-top navbar-inverse navbar-yp">
 	  <div class="navbar-inner">
 	    <div class="container">
       		<a class="brand" href="#">

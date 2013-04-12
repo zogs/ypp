@@ -6,7 +6,7 @@
     src: local('Newsflash BB Regular'), local('NewsFlash'), url('fonts/NewsFlash/NewsflashBB.woff') format('woff'), url('fonts/NewsFlash/NewsflashBB.ttf') format('truetype'), url('fonts/NewsFlash/NewsflashBB.svg#NewsflashBB') format('svg');
 }
 
-
+/* Color selection yp */
 ::selection {
   background: #c00000; color:#FFF; /* Safari */
   }
@@ -14,6 +14,12 @@
   background: #c00000; color:#FFF; /* Firefox */
 }
 
+/* navbar yp */
+.navbar-yp .navbar-inner {  background-image:url('../webroot/img/bkg/footer-bkg-1.png');}
+.navbar .navbar-search input{ padding:6px 5px 6px 10px; font-size:11px; margin-top:2px;}
+.navbar-yp .nav { font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;}
+.navbar-yp .nav li { text-transform: uppercase; font-size:10px;}
+.navbar-yp .nav-login { font-size: 12px; }
 
 /*
 Add here modif to twttr Bootstrap
@@ -103,10 +109,21 @@ Index Manif
 .nav-timeline-a:hover { border-left:6px solid #888; color:#005580; text-decoration:none; font-weight:bold;}
 
 .listed { width:88%; }
-.manif {  position:relative; float:left; margin:10px 0; padding:20px 2% 15px 4%; border:1px solid #CCC; background:rgba(255, 255, 255, 0.6); box-shadow:3px 5px 5px rgba(0,0,0,0.1); border-radius: 3px;}
+.manif {  position:relative; float:left; margin:10px 0; padding:20px 2% 15px 4%; border:1px solid #CCC;  box-shadow:3px 5px 5px rgba(0,0,0,0.1); border-radius: 3px;
+      -webkit-transition: background-color 200ms linear;
+     -moz-transition: background-color 200ms linear;
+     -o-transition: background-color 200ms linear;
+     -ms-transition: background-color 200ms linear;
+     transition: background-color 200ms linear;
+   background-color:#F3F3F3;}
 .manif:nth-child(odd) { margin-left:0; width:100%;}
 .manif:nth-child(even) { margin-left:5%; width:95%; }
-.manif:hover { background-color: #2c2c2c;}
+.manif:hover { background-color: #2c2c2c;      
+      -webkit-transition: background-color 0 linear;
+     -moz-transition: background-color 0 linear;
+     -o-transition: background-color 0 linear;
+     -ms-transition: background-color 0 linear;
+     transition: background-color 0 linear;}
 .manif:hover .title .nommanif { color:#FFF}
 .manif:hover .description { color:#FFF; font-weight: normal;}
 .manif:hover .action { visibility: visible;}

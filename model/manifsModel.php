@@ -179,9 +179,9 @@ class ManifsModel extends Model {
  			$sql .= ' '.$req['end'];
  		}
  		
- 		
+ 		//debug($sql);
  		$results = $this->query($sql);
-
+ 		
  		if(count($results)==0) return array(new Manif());
 
  		$manifs = array();

@@ -152,7 +152,7 @@ class ManifsController extends Controller{
 			);
 
 
-		$manif = $this->Manifs->findFirstManif($params);
+		$manif = $this->Manifs->findFirstManif($params);		
 		$manif = $this->Worlds->JOIN_GEO($manif);
 
 
@@ -172,6 +172,8 @@ class ManifsController extends Controller{
 		//get creator 
 		$manif->creator = $this->Users->findFirstUser(array('conditions'=>array('user_id'=>$manif->administrator_id)));
 		$manif->creator = $this->Worlds->JOIN_GEO($manif->creator);
+
+
 
 		//get manif translations
 		$d['translationAvailable'] = $this->Manifs->find(array('table'=>'manif_descr','conditions'=>array('manif_id'=>$id),'fields'=>'lang'));
