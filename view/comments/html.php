@@ -106,7 +106,7 @@
             <div class="content">
                 <abbr class="date" title="<?php echo $protest->date;?>"><?php echo $protest->date;?></abbr>
                 <div>
-                    <span class="user"><?php echo $protest->user->getLogin(); ?> </span>
+                    <span class="user"><?php echo $protest->user->getLinkedLogin(); ?> </span>
                     protest
                     <a href="<?php echo Router::url('manifs/view/'.$protest->manif->getID().'/'.$protest->manif->getSlug()); ?>"><?php echo $protest->manif->getTitle(); ?></a>
                 </div>

@@ -424,9 +424,10 @@ class CommentsModel extends Model
 					S.date as date
 				FROM
 					manif_step as S
+					LEFT JOIN manif_participation AS P ON P.manif_id = S.manif_id
 					
 				WHERE
-					S.manif_id=2
+					P.user_id = ".$params['context_id']."
 
 				UNION
 				SELECT 

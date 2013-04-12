@@ -878,8 +878,9 @@ class UsersController extends Controller{
     			$d['protests'] = $this->Manifs->findManifsUserIsAdmin($user_id);
     			
     			//Participations
-    			$d['participations'] = $this->Users->findParticipations('P.id,P.manif_id,M.logo,D.nommanif',array($user_id));
-
+    			$d['participations'] = $this->Manifs->findUserParticipations($user_id);
+    			$d['participations'] = $this->Manifs->JOIN_MANIF($d['participations']);    			
+    			
 	    		/*	
     			//Timeline
     			$timing = $this->Users->findUserThread($user_id);

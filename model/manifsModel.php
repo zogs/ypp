@@ -224,8 +224,23 @@ class ManifsModel extends Model {
 			return false;
 	}
 
+	public function findUserParticipations( $user_id ){
+
+		$results = array();
+
+		$sql = "SELECT * FROM manif_participation WHERE user_id = :user_id";
+
+		$pre = $this->db->prepare($sql);
+		$pre->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+		$pre->execute();
+
+		return $pre->fetchAll(PDO::FETCH_OBJ);
+
+	}
+
 	public function JOIN_MANIF($objects,$fields = '*'){
 
+		$unique = false;
 		if(!is_array($objects)) {
 			$objects = array($objects);
 			$unique = true;

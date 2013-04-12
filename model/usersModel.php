@@ -386,7 +386,8 @@ class User {
 	public function getLinkedLogin(){
 
 		if($this->account=='anonym') return 'anonym_'.$this->user_id;
-		else return '<a href="'.Router::url('users/view/'.$this->user_id).'" >'.$this->login.'</a>';
+		if(Session::user()->isLog() && $this->user_id==Session::user()->getID()) return '<a class="userLink currentUser" href="'.Router::url('users/view/'.$this->user_id).'" >You</a>';
+		return '<a class="userLink" href="'.Router::url('users/view/'.$this->user_id).'" >'.$this->login.'</a>';
 	}
 
 	public function getAvatar(){

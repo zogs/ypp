@@ -618,9 +618,16 @@ Thread
 #thread .extrude-label { width:90%; margin-left:-10px; margin-top:20px; padding:8px 0 8px 25px; background:#f4f4f4; border:1px solid #c8c8c8; border-left:1px solid #f4f4f4; box-shadow:3px 3px 3px rgba(0,0,0,0.1);}
 #thread .extrude-label span { font-size: 10px; font-weight: bold; font-family: Times, serif; color: #727272; text-transform: uppercase;}
 
-#thread .extrude-list { margin: 10px 0 ; list-style:none; }
+#thread .extrude-list { margin: 10px 0 ; list-style:none;  }
+#thread .extrude-list:after { content:''; float:left; display: block; width:100%; }
 #thread .extrude-list li { color: #AAA; font-weight: normal; font-size: 12px; font-family: Times,serif }
 #thread .extrude-list li a:hover { color:#666; text-decoration: none; }
+#thread .extrude-list.list-logo li { float:left; }
+
+#thread .smallLogoProtest { float:left; margin:2px; width:30px; height:30px;}
+#thread .smallLogoProtest img { width:100%; height:100%;}
+#thread .mediumLogoProtest { float:left; margin:2px; width:40px; height:40px;}
+#thread .mediumLogoProtest img { width:100%; height:100%;}
 
 #thread .thread-unit { float:left; margin:0px 0; padding: 15px 0; width: 100%;border-bottom:1px solid #DDD;}
 #thread .thread-date { float:left; width: 100%; color:#AAA; text-align: right; font-weight:bold; font-size: 12px;}
@@ -634,6 +641,8 @@ Thread
 #thread .comment .comment_avatar { }
 #thread .comment .previewMedia { background-color: rgba(255, 255, 255, 0.5);}
 
+.userLink {}
+.userLink.currentUser { color:#910000; font-size:100%; text-transform: uppercase}
 
 /*
 Inscription
