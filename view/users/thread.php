@@ -63,7 +63,7 @@
 
 				<?php
 				
-				$auth = $this->request('comments','auth',array(array('context'=>'user','obj'=>$user)));
+				$auth = $this->request('comments','auth',array(array('context'=>'user','obj'=>$user)));				
 				$params = array('context'=>'user','context_id'=>$user->user_id,'displayRenderButtons'=>true,'enableInfiniteScrolling'=>true);			
 				$params = array_merge($auth,$params);
 				

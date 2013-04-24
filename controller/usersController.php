@@ -167,6 +167,11 @@ class UsersController extends Controller{
 										Session::setFlash("Il y a eu une erreur lors de l'envoi de l'email de validation", "error");
 									}
 
+									//Update statistics
+									$this->loadModel('Config');
+									$this->Config->incrementTotalUsersOnline();
+									$this->Config->incrementTotalUsersAccountType($user->account);
+
 
 							}
 							else {
@@ -472,6 +477,10 @@ class UsersController extends Controller{
 	    					unset($_SESSION['user']);
 	    					$user_id = 0;
 	    					Session::setFlash('Your account has been delete... <strong>Wait ? Why did you do that ??</strong>');
+
+	    					//Statistics
+	    					$this->loadModel('Config');
+	    					$this->Config->incrementTotalUsersOffline();
 
 	    				}
 	    				else
@@ -876,6 +885,7 @@ class UsersController extends Controller{
     			//$d['user']->context = 'userThread';
     			//$d['user']->context_id = $user_id;
     			$d['protests'] = $this->Manifs->findManifsUserIsAdmin($user_id);
+    			
     			
     			//Participations
     			$d['participations'] = $this->Manifs->findUserParticipations($user_id);

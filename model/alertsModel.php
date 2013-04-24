@@ -23,6 +23,10 @@ class alertsModel extends Model{
 		$sql = 'UPDATE '.$this->table.' SET treated=1, moderator_id=:moderator_id WHERE id=:id';
 		$tab = array('moderator_id'=>$mod_id,'id'=>$id);
 		$this->query($sql,$tab);
+
+		//increment statistics
+		$this->loadModel('Config');
+		$this->Config->incrementTotalReportsTreated();
 	}
 
 	public function saveAlert($data,$reporter_id){

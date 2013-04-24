@@ -66,10 +66,10 @@
                                 <ul>
                                     <li><a href="">Partager</a></li>
                                     <?php if($manif->isUserAdmin( Session::user()->getID())): ?>
-                                    <li><a href="">Administrer</a></li>
+                                    <li><a href="<?php echo Router::url('manifs/create/'.$manif->getID().'/'.$manif->getSlug());?>">Administrer</a></li>
                                     <?php endif; ?>
                                     <?php if(Session::user()->isLog()): ?>
-                                    <li><a href="">Alerter</a></li>
+                                    <li><a href="<?php echo Router::url('report/report/protest/'.$manif->getID());?>">Signaler</a></li>
                                     <?php endif; ?>
                                 </ul>
 

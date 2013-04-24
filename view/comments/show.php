@@ -10,23 +10,17 @@
                     
                     //Form is display
                     if(true == $this->displayFormComment ): ?>
-                    <form id="commentForm" action="<?php echo Router::url('comments/add'); ?>" method="POST">                        
-
-
-                        <?php
-                        
-                        //Si les commentaires sont authorisé OU si c'est l'admin on affiche le formulaire
-                        if (Session::user()->isLog() && $this->allowComment == true): ?>    
+                    <form id="commentForm" action="<?php echo Router::url('comments/add'); ?>" method="POST">                                                  
 
                         <img class="userAvatarCommentForm" src="<?php echo Router::url(Session::user()->getAvatar()); ?>" />
                         <div class="commentFormFields">
                             <?php 
                                 //Si c'est l'admin , il peut mettre un titre a son commentaire
-                                if($this->allowTitle):?>
+                                if(true === $this->allowTitle  &&  true === $this->allowComment):?>
                                 <input type="text" name="title" id="commentTitle" placeholder="<?php echo $this->tx_commentTitle;?>" />
-                                <?php endif; ?>
-
-                            <textarea name="content" id="commentTextarea" class="formComment" data-url-preview="<?php echo Router::url('comments/preview'); ?>" placeholder="<?php echo $this->tx_commentTextarea;?>"></textarea>
+                                <?php endif; ?>                            
+                            <textarea name="content" id="commentTextarea" class="formComment" <?php if(false===$this->allowComment) echo 'disabled="disabled"';?> data-url-preview="<?php echo Router::url('comments/preview'); ?>" placeholder="<?php echo $this->tx_commentTextarea;?>"></textarea>
+                            <?php if(true===$this->allowComment):?>
                             <input type="hidden" name="context" value="<?php echo $context; ?>" />
                             <input type="hidden" name="context_id" value="<?php echo $context_id; ?>" />                 
                             <input type="hidden" name="type" id="type" value='com' /> 
@@ -44,11 +38,8 @@
                                 </ul>
                             </div>                              
                             <div id="commentPreview"></div>
-                        </div>
-                        <?php else: ?>
-                        <img class="userAvatarCommentForm" src="<?php echo Router::url(Session::user()->getAvatar()); ?>" />
-                        <textarea class="formComment" disabled="disabled" name="content"><?php echo $this->tx_commentTextareaDisabled;?></textarea>
-                        <?php endif; ?>
+                            <?php endif;?>
+                        </div>                        
                     </form> 
 
                         <div class="btn-toolbar" style="margin-top:0">  

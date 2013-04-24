@@ -37,7 +37,7 @@
 	public $tx_endOfComments = "End of comments";
 	public $tx_loadingForComments = 'Wait please...';
 	public $tx_showMoreComments   = 'Show more comments !';
-	public $tx_commentTextareaDisabled = "You must login to comment";
+	public $tx_connectToComment = "You must login to comment";
 
 
  	public function auth($params){
@@ -46,19 +46,21 @@
 
  			$a = array();
 
+ 			//PROTEST PAGE =======
  			if($params['context'] == 'manif'){
 
  				$m = $params['obj'];
 
- 				//User can comment protest
+ 				//User can comment protest 				
  				$c = $m->userCanComment(Session::user()->getRole(),Session::user()->getID());
+
  				if($c===true){
 
  					$a['allowComment'] = true;
  					$a['allowReply'] = true;
  				} else {
  				
- 					$a['tx_commentTextareaDisabled'] = $c;				
+ 					$a['tx_commentTextarea'] = $c;				
  				}
 
  				//User is admin of protest
@@ -68,6 +70,7 @@
  				}
  			}
 
+ 			//USER PAGE =========
  			if($params['context'] == 'user'){
 
  				//anonym
@@ -75,7 +78,7 @@
  					$a['allowComment'] = false;
  					$a['allowTitle'] = false;
  					$a['allowReply'] = false;
- 					$a['textareaPlaceholder'] = "As a anonym you cant comment an user page";
+ 					$a['tx_commentTextarea'] = "As a anonym you cant comment an user page";
  				}
 
  				//pseudo
@@ -83,23 +86,25 @@
  					$a['allowComment'] = false;
  					$a['allowTitle'] = false;
  					$a['allowReply'] = false;
- 					$a['textareaPlaceholder'] = "As a pseudo you cant comment an user page";
+ 					$a['tx_commentTextarea'] = "As a pseudo you cant comment an user page";
  				}
  				//public
  				if(Session::user()->getRole()=='public'){
  					$a['allowComment'] = false;
  					$a['allowTitle'] = false;
  					$a['allowReply'] = false;
- 					$a['textareaPlaceholder'] = "Talk to message to ".$params['obj']->getLogin();
+ 					$a['tx_commentTextarea'] = "Talk to message to ".$params['obj']->getLogin();
  				}
 
  				//admin of the page
 				if($params['obj']->getID() == Session::user()->getID()){
-					$a['allowComment'] = false;
-					$a['allowTitle'] = false;
+					$a['allowComment'] = true;
+					$a['allowTitle'] = true;
 					$a['allowReply'] = true;
+					$a['tx_commentTextarea'] = "Whats in your mind ?";
 				}
 			}
+
  		}
 
  		return $a;
@@ -348,6 +353,9 @@
  				$d['context'] = $com->context;
  				$d['context_id'] = $com->context_id;
 
+ 				//Statistics
+ 				$this->loadModel('Config');
+ 				$this->Config->incrementTotalComments();
 
  			}
  			else {
@@ -387,6 +395,10 @@
 	 				$d['coms']  = $coms;
 					$d['context']    = $com->context;
 					$d['context_id'] = $com->context_id;
+
+					//Statistics
+	 				$this->loadModel('Config');
+	 				$this->Config->incrementTotalReplies();
 	 			
 	 			} else {
 

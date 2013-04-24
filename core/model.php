@@ -411,11 +411,11 @@
  		$field = $data['field'];
  		$id = $data['id'];
 
- 		$sql = "UPDATE $this->table SET $field = $field+1 WHERE $this->primaryKey = $id";
+ 		$sql = "UPDATE $table SET $field = $field+1 WHERE $this->primaryKey = $id";
  		$pre = $this->db->prepare($sql);
  		$pre->execute();
 
- 		$sql ="SELECT $field FROM $this->table WHERE $this->primaryKey = $id";
+ 		$sql ="SELECT $field FROM $table WHERE $this->primaryKey = $id";
  		return $this->query($sql);
  	}
 
@@ -431,11 +431,11 @@
  		$field = $data['field'];
  		$id = $data['id'];
 
- 		$sql = "UPDATE $this->table SET $field = $field-1 WHERE $this->primaryKey = $id";
+ 		$sql = "UPDATE $table SET $field = $field-1 WHERE $this->primaryKey = $id";
  		$pre = $this->db->prepare($sql);
  		$pre->execute();
 
- 		$sql ="SELECT $field FROM $this->table WHERE $this->primaryKey = $id";
+ 		$sql ="SELECT $field FROM $table WHERE $this->primaryKey = $id";
  		return $this->query($sql);
  	}
 

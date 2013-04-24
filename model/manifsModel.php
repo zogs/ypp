@@ -396,7 +396,7 @@ class ManifsModel extends Model {
  		$save_manif = $this->saveProtest_info($data);
  		$this->saveProtest_i18n($data,$save_manif,$data->lang);
  		$this->saveKeywords($data,$save_manif['id'],$data->lang);
- 		$this->saveManifLogo($save_manif['id']);
+ 		$this->saveManifLogo($save_manif['id'],$data->lang);
  		$this->saveProtester(Session::user()->getID(),$save_manif['id']);
  		$this->saveAdmin(Session::user()->getID(),$save_manif['id']);
 
@@ -492,7 +492,7 @@ class ManifsModel extends Model {
  	 * save the logo 
  	 * @param numeric $manif_id 	 
  	 */
- 	public function saveManifLogo($manif_id){
+ 	public function saveManifLogo($manif_id,$lang){
 
  		//Les vérifications sont faites dans model/validates
  		if(!empty($_FILES)){
@@ -502,6 +502,10 @@ class ManifsModel extends Model {
 
  				$sql = "UPDATE manif_info SET logo=:logo WHERE manif_id=:manif_id";
  				$values = array('logo'=>$dest,'manif_id'=>$manif_id);
+ 				$this->query($sql,$values);
+
+ 				$sql = "UPDATE manif_descr SET logo=:logo WHERE manif_id=:manif_id AND lang=:lang";
+ 				$values = array('logo'=>$dest,'manif_id'=>$manif_id,'lang'=>$lang);
  				$this->query($sql,$values);
  			}
  		}
@@ -841,7 +845,7 @@ class Manif extends Model{
 		if($type=='pseudo') return $this->pseudoCanComment();
 		if($type=='public') return $this->publicCanComment();
 
-		return false;
+		return 'Account type is not defined';
 	}
 	private function anonCanComment(){
 		return "Remember... anonym account can not comment..";

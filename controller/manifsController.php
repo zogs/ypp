@@ -318,10 +318,19 @@ class ManifsController extends Controller{
 					//save data
 					$saved_manif = $this->Manifs->saveManif($data,$manif_id);
 
-					if($saved_manif['action']=='insert')
+					if($saved_manif['action']=='insert') {
+
 						Session::setFlash('Protest have been <strong>save</strong> ! <a href="'.Router::url('manifs/view/'.$saved_manif['id'].'/'.$slug.'?lang='.$data->lang).'">See it in action !</a>','success');
-					else
+						
+						//Statistics
+						$this->loadModel('Config');
+						$this->Config->incrementTotalProtestsOnline();
+					}
+					else {
+
 						Session::setFlash('Protest have been <strong>updated</strong> ! <a href="'.Router::url('manifs/view/'.$saved_manif['id'].'/'.$slug.'?lang='.$data->lang).'">See it in action !</a>','success');
+						
+					}
 					
 					//redirect to create form
 					$this->redirect('manifs/create/'.$saved_manif['id'].'/?lang='.$saved_manif['lang']);
@@ -428,6 +437,11 @@ class ManifsController extends Controller{
 
 				//decrement manif numerus
 				$this->Manifs->decrement(array('field'=>'numerus','id'=>$manif_id));
+
+				//Global statistic
+				$this->loadModel('Config');
+				$this->Config->decrementTotalProtesters();
+				$this->Config->incrementTotalProtestersCanceled();
 			}
 			else {
 				$d['error'] = 'Error canceling protesting '.$participation->login;
@@ -488,6 +502,11 @@ class ManifsController extends Controller{
 
 			//save a numerus stage
 			$this->setNumerusStep($manif_id,$user_id);
+
+			//Global statistic
+			$this->loadModel('Config');
+			$this->Config->incrementTotalProtesters();
+
 		}
 		//user is already in
 		elseif($result=='already'){

@@ -261,8 +261,8 @@ class CommentsModel extends Model
 			$c->media = html_entity_decode($c->media,ENT_NOQUOTES|'ENT_XHTML', 'UTF-8' );
 		}
 
-		if(!empty($title)){
-			$c->title = $c->title;
+		if(!empty($c->title)){
+
 			$c->news = 1;
 		}
 

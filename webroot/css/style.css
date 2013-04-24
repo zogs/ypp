@@ -242,8 +242,10 @@ article { }
     .switchProtest input {
       /* First, we make it as wide as the container */
       position: absolute;
-      width: 50%;
+      width: 100%;
       height: 100%;
+      position:absolute;
+      left:0;
       /* Then, we put it on top of everything else */
       z-index: 100;
       /* Last, we make it invisible */
@@ -359,10 +361,6 @@ article { }
       background:#9abb82;
     }
 
-    .switchProtest input:checked {
-      left:50%;
-    }
-
     .switchProtest input:checked ~ label i {
       left:auto;
       right:-1%;
@@ -423,8 +421,8 @@ a.sectionTitle:hover { text-decoration: none; color: #911111;}
 
             /* Description */
 .protest-sheet .description {float:left; width:70%;}
-.protest-sheet .actions {float:left; width:25%; margin-left:5%; padding:5px 0px 0 10px;}
-.protest-sheet .actions ul { float:left; width:100%; margin:15px 0 0 50px; list-style:none; }
+.protest-sheet .actions {float:right; width:25%; padding-top:5px; }
+.protest-sheet .actions ul { float:left; width:50%; margin:15px 0 0 0px; list-style:none; }
 
             /* Authors */
 .protest-sheet #authors {}
@@ -488,7 +486,7 @@ Commentaires
 .post .user { display:inline; color:#4F88CC; text-transform:capitalize; font-weight:bold; font-size:100%; }
 .post .logo { width:40px; float:left; margin-right:4px}
 .post .date { color:grey; font-size:80%; }
-.post .actions { margin-top: 10px; margin-right:15px; text-align:left; }
+.post .actions { margin-top: 10px; text-align:left; }
 .content { float:left; width:90%; }
 .content { color:#555; font-size:12px;}
 .replies { position:relative; float:right; margin-bottom:3px; margin-left:1%; padding-left:2%; width:92%; }
@@ -503,6 +501,7 @@ Commentaires
 .hiddenReplies {display: none;}
 
 /* Type news */
+.type_news { background-image:url('../img/creneau_gauche.png'); background-repeat: repeat-y;}
 .type_news .content { width:80%; }
 .type_news .title { color:#4F88CC; font-weight:bold ; font-size:105%;}
 .newsInfo { float:left; width:70%;}
@@ -540,9 +539,10 @@ Commentaires
 
 /* Form */
 
-#commentTextarea { float:left; width:70%; height:60px;}
+#commentTextarea { float:left; width:70%; height:30px;}
 #commentTextareaButtons { float: left;  margin-left:5px; }
 #commentTitle { width:60%;}
+#commentTitle ~ #commentTextarea {margin-left:30px;}
 .userAvatarCommentForm { float:left; height: 30px; margin:0 5px 0 0;}
 .formCommentReply { float:left; padding:10px 8% 5px 3%; margin-bottom:0; width:93%; background-color:rgba(0,0,0,0.05); border:1px solid #CCC;}
 #formCommentReply { margin-left:7%; width:79%; margin-top:5px;}
@@ -624,10 +624,11 @@ Thread
 #thread .extrude-list li a:hover { color:#666; text-decoration: none; }
 #thread .extrude-list.list-logo li { float:left; }
 
-#thread .smallLogoProtest { float:left; margin:2px; width:30px; height:30px;}
+#thread .smallLogoProtest { float:left; margin:2px; width:30px; height:30px; opacity:0.2;}
 #thread .smallLogoProtest img { width:100%; height:100%;}
-#thread .mediumLogoProtest { float:left; margin:2px; width:40px; height:40px;}
+#thread .mediumLogoProtest { float:left; margin:2px; width:40px; height:40px; opacity: 0.5;}
 #thread .mediumLogoProtest img { width:100%; height:100%;}
+#thread .smallLogoProtest:hover, #thread .mediumLogoProtest:hover { opacity: 1;}
 
 #thread .thread-unit { float:left; margin:0px 0; padding: 15px 0; width: 100%;border-bottom:1px solid #DDD;}
 #thread .thread-date { float:left; width: 100%; color:#AAA; text-align: right; font-weight:bold; font-size: 12px;}

@@ -41,8 +41,13 @@ class ReportController extends Controller{
 
 			if($res = $this->Alerts->saveAlert($post,$reporter_id)){
 
-				if(is_numeric($res)){				
+				if(is_numeric($res)){	
+
 					Session::setFlash('<strong>Your report have been saved !</strong> We will study it as soon as possible. Please be patient we are a small team...');
+
+					//increement Statistics
+					$this->loadModel('Config');
+					$this->Config->incrementTotalReportsUntreated();
 
 				}
 				elseif($res=='reporter_have_already_report'){
@@ -95,16 +100,20 @@ class ReportController extends Controller{
 		if(!Session::user()->isLog() || !Session::user()->isSuperAdmin()) $this->redirect('users/login');
 
 		$this->loadModel('Alerts');
+		$this->loadModel('Config');
 
 		//moderate
 		$report = $this->Alerts->findFirst(array('conditions'=>array('id'=>$id)));
 		if($report->context=='comments'){
 			$this->loadModel('Comments');
 			$this->Comments->admin_moderate($report->context_id);
+			$this->Config->incrementTotalCommentsModerate();
+
 		}
 		elseif($report->context=='protest'){
 			$this->loadModel('Manifs');
 			$this->Manifs->admin_moderate($report->context_id);
+			$this->Config->incrementTotalProtestsModerate();
 		}
 
 		//avert author
@@ -120,14 +129,20 @@ class ReportController extends Controller{
 	public function admin_deleteContent($id){
 
 		$this->loadModel('Alerts');
+		$this->loadModel('Comments');
+
 		$report = $this->Alerts->findFirst(array('conditions'=>array('id'=>$id)));
+
 		if($report->context=='comments'){
 			$this->loadModel('Comments');
 			$this->Comments->admin_delete($report->context_id);
+			$this->Config->incrementTotalCommentsOffline();
+
 		}
 		elseif($report->context=='protest'){
 			$this->loadModel('Manifs');
 			$this->Manifs->admin_delete($report->context_id);
+			$this->Config->incrementTotalProtestsOffline();
 		}
 
 		$this->loadModel('Users');

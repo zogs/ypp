@@ -161,9 +161,10 @@
                     <div class="comInfo">
                         <?php if($com->isNews()): ?> 
                         <div class="newsInfo">
+                             <div class="contextName"><?php echo $com->contextTitle(); ?></div> 
                             <div class="title"><?php echo $com->title; ?></div> 
                             <abbr class="date" title="<?php echo $com->date;?>"><?php echo $com->date;?></abbr>   
-                            <div class="contextName"><?php echo $com->contextTitle(); ?></div> 
+                           
                                                                                                            
                         </div>
                         <div class="newsAuthor">
