@@ -81,7 +81,7 @@ class ManifsController extends Controller{
 												'ADM4'=>$this->CookieRch->read('ADM4'),
 												'city'=>$this->CookieRch->read('city')
 												));
-		
+	
 		//get category
 		$d['cat2'] = $this->Manifs->findCategory(array(
 		'lang'     =>$this->getLang(),

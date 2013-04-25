@@ -190,7 +190,9 @@ class Router{
 	static function webroot($url){
 		$url = trim($url,'/');
 		$url = Router::addToken($url);//add security token
-		return BASE_URL.'/'.$url;
+		$url = BASE_URL.'/'.$url;
+		$url = str_replace('//','/',$url);
+		return $url;
 
 	}
 
