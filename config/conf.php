@@ -21,8 +21,8 @@ class Conf {
 		'ypp.zogs.org' =>array(
 			'host'     => 'localhost',
 			'database' => 'ypp',
-			'login'    => 'admin',
-			'password' => 'XSgvEPbG'
+			'login'    => 'protestboy',
+			'password' => 'protestandresist'
 			) 
 		);
 
