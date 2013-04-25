@@ -1,5 +1,5 @@
 <?php 
-class cache {
+class Cache {
 
 	public $dirname;
 	public $duration;
