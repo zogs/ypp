@@ -143,9 +143,12 @@ class Router{
 		if($lang) $url = Router::addLang($url);
 
 		//Security token
-		if($token) $url = Router::addToken($url);	
+		if($token) $url = Router::addToken($url);
+			
+		//Correction 
+		$url = str_replace('//','/',BASE_URL.'/'.$url);
 
-		return  BASE_URL.'/'.$url;
+		return  $url;
 	}
 
 
