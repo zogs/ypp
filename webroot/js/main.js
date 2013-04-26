@@ -15,7 +15,8 @@ $(document).ready(function(){
 
 	if(typeof io!='undefined'){
 		//initialisation de la conexion au socket
-		var socket = io.connect('http://localhost:1337');
+		//var socket = io.connect('http://localhost:1337');
+		var socket = io.connect('http://ypnode.zogs.org');
 
 		socket.emit('newManifViewed', {id:$("#protest-flash").attr('data-manif-id')});
 
