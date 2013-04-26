@@ -256,21 +256,21 @@ class UsersModel extends Model{
 			$sql .= ' LIMIT '.$req['limit'];
  		}
 
- 		//debug($sql);
- 		$results = $this->query($sql);
-
- 		if(empty($results)) return new User();
-
+ 		$results = $this->query($sql); 		
 
  		$users = array();
+
+ 		//if no result , set a empty user
+ 		 if(empty($results)) $users[] = new User();	
+
+ 		//contruct array of users 
  		foreach ($results as $user) {
  	
  			$user = new User($user);
  			$user = $this->JOIN('groups',array('group_id','logo as avatar','slug'),array('user_id'=>$user->getID()),$user); 		
  			$users[] = $user;
  		}
- 		 		
-
+ 		 
  		return $users;
 	}
 

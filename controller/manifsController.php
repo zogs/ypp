@@ -169,11 +169,12 @@ class ManifsController extends Controller{
 			//$this->redirect("manifs/view/id:$id/slug:".$d['manif']->slug,301);
 		}		
 
+		
 		//get creator 
-		$manif->creator = $this->Users->findFirstUser(array('conditions'=>array('user_id'=>$manif->administrator_id)));
+		$manif->creator = $this->Users->findFirstUser(array('conditions'=>array('user_id'=>$manif->administrator_id)));		
 		$manif->creator = $this->Worlds->JOIN_GEO($manif->creator);
-
-
+		if(empty($manif)) throw new zException("Creator of the protest does not exist anymore", 1);
+		
 
 		//get manif translations
 		$d['translationAvailable'] = $this->Manifs->find(array('table'=>'manif_descr','conditions'=>array('manif_id'=>$id),'fields'=>'lang'));

@@ -1,7 +1,7 @@
 <?php 
 header ('Content-type: text/html; charset=utf-8');
 
-
+$html= '';
 if($type!='404'){
 	
 	$html ='<div class="previewMedia previewMedia-'.$type.'">';
