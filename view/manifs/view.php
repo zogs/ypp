@@ -178,7 +178,7 @@
 <script type="text/javascript" src="<?php echo Router::webroot('js/jqplot/jquery.jqplot.min.js');?>"></script>
 <script type="text/javascript" src="<?php echo Router::webroot('js/jqplot/plugins/jqplot.dateAxisRenderer.min.js');?>"></script>
 <script type="text/javascript" src="http://konami-js.googlecode.com/svn/trunk/konami.js"></script>
-<script type="text/javascript" src="http://localhost:1337/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="http://ypnode.zogs.org/socket.io/socket.io.js"></script>
 <script type="text/javascript">
 
 
