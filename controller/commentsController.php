@@ -21,7 +21,7 @@
 
  	//Preference
  	public $displayReply = true;
- 	public $enablePreview = false;
+ 	public $enablePreview = true;
  	public $showFormReply = false;
  	public $commentsPerPage = 6;
  	public $repliesDisplayPerComment = 3; 	
@@ -462,7 +462,6 @@
  		$this->layout = 'none';
  		$vars = array();
 
-
 		if($this->request->get() && $this->enablePreview){
 
 			if($this->request->get('url')) {
@@ -485,6 +484,8 @@
 				//default params
 				$image_extension = array('jpg','jpeg','gif','png');
 				$default_thumbnail = 'http://localhost/ypp/img/sign.png';
+
+
 
 				//If the url ends with an image extension
 				if(!empty($purl['path']) && in_array(substr($purl['path'],strripos($purl['path'],'.')+1),$image_extension)){
