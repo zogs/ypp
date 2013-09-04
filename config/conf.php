@@ -6,6 +6,11 @@ class Conf {
 	static $debug = 1;
 	static $adminPrefix = 'banane';
 	static $Website = 'YouProtest.net';
+	static $websiteURLs = array(
+		'localhost'=>'http://localhost/ypp',
+		'ypp.zogs.org'=>'http://ypp.zogs.org',		
+		'default' => 'http://ypp.zogs.org'
+		);
 	static $pays = 'FR';
 	static $lang = 'fr';
 		
