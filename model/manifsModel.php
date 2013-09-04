@@ -72,7 +72,7 @@ class ManifsModel extends Model {
 
 
 		//User information		
-		$user_id = Session::user()->getID();
+		$user_id = $this->session->user()->getID();
 
 		//Lang
 		if(isset($req['lang']) && $req['lang']!='')
@@ -324,7 +324,7 @@ class ManifsModel extends Model {
 
 
  	public function findCategory($params){
-
+ 		
  		extract($params);
  		$values = array();
  		$sql = "SELECT id," . $lang . " as name FROM config_category WHERE 1=1 ";
@@ -397,8 +397,8 @@ class ManifsModel extends Model {
  		$this->saveProtest_i18n($data,$save_manif,$data->lang);
  		$this->saveKeywords($data,$save_manif['id'],$data->lang);
  		$this->saveManifLogo($save_manif['id'],$data->lang);
- 		$this->saveProtester(Session::user()->getID(),$save_manif['id']);
- 		$this->saveAdmin(Session::user()->getID(),$save_manif['id']);
+ 		$this->saveProtester($this->session->user()->getID(),$save_manif['id']);
+ 		$this->saveAdmin($this->session->user()->getID(),$save_manif['id']);
 
  		return $save_manif;
 
@@ -417,7 +417,7 @@ class ManifsModel extends Model {
  		//Data to save
  		$m = new StdClass(); 
  		$m->table = 'manif_info';
- 		$m->administrator_id = Session::user()->getID(); 		
+ 		$m->administrator_id = $this->session->user()->getID(); 		
  		$fields = array('nommanif'=>'nom','lang'=>'lang','CC1'=>'CC1','ADM1'=>'ADM1','ADM2'=>'ADM2','ADM3'=>'ADM3','ADM4'=>'ADM4','city'=>'city','cat2'=>'cat2','cat3'=>'cat3','comments'=>'comments','colored'=>'colored','rain'=>'rain','hover'=>'hover','signs'=>'signs','bonhoms'=>'bonhoms');			
  		foreach ($fields as $field => $sqlfield) {
 
@@ -429,7 +429,7 @@ class ManifsModel extends Model {
  		//if the protest exist
  		if(!empty($data->manif_id)){
  			$m->manif_id = $data->manif_id;
-	 		$m->administrator_id = Session::user()->getID();
+	 		$m->administrator_id = $this->session->user()->getID();
 
 	 		$return['action'] = 'update';
  		}
@@ -478,7 +478,7 @@ class ManifsModel extends Model {
 
  			if($manif['action']=='update'){
 
- 				Session::setFlash('A new translation have been added ! (<a href="'.Router::url("manifs/create/".$manif['id']."?lang=".$m->lang).'">'.Conf::$languageAvailable[$m->lang].'</a>)','success');
+ 				$this->session->setFlash('A new translation have been added ! (<a href="'.Router::url("manifs/create/".$manif['id']."?lang=".$m->lang).'">'.Conf::$languageAvailable[$m->lang].'</a>)','success');
  				
  			}
  		}			
@@ -619,7 +619,7 @@ class ManifsModel extends Model {
  		$sql .= " FROM users as U 
  					JOIN manif_participation as P ON P.user_id=U.user_id 
  					LEFT JOIN manif_info as M ON M.manif_id = P.manif_id
- 					LEFT JOIN manif_descr as D ON D.manif_id = P.manif_id AND D.lang='".Session::user()->getLang()."' 					
+ 					LEFT JOIN manif_descr as D ON D.manif_id = P.manif_id AND D.lang='".$this->session->user()->getLang()."' 					
  					WHERE ";
 
  		 if(isset($req['conditions'])){
@@ -735,7 +735,7 @@ class Manif extends Model{
 	public $description      = '';
 	public $date_creation    = '';
 	public $keywords         = '';
-	public $comments         = '';
+	public $comments         = 'open';
 	public $logo             = '';
 	public $cat2             = '';
 	public $cat3             = '';

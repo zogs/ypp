@@ -43,7 +43,7 @@ class CommentsModel extends Model
         	}           
         }
 
-        $user_id = Session::user()->getID();
+        $user_id = $this->session->user()->getID();
         
 
 		$q = " SELECT C.*, U.user_id, U.login, U.avatar, V.id as voted 
@@ -136,7 +136,7 @@ class CommentsModel extends Model
         	}           
         }
 
-        $user_id = Session::user()->getID();
+        $user_id = $this->session->user()->getID();
 
 		$sql = " SELECT C.*
 				FROM $this->table as C
@@ -282,7 +282,7 @@ class CommentsModel extends Model
 	public function admin_moderate($id){
 
 		//secu
-		if(!Session::user()->isLog() || !Session::user()->isSuperAdmin()) $this->redirect('users/login');
+		if(!$this->session->user()->isLog() || !$this->session->user()->isSuperAdmin()) $this->redirect('users/login');
 		$sql = 'UPDATE '.$this->table.' SET valid=0 WHERE id='.$id;
 		$this->query($sql);
 	}
@@ -321,7 +321,7 @@ class CommentsModel extends Model
 
 	public function JOIN_USER_VOTE($data){
 
-		return $this->JOIN($this->table_vote,'id as voted',array('comment_id'=>':id','user_id'=>Session::user()->getID()),$data);
+		return $this->JOIN($this->table_vote,'id as voted',array('comment_id'=>':id','user_id'=>$this->session->user()->getID()),$data);
 	}
 
 	public function JOIN_CONTEXT($com){

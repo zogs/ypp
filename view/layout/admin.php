@@ -8,7 +8,7 @@
         <title><?php echo isset($title_for_layout)?$title_for_layout : 'Ypp';?></title>
         
 </head>
-<body data-user_id="<?php echo Session::user()->getID(); ?>">
+<body data-user_id="<?php echo $this->session->user()->getID(); ?>">
 
 
         <div class="navbar navbar-fixed-top navbar-inverse">
@@ -46,10 +46,10 @@
                                 </li>
 
                                 
-                                <?php if (Session::user()->isLog()): ?>
+                                <?php if ($this->session->user()->isLog()): ?>
                                         <li><a href="<?php echo Router::url('users/thread');?>">
-                                                        <img class="nav-avatar" src="<?php echo Router::webroot(Session::user()->getAvatar()); ?>" />   
-                                                        <span class="nav-login"><?php echo Session::user()->getLogin(); ?></span>
+                                                        <img class="nav-avatar" src="<?php echo Router::webroot($this->session->user()->getAvatar()); ?>" />   
+                                                        <span class="nav-login"><?php echo $this->session->user()->getLogin(); ?></span>
                                         </a></li>
                                         <li class="dropdown">   
                         
@@ -68,7 +68,7 @@
                                         <form class="loginForm" action="<?php echo Router::url('users/login'); ?>" method='post'>
                                                 <input type="login" name="login" required="required" placeholder="Login or email" autofocus="autofocus" value="pumtchak"/>
                                                 <input type="password" name="password" required="required" placeholder="Password" value="fatboy" />
-                                                <input type="hidden" name="token" value="<?php echo Session::token();?>" />
+                                                <input type="hidden" name="token" value="<?php echo $this->session->token();?>" />
                                                 <input type="submit" value="OK" />
                                         </form>
                                         <li><a href="<?php echo Router::url('users/login');?>">Login</a></li>   
@@ -111,7 +111,7 @@
         /*===========================================================
                 Set security token
         ============================================================*/
-        var CSRF_TOKEN = '<?php echo Session::token(); ?>';
+        var CSRF_TOKEN = '<?php echo $this->session->token(); ?>';
 
 
         /*===========================================================

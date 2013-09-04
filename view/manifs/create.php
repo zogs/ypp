@@ -20,7 +20,7 @@
 		
 		<div class="formulaire">
 
-			<?php echo Session::flash(); ?>
+			<?php echo $this->session->flash(); ?>
 			
 			<div class="arianne">
 
@@ -115,7 +115,7 @@
 
 					<div class="submit">						
 						<?php echo $this->Form->input("manif_id","hidden",array("value"=>$manif->getID())) ;?>
-						<?php echo $this->Form->input('token','hidden',array('value'=>Session::token())) ;?>
+						<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 						<input class="btn btn-info" type="submit" value="<?php echo $submit_text; ?>"/>
 					</div>
 					
@@ -126,7 +126,7 @@
 					<?php echo $this->Form->select("comments","Commentaires",array("open"=>"Les commentaires sont ouverts","onlypublic"=>"Les commentaires sont limités aux comptes public","close"=>"Les commentaires sont fermés"),array('default'=>$manif->comments)) ;?>
 					<div class="submit">						
 						<?php echo $this->Form->input("manif_id","hidden",array("value"=>$manif->getID())) ;?>
-						<?php echo $this->Form->input('token','hidden',array('value'=>Session::token())) ;?>
+						<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 						<input class="btn btn-info" type="submit" value="<?php echo $submit_text; ?>"/>
 					</div>
 				</div>
@@ -155,7 +155,7 @@
 
 					<div class="submit">						
 						<?php echo $this->Form->input("manif_id","hidden",array("value"=>$manif->getID())) ;?>
-						<?php echo $this->Form->input('token','hidden',array('value'=>Session::token())) ;?>
+						<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 						<input class="btn btn-info" type="submit" value="<?php echo $submit_text; ?>"/>
 					</div>
 				</div>

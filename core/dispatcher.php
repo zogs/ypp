@@ -4,10 +4,10 @@ class Dispatcher{
 
 	var $request;
 
-	function __construct() {
+	function __construct( $request ) {
 
 		//Intanciation d'un objet requete
-		$this->request = new Request();
+		$this->request = $request;
 
 		//Appel de la class Router pour decortiquer la requete url
 		Router::parse($this->request->url,$this->request);
@@ -37,12 +37,12 @@ class Dispatcher{
 	// Permet d'inclure le bon controlleur
 	function loadController() {
 
+		//nom du controller
+		$name = ucfirst($this->request->controller).'Controller'; //On recupere le nom du controller ( en lui mettant une majuscule ^^)
 
+		//autoload du controller
+		$controller =  new $name($this->request); //retourne une instance du bon controleur ( representé par le $name ! )
 		
-		$name = ucfirst($this->request->controller).'Controller'; //On recupere le nom du controller ( en lui mettant une majuscule ^^)		
-		$controller =  new $name($this->request); //autoloade une instance du bon controleur ( representé par le $name ! )
-
-
 		return $controller;
 	}
 

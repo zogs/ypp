@@ -1,51 +1,54 @@
 <?php 
 class Session {
 
-	private static $controller;
+	function __construct($controller){
 
-	public static function init($controller){
-
-		self::$controller = $controller;
+		$this->controller = $controller;		
 
 		if(!isset($_SESSION)){
 			session_start();
 
+
 			if(!isset($_SESSION['token'])){
-				self::setToken();
+				$this->setToken();
 			}
 
 			if(!isset($_SESSION['user'])){
 
-				$user = new User();				
-				self::write('user',$user);
-			}	
+				$user = new User();
+				$user->setlang($this->get_client_language(array_keys(Conf::$languageAvailable,Conf::$languageDefault)));				
+				$this->write('user',$user);
+
+			}
+
+
 			//destroy session if user in not from User class
-			elseif(!$_SESSION['user'] instanceof User){
+			if(!$_SESSION['user'] instanceof User){
 
 				if ( isset( $_COOKIE[session_name()] ) ){
 					setcookie( session_name(), '', time()-3600, '/' );
 				}
 				$_SESSION = array();
 				session_destroy();
-			}	
+			}			
 			
 		}
 		
 	}
 
-	public static function setToken(){
+	public function setToken(){
 
 		if(!isset($_SESSION['token'])){
 			$_SESSION['token'] = md5(time()*rand(111,777));	
 		}
 	}
 
-	public static function token(){
+	public function token(){
 
-		return self::read('token');
+		return $this->read('token');
 	}
 
-	public static function setFlash($message, $type = 'success', $duration = 0){
+	public function setFlash($message, $type = 'success', $duration = 0){
 
 		$flash = array('message'=>$message,'type'=>$type,'duration'=>$duration);
 
@@ -58,7 +61,7 @@ class Session {
 		
 	}
 
-	public static function flash(){
+	public function flash(){
 
 		if(isset($_SESSION['flash'])){
 			$html='';
@@ -66,10 +69,15 @@ class Session {
 
 				if(isset($v['message'])){
 					$html .= '<div class="alert alert-'.$v['type'].' alert-hide-'.$v['duration'].'s">
-								<button class="close" data-dismiss="alert">×</button>
-								<p>'.$v['message'].'</p>
 								<div class="alert-progress alert-progress-'.$v['duration'].'s"></div>
-							</div>';				
+								
+								<p>'.$v['message'].'</p>
+								
+								<button class="close" data-dismiss="alert">×</button>
+								';
+								
+
+					$html .= '</div>';				
 				}
 			}
 
@@ -78,12 +86,12 @@ class Session {
 		}
 	}
 
-	public static function write($key,$value){
+	public function write($key,$value){
 		$_SESSION[$key] = $value;
 	}
 
 
-	public static function read($key = null){
+	public function read($key = null){
 
 		if($key){
 
@@ -99,26 +107,26 @@ class Session {
 		}
 	}
 
-	public static function role(){
+	public function role(){
 		return isset($_SESSION['user']->statut); 
 
 	}
 
-	public static function isLogged(){
-		if(self::user('user_id')!=0)
+	public function isLogged(){
+		if($this->user('user_id')!=0)
 			return true;		
 	}
 
-	public static function allow($statuts){
+	public function allow($statuts){
 
-		if(in_array(self::user('statut'),$statuts))
+		if(in_array($this->user('statut'),$statuts))
 			return true;
 		else
-			self::$controller->e404('Vous n\'avez pas les droits pour voir cette page');
+			$this->controller->e404('Vous n\'avez pas les droits pour voir cette page');
 
 	}
 
-	public static function noUserLogged(){
+	public function noUserLogged(){
 
 		$params = new stdClass();
 		$params->user_id = 0;
@@ -127,15 +135,15 @@ class Session {
 
 	// public function user($key = null){
 
-	// 	if(self::read('user')){
+	// 	if($this->read('user')){
 
 	// 		if($key){
 
 	// 			if($key=='obj'){
-	// 				return self::read('user');
+	// 				return $this->read('user');
 	// 			}
 
-	// 			$val = trim(self::read('user')->$key);
+	// 			$val = trim($this->read('user')->$key);
 
 	// 			if(!empty($val)){
 
@@ -146,7 +154,7 @@ class Session {
 	// 		}	
 
 	// 		else {
-	// 			return self::isLogged();
+	// 			return $this->isLogged();
 	// 		}
 	// 	}
 	// 	else 
@@ -163,32 +171,51 @@ class Session {
 	// 	}
 	// }
 
-	public static function user(){
-		
-		return self::read('user');
+	public function user(){
+
+		return $this->read('user');
 	}
 
-	public static function user_id(){
+	public function user_id(){
 
-		if( self::read('user') ){
-			return self::user('user_id');
+		if( $this->read('user') ){
+			return $this->user('user_id');
 		}
 		else return 0;
 	}
-	public static function getLang(){
-		if(isset(self::read('user')->lang) && self::read('user')->lang!='')
-			return self::read('user')->lang;		
+	public function getLang(){
+		if(isset($this->read('user')->lang) && $this->read('user')->lang!='')
+			return $this->read('user')->lang;		
 		else 
 			return Conf::$languageDefault;		
 	}
 
-	public static function getPays(){
-		if(isset(self::read('user')->pays))
-			return self::read('user')->pays;		
+	public function getPays(){
+		if(isset($this->read('user')->pays))
+			return $this->read('user')->pays;		
 		else 
 			return Conf::$pays;
 	}
-	
+
+	public function get_client_language($availableLanguages, $default='fr'){
+     
+	    if (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+	     
+		    $langs=explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+		     
+		    //start going through each one
+		    foreach ($langs as $value){
+		     
+			    $choice=substr($value,0,2);
+			    if(in_array($choice, $availableLanguages)){
+			    	return $choice;
+			     
+			    }
+		     
+		    }
+	    }
+	    return $default;
+    }
 
     
 }

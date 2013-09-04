@@ -81,7 +81,7 @@ class ManifsController extends Controller{
 												'ADM4'=>$this->CookieRch->read('ADM4'),
 												'city'=>$this->CookieRch->read('city')
 												));
-	
+		
 		//get category
 		$d['cat2'] = $this->Manifs->findCategory(array(
 		'lang'     =>$this->getLang(),
@@ -146,7 +146,7 @@ class ManifsController extends Controller{
 		$params = array(
 			'fields' => array('D.*','MD.nommanif','MD.slug','P.id as participation_id','MD.description'),
 			'conditions' => array('D.manif_id'=>$id),
-			"user"=>array('statut'=>Session::user()->getRole(),"id"=>Session::user()->getID()),
+			"user"=>array('statut'=>$this->session->user()->getRole(),"id"=>$this->session->user()->getID()),
 			"lang"=>$this->getLang(),
 			"pays"=>$this->getCountryCode()
 			);
@@ -229,8 +229,8 @@ class ManifsController extends Controller{
 		$this->loadModel('Manifs');
 		$this->loadModel('Worlds');
 
-		Session::setFlash("All you need to <strong>create</strong> a protest is here !","info");
-		Session::setFlash("Make sure your <strong><a href=".Router::url('manifs/index').">idea</a></strong> is not already existing !",'warning');
+		$this->session->setFlash("All you need to <strong>create</strong> a protest is here !","info");
+		$this->session->setFlash("Make sure your <strong><a href=".Router::url('manifs/index').">idea</a></strong> is not already existing !",'warning');
 
 		//get geographical 
 		$d['states'] = $this->Worlds->findAllStates(array(
@@ -252,7 +252,7 @@ class ManifsController extends Controller{
 		));	
 
 		$manif = new Manif();
-		$manif->setCreatorID(Session::user()->getID());
+		$manif->setCreatorID($this->session->user()->getID());
 		$manif->setCC1($this->CookieRch->read('CC1')); 
 		$manif->setADM1($this->CookieRch->read('ADM1'));
 		$manif->setADM2($this->CookieRch->read('ADM2'));
@@ -272,7 +272,7 @@ class ManifsController extends Controller{
 
 		$d = array();
 
-		if(Session::user()->islog()){
+		if($this->session->user()->islog()){
 
 			//lang to render by default
 			$lang = $this->getLang();
@@ -283,9 +283,9 @@ class ManifsController extends Controller{
 				//if protest exist
 				if($manif = $this->Manifs->exist($manif_id)){
 					
-					if(!$manif->isUserAdmin( Session::user()->getID() )) {
+					if(!$manif->isUserAdmin( $this->session->user()->getID() )) {
 
-						Session::setFlash("You are not admin of this protest...",'danger');
+						$this->session->setFlash("You are not admin of this protest...",'danger');
 						$this->e404('So, who are you ?');
 					}
 
@@ -293,15 +293,15 @@ class ManifsController extends Controller{
 					if(!$this->Manifs->i18n_exist($manif_id,$lang)){
 
 						//redirect to origin lang
-						Session::setFlash("This protest is not yet translated in ".Conf::$languageAvailable[$lang].".","warning");
-						Session::setFlash("If you want to translate, modify this form and save it in ".Conf::$languageAvailable[$lang],"info");
+						$this->session->setFlash("This protest is not yet translated in ".Conf::$languageAvailable[$lang].".","warning");
+						$this->session->setFlash("If you want to translate, modify this form and save it in ".Conf::$languageAvailable[$lang],"info");
 						$this->redirect('manifs/create/'.$manif_id.'?lang='.$manif->lang);
 					}
 
 				}
 				//protest dont exist return 404
 				else {
-					Session::setFlash("This protest does not exist","info");
+					$this->session->setFlash("This protest does not exist","info");
 					$this->e404('hum... nothing here. ');													
 				}
 
@@ -321,7 +321,7 @@ class ManifsController extends Controller{
 
 					if($saved_manif['action']=='insert') {
 
-						Session::setFlash('Protest have been <strong>save</strong> ! <a href="'.Router::url('manifs/view/'.$saved_manif['id'].'/'.$slug.'?lang='.$data->lang).'">See it in action !</a>','success');
+						$this->session->setFlash('Protest have been <strong>save</strong> ! <a href="'.Router::url('manifs/view/'.$saved_manif['id'].'/'.$slug.'?lang='.$data->lang).'">See it in action !</a>','success');
 						
 						//Statistics
 						$this->loadModel('Config');
@@ -329,7 +329,7 @@ class ManifsController extends Controller{
 					}
 					else {
 
-						Session::setFlash('Protest have been <strong>updated</strong> ! <a href="'.Router::url('manifs/view/'.$saved_manif['id'].'/'.$slug.'?lang='.$data->lang).'">See it in action !</a>','success');
+						$this->session->setFlash('Protest have been <strong>updated</strong> ! <a href="'.Router::url('manifs/view/'.$saved_manif['id'].'/'.$slug.'?lang='.$data->lang).'">See it in action !</a>','success');
 						
 					}
 					
@@ -337,7 +337,7 @@ class ManifsController extends Controller{
 					$this->redirect('manifs/create/'.$saved_manif['id'].'/?lang='.$saved_manif['lang']);
 				}
 				else {
-					Session::setFlash('Please review the formulaire','error');
+					$this->session->setFlash('Please review the formulaire','error');
 					
 				}							
 			}
@@ -388,7 +388,7 @@ class ManifsController extends Controller{
 		}
 		else {
 
-			Session::setFlash('Sorry but you need to be connected here <a class="callModal" href="'.Router::url('users/register').'">Inscription here</a>','danger');
+			$this->session->setFlash('Sorry but you need to be connected here <a class="callModal" href="'.Router::url('users/register').'">Inscription here</a>','danger');
 		}
 
 		$d['manif'] = $manif;
@@ -406,7 +406,7 @@ class ManifsController extends Controller{
 
 		if($this->request->get('manif_id')){			
 
-			$d = $this->removeProtester($this->request->get('manif_id'),Session::user()->getID());
+			$d = $this->removeProtester($this->request->get('manif_id'),$this->session->user()->getID());
 			
 		}
 		else $d['error'] = 'Missing data in manifs/removeUser url ';
@@ -464,7 +464,7 @@ class ManifsController extends Controller{
 		if($manif_id = $this->request->get('manif_id')){
 		
 			//call to addProtester
-			$d = $this->addProtester($manif_id,Session::user()->getID());				
+			$d = $this->addProtester($manif_id,$this->session->user()->getID());				
 
 
 		}
@@ -814,7 +814,7 @@ class ManifsController extends Controller{
 				$nommanif = $this->Manifs->findManifs(array(
 					'fields'=>'MD.nommanif as slogan',
 					'conditions'=>array('D.manif_id'=>$manif_id,'MD.lang'=>$lang),
-					"user"=>array('statut'=>Session::user()->getRole(),"id"=>Session::user()->getID()),
+					"user"=>array('statut'=>$this->session->user()->getRole(),"id"=>$this->session->user()->getID()),
 					'lang'=>$lang,
 					'limit'=>1
 				));

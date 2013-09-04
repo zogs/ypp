@@ -43,7 +43,7 @@
 			</div>
 
 			<div class="btn-group">					
-				<input type="hidden" name="token" value="<?php echo Session::token(); ?>" />		
+				<input type="hidden" name="token" value="<?php echo $this->session->token(); ?>" />		
 				<input type="submit" class="btn btn-primary" value="SEARCH"/>
 			</div>
 			</form>
@@ -55,7 +55,7 @@
 </div>
 <div class="container protest-list">
 
-	<?php echo Session::flash(); ?>
+	<?php echo $this->session->flash(); ?>
 	
 	<div class="arianne">
 		<?php 
@@ -186,7 +186,7 @@
 				 		<div class="actions">
 				 			<div class="numerus" id="numerus<?php echo $manif->getID();?>"><?php echo number_format($manif->getNumerus(),0,' ',' '); ?></div>
 
-				 			<?php if(Session::user()->isLog()): ?>
+				 			<?php if($this->session->user()->isLog()): ?>
 				 			<div class="switchProtest mini">
 		                        <input type="checkbox" <?php echo ($manif->isUserProtesting())? 'checked="checked"' : '';?> class="btn-switch-protested" data-protest-id="<?php echo $manif->getID();?>" data-url-protest="<?php echo Router::url('manifs/addUser');?>" data-url-cancel="<?php echo Router::url('manifs/removeUser');?>">
 		                        <label><i></i></label>
@@ -198,7 +198,7 @@
 							    <span class="caret"></span>
 							  </button>
 							  <ul class="dropdown-menu">
-							  		<?php if($manif->isUserAdmin( Session::user()->getID() )): ?>
+							  		<?php if($manif->isUserAdmin( $this->session->user()->getID() )): ?>
 						      	<li><a href="<?php echo Router::url('manifs/create/'.$manif->getID().'/'.$manif->getSlug()); ?>">Administrer</a></li>
 					    			<?php endif;?>
 							    <li><a href="#">Signaler</a></li>							    

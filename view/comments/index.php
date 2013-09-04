@@ -16,7 +16,7 @@
     if(!empty($coms)){
         
         //Create the html 
-        $html = show_comments($coms,Session::user(),$this);
+        $html = show_comments($coms,$this->session->user(),$this);
 
         $firstCommentID = $coms[0]->id;
 

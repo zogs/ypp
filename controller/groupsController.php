@@ -88,9 +88,9 @@ class GroupsController extends Controller{
 
 
 				//check if user is admin of the group
-				$admin = $this->Groups->isAdmin(Session::user()->getID(),$group_id);
+				$admin = $this->Groups->isAdmin($this->session->user()->getID(),$group_id);
 				if(!$admin) {
-					Session::setFlash("You are not admin of this group","warning");
+					$this->session->setFlash("You are not admin of this group","warning");
 					$this->redirect('/');
 				}					
 
@@ -124,10 +124,10 @@ class GroupsController extends Controller{
 					$d['group'] = unescape($group);
 					$d['submit_tx'] = 'Save';
 
-					Session::setFlash("You are admin of ".$group->name,"success");
+					$this->session->setFlash("You are admin of ".$group->name,"success");
 				}
 				else{
-					Session::setFlash('This group does not exist','error');
+					$this->session->setFlash('This group does not exist','error');
 					return $this->account_view();
 				}
 			}
@@ -140,7 +140,7 @@ class GroupsController extends Controller{
 		else {
 
 
-			Session::setFlash("As a group, you can create protests, spread news, schedule events ! ",'warning');
+			$this->session->setFlash("As a group, you can create protests, spread news, schedule events ! ",'warning');
 			//get geographical 
 			$d['states'] = $this->Worlds->findAllStates(array(
 				'CC1'=>$this->CookieRch->read('CC1'),
@@ -260,15 +260,15 @@ class GroupsController extends Controller{
 				if($this->Groups->saveGroup($group)){
 
 					if($this->Groups->action=='insert')
-						Session::setFlash('Your group have been <strong>succefully created</strong>');
+						$this->session->setFlash('Your group have been <strong>succefully created</strong>');
 					elseif($this->Groups->action=='update')
-						Session::setFlash('<strong>Update successful</strong>');
+						$this->session->setFlash('<strong>Update successful</strong>');
 
 					$group_id = $this->Groups->id;
 
 				}
 				else{
-					Session::setFlash('Oups... error while saving group !','error');
+					$this->session->setFlash('Oups... error while saving group !','error');
 				}
 				
 
@@ -283,7 +283,7 @@ class GroupsController extends Controller{
 				
 			}
 			else {
-				Session::setFlash('Please check your information','error');
+				$this->session->setFlash('Please check your information','error');
 			}
 		}
 		else {

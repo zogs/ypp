@@ -12,7 +12,7 @@
 
 	<div class="container">
 
-		<?php echo Session::flash();?>
+		<?php echo $this->session->flash();?>
 
 
 		<form id="form_register" autocomplete="on" action="<?php echo Router::url('users/register'); ?>" method="post"  >	
@@ -71,7 +71,7 @@
 						
 						<span class="anonym_info" style="display:none">Your profil will not be visible by anyone</span>
 
-						<?php echo $this->Form->input('token','hidden',array('value'=>Session::token())) ;?>	
+						<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>	
 						<?php echo $this->Form->input('login','',array('icon'=>'icon-user','required'=>'required','placeholder'=>"Votre pseudo",'data-url'=>Router::url('users/check'))) ?>
 						<?php echo $this->Form->input('email',"",array('type'=>'email', 'icon'=>"icon-envelope","required"=>"required","placeholder"=>"Votre email",'data-url'=>Router::url('users/check'))) ?>
 						<?php echo $this->Form->input('password','',array('type'=>"password",'icon'=>'icon-lock','required'=>'required','placeholder'=>'Votre mot de passe')) ?>

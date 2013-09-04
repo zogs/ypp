@@ -3,7 +3,7 @@
 <div class="container">
 	
 	<?php 
-	echo Session::flash();
+	echo $this->session->flash();
 	?>
 	<div class="error_page">	
 		<div class="sign">

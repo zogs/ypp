@@ -1,13 +1,13 @@
 <div class="formulaire">
 	
-	<?php echo Session::flash(); ?>
+	<?php echo $this->session->flash(); ?>
 
 	<?php if($action=='' || $action=='show_form_email'): ?>
 
 	<form class="form-yp" action="<?php echo Router::url('users/recovery'); ?>" method="POST">
 		<div class="form-block">
 			<?php echo $this->Form->input('email','Entrer votre adresse email',array('required'=>'required','icon'=>'icon-envelope')) ;?>
-			<?php echo $this->Form->input('token','hidden',array('value'=>Session::token())) ;?>
+			<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 			<input type="submit" value="Envoyer" />
 		</div>
 	</form>	
@@ -25,7 +25,7 @@
 			<?php echo $this->Form->input('user','hidden',array('value'=>$user_id)) ;?>	
 			<?php echo $this->Form->input('password','New password',array('type'=>'password','icon'=>'icon-lock')) ;?>
 			<?php echo $this->Form->input('confirm','Confirm password',array('type'=>'password','icon'=>'icon-lock')) ;?>
-			<?php echo $this->Form->input('token','hidden',array('value'=>Session::token())) ;?>
+			<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 			<input type="submit" value="Envoyer" />
 		</div>	
 

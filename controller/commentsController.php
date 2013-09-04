@@ -52,7 +52,7 @@
  				$m = $params['obj'];
 
  				//User can comment protest 				
- 				$c = $m->userCanComment(Session::user()->getRole(),Session::user()->getID());
+ 				$c = $m->userCanComment($this->session->user()->getRole(),$this->session->user()->getID());
 
  				if($c===true){
 
@@ -64,7 +64,7 @@
  				}
 
  				//User is admin of protest
- 				if($m->isUserAdmin(Session::user()->getID())){
+ 				if($m->isUserAdmin($this->session->user()->getID())){
 
  					$a['allowTitle'] = true;
  				}
@@ -74,7 +74,7 @@
  			if($params['context'] == 'user'){
 
  				//anonym
- 				if(Session::user()->getRole()=='anonym'){
+ 				if($this->session->user()->getRole()=='anonym'){
  					$a['allowComment'] = false;
  					$a['allowTitle'] = false;
  					$a['allowReply'] = false;
@@ -82,14 +82,14 @@
  				}
 
  				//pseudo
- 				if(Session::user()->getRole()=='pseudo'){
+ 				if($this->session->user()->getRole()=='pseudo'){
  					$a['allowComment'] = false;
  					$a['allowTitle'] = false;
  					$a['allowReply'] = false;
  					$a['tx_commentTextarea'] = "As a pseudo you cant comment an user page";
  				}
  				//public
- 				if(Session::user()->getRole()=='public'){
+ 				if($this->session->user()->getRole()=='public'){
  					$a['allowComment'] = false;
  					$a['allowTitle'] = false;
  					$a['allowReply'] = false;
@@ -97,7 +97,7 @@
  				}
 
  				//admin of the page
-				if($params['obj']->getID() == Session::user()->getID()){
+				if($params['obj']->getID() == $this->session->user()->getID()){
 					$a['allowComment'] = true;
 					$a['allowTitle'] = true;
 					$a['allowReply'] = true;
@@ -339,10 +339,10 @@
  		else $com = $this->request->post();
 
  		//if there is a user logged in
- 		if(Session::user()->isLog()){
+ 		if($this->session->user()->isLog()){
 
 
- 			$com->user_id = Session::user()->getID();
+ 			$com->user_id = $this->session->user()->getID();
  			$com->lang = $this->getLang();
 
  			if($id = $this->Comments->saveComment($com)){
@@ -382,10 +382,10 @@
 	 		if(empty($com->reply_to) || !is_numeric($com->reply_to)) throw new zException("Reply_to is not defined", 1);
 	 		
 
- 			if(Session::user()->isLog()){
+ 			if($this->session->user()->isLog()){
 
 	 			//On rajoute les params nécessaires
-	 			$com->user_id = Session::user()->getID();
+	 			$com->user_id = $this->session->user()->getID();
 	 			$com->lang = $this->getLang();	 			
 
 	 			if($id = $this->Comments->saveComment($com)){
@@ -425,9 +425,9 @@
 
  		if(is_numeric($id)){
 
-	 		if(Session::user()->isLog()){
+	 		if($this->session->user()->isLog()){
 
-	 			$user_id = Session::user()->getID();
+	 			$user_id = $this->session->user()->getID();
 
 	 			if(!$this->Comments->alreadyVoted($id,$user_id)){
 

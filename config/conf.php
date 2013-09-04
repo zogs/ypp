@@ -86,6 +86,22 @@ class Conf {
 
 	    	return $transport;
 	    }
+
+	    
+	    public static function getHost(){
+
+	    	if(isset($_SERVER['HTTP_HOST'])) return $_SERVER['HTTP_HOST'];
+	    	
+	    	return self::$websiteURL;
+	    }
+
+	    public static function getSiteUrl(){
+	    	
+	    	$host = self::getHost();
+	    	
+	    	return self::$websiteURLs[$host];
+	    }
+
 }
 
 

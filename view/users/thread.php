@@ -1,5 +1,5 @@
 <div class="container">
-	<?php echo Session::flash(); ?>
+	<?php echo $this->session->flash(); ?>
 	<div id="thread">
 		<div class="span3">
 			<div class="thread-user">
@@ -58,7 +58,7 @@
 		</div>
 
 		<div class="span8">
-			<div class="thread-timeline-header alert alert-info">You will receive here <strong>News</strong> and <strong>Info</strong> about protest you are in</div>
+			<div class="thread-timeline-header alert alert-info"><strong>This is your page !</strong> You will see here <strong>all the News</strong> about protests you are in</div>
 			<div class="thread-timeline">
 
 				<?php

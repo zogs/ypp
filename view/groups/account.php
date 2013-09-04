@@ -2,7 +2,7 @@
 
 	<div class="formulaire">
 		
-		<?php echo Session::flash(); ?>
+		<?php echo $this->session->flash(); ?>
 		
 		<form action="<?php echo Router::url('groups/account'); ?>" method="POST" enctype="multipart/form-data">
 
@@ -84,7 +84,7 @@
 				<?php echo $this->Form->input('banner','Banner',array('type'=>'file','info'=>'width :960px, max-weight: 200ko','src'=>(!empty($group->banner))? Router::webroot($group->banner):'')); ?>								
 
 				<div class="submit">
-					<?php echo $this->Form->input('token','hidden',array('value'=>Session::token())) ;?>
+					<?php echo $this->Form->input('token','hidden',array('value'=>$this->session->token())) ;?>
 					<input class="btn btn-info" type="submit" value="<?php echo $submit_tx; ?>"/>
 				</div>
 

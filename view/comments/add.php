@@ -15,7 +15,7 @@
     if(!empty($coms)){
 
         //Create the html 
-        $html = show_comments($coms,Session::user(),$this);
+        $html = show_comments($coms,$this->session->user(),$this);
         
         echo json_encode(array('content'=>$html),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_QUOT);
     }

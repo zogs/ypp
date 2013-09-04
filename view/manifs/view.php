@@ -17,11 +17,11 @@
                         </div>
 
                         <div class="btn-toolbar">
-                            <?php if(!Session::user()->isLog()): ?>                    
+                            <?php if(!$this->session->user()->isLog()): ?>                    
                             <a class="btn btn-dark btn-large btn-inverse callModal" href="<?php echo Router::url('users/login');?>" ><i class="icon-user icon-white"></i> <strong>Connexion</strong> </a>
                             <?php endif; ?>
                             <a class="btn btn-dark btn-large btn-share"><i class="icon-heart icon-white"></i> Partager</a> 
-                            <?php if($manif->isUserAdmin( Session::user()->getID())): ?>
+                            <?php if($manif->isUserAdmin( $this->session->user()->getID())): ?>
                               <a class="btn btn-dark btn-large btn-info bubble-bottom" href="<?php echo Router::url('manifs/create/'.$manif->getID().'/'.$manif->getSlug()); ?>" data-original-title="Admin your protest"><i class="icon-wrench icon-white"></i> <strong>Admin</strong></a>
                             <?php endif;?>        
                         </div>
@@ -44,7 +44,7 @@
 
         <div class="protest-sheet">
 
-            <?php echo Session::flash() ;?>
+            <?php echo $this->session->flash() ;?>
 
             <div class="sections">       
 
@@ -57,7 +57,7 @@
                             </div>
                             <div class="actions">
                                 
-                                <?php if(Session::user()->isLog()): ?>
+                                <?php if($this->session->user()->isLog()): ?>
                                     <div class="switchProtest mini">
                                         <input type="checkbox" <?php echo ($manif->isUserProtesting())? 'checked="checked"' : '';?> class="btn-switch-protested" data-protest-id="<?php echo $manif->getID();?>" data-url-protest="<?php echo Router::url('manifs/addUser');?>" data-url-cancel="<?php echo Router::url('manifs/removeUser');?>">
                                         <label><i></i></label>
@@ -65,10 +65,10 @@
                                 <?php endif; ?>
                                 <ul>
                                     <li><a href="">Partager</a></li>
-                                    <?php if($manif->isUserAdmin( Session::user()->getID())): ?>
+                                    <?php if($manif->isUserAdmin( $this->session->user()->getID())): ?>
                                     <li><a href="<?php echo Router::url('manifs/create/'.$manif->getID().'/'.$manif->getSlug());?>">Administrer</a></li>
                                     <?php endif; ?>
-                                    <?php if(Session::user()->isLog()): ?>
+                                    <?php if($this->session->user()->isLog()): ?>
                                     <li><a href="<?php echo Router::url('report/report/protest/'.$manif->getID());?>">Signaler</a></li>
                                     <?php endif; ?>
                                 </ul>
@@ -306,12 +306,12 @@ $(document).ready(function(){
         manifName:"<?php echo $manif->getTitle(); ?>",
         manifId:'<?php echo $manif->getID(); ?>',
         manifBackgroundColor:"0xF3F3F3",
-        userID:'<?php if(Session::user()->getID()) echo Session::user()->getID(); else echo ""; ?>',
-        userLogin:'<?php if(Session::user()->getLogin()) echo Session::user()->getLogin(); else echo ""; ?>',
-        userBonhom:'<?php if(Session::user()->getBonhom()) echo Session::user()->getBonhom(); else echo ""; ?>',
-        userLogged:'<?php if(Session::user()->isLog()) echo "true"; else echo "false";?>',
+        userID:'<?php if($this->session->user()->getID()) echo $this->session->user()->getID(); else echo ""; ?>',
+        userLogin:'<?php if($this->session->user()->getLogin()) echo $this->session->user()->getLogin(); else echo ""; ?>',
+        userBonhom:'<?php if($this->session->user()->getBonhom()) echo $this->session->user()->getBonhom(); else echo ""; ?>',
+        userLogged:'<?php if($this->session->user()->isLog()) echo "true"; else echo "false";?>',
         userParticipe:'<?php if($manif->isUserProtesting()) echo "true"; else echo "false";?>',
-        userLang:'<?php if(Session::user()->getLang()) echo Session::user()->getLang(); else echo $this->getLang(); ?>',
+        userLang:'<?php if($this->session->user()->getLang()) echo $this->session->user()->getLang(); else echo $this->getLang(); ?>',
         onHoverColorBonhom:'<?php echo $manif->onHoverColorBonhom();?>',
         onlyBonhom:'<?php echo $manif->getUniqueBonhom(); ?>',
         perCentColored:'<?php echo $manif->perCentColorBonhom();?>',

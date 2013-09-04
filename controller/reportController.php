@@ -5,10 +5,10 @@ class ReportController extends Controller{
 
 		//secu
 		//user have to be logged
-		if(!Session::user()->isLog()) $this->redirect('users/login');
+		if(!$this->session->user()->isLog()) $this->redirect('users/login');
 
 		//set reporter id				
-		$reporter_id = Session::user()->getID();
+		$reporter_id = $this->session->user()->getID();
 
 		//on submit
 		$post = $this->request->post();		
@@ -43,7 +43,7 @@ class ReportController extends Controller{
 
 				if(is_numeric($res)){	
 
-					Session::setFlash('<strong>Your report have been saved !</strong> We will study it as soon as possible. Please be patient we are a small team...');
+					$this->session->setFlash('<strong>Your report have been saved !</strong> We will study it as soon as possible. Please be patient we are a small team...');
 
 					//increement Statistics
 					$this->loadModel('Config');
@@ -51,12 +51,12 @@ class ReportController extends Controller{
 
 				}
 				elseif($res=='reporter_have_already_report'){
-					Session::setFlash('<strong>You have aleady reported this content</strong>','info');
+					$this->session->setFlash('<strong>You have aleady reported this content</strong>','info');
 
 				}
 			}
 			else {
-				Session::setFlash('Sorry an error occured when saving... Please retry.','danger');
+				$this->session->setFlash('Sorry an error occured when saving... Please retry.','danger');
 
 			}
 			
@@ -85,11 +85,11 @@ class ReportController extends Controller{
 	public function admin_clear($id){
 
 		//secu
-		if(!Session::user()->isLog() || !Session::user()->isSuperAdmin()) $this->redirect('users/login');
+		if(!$this->session->user()->isLog() || !$this->session->user()->isSuperAdmin()) $this->redirect('users/login');
 
 		$this->loadModel('Alerts');
 		
-		$this->Alerts->clearSimilarReports($id,Session::user()->getID());
+		$this->Alerts->clearSimilarReports($id,$this->session->user()->getID());
 
 		$this->redirect('admin/super/reports');
 	}
@@ -97,7 +97,7 @@ class ReportController extends Controller{
 	public function admin_moderate($id){
 
 		//secu
-		if(!Session::user()->isLog() || !Session::user()->isSuperAdmin()) $this->redirect('users/login');
+		if(!$this->session->user()->isLog() || !$this->session->user()->isSuperAdmin()) $this->redirect('users/login');
 
 		$this->loadModel('Alerts');
 		$this->loadModel('Config');
@@ -121,7 +121,7 @@ class ReportController extends Controller{
 		$this->Users->admin_avertUser($report->author_id);
 
 		//clear reports
-		$this->Alerts->clearSimilarReports($id,Session::user()->getID());
+		$this->Alerts->clearSimilarReports($id,$this->session->user()->getID());
 
 		$this->redirect('admin/super/reports');
 	}
@@ -148,7 +148,7 @@ class ReportController extends Controller{
 		$this->loadModel('Users');
 		$this->Users->admin_avertUser($report->author_id);
 
-		$this->Alerts->clearSimilarReports($id,Session::user()->getID());
+		$this->Alerts->clearSimilarReports($id,$this->session->user()->getID());
 
 		$this->redirect('admin/super/reports');
 	}
@@ -156,7 +156,7 @@ class ReportController extends Controller{
 	public function admin_warnReporters($id){
 
 		//secu
-		if(!Session::user()->isLog() || !Session::user()->isSuperAdmin()) $this->redirect('users/login');
+		if(!$this->session->user()->isLog() || !$this->session->user()->isSuperAdmin()) $this->redirect('users/login');
 
 		//get reporter id
 		$this->loadModel('Alerts');
@@ -170,7 +170,7 @@ class ReportController extends Controller{
 			$this->Users->admin_avertUser($r->reporter_id);
 		}
 		//clear reports
-		$this->Alerts->clearSimilarReports($id,Session::user()->getID());
+		$this->Alerts->clearSimilarReports($id,$this->session->user()->getID());
 
 		$this->redirect('admin/super/reports');
 	}
@@ -178,7 +178,7 @@ class ReportController extends Controller{
 	public function admin_warnReporter($id){
 
 		//secu
-		if(!Session::user()->isLog() || !Session::user()->isSuperAdmin()) $this->redirect('users/login');
+		if(!$this->session->user()->isLog() || !$this->session->user()->isSuperAdmin()) $this->redirect('users/login');
 
 		//get reporter id
 		$this->loadModel('Alerts');
@@ -188,7 +188,7 @@ class ReportController extends Controller{
 		$this->Users->admin_avertUser($report->reporter_id);
 		
 		//clear reports
-		$this->Alerts->clearSimilarReports($id,Session::user()->getID());
+		$this->Alerts->clearSimilarReports($id,$this->session->user()->getID());
 
 		$this->redirect('admin/super/reports');
 	}

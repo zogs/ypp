@@ -10,6 +10,7 @@ define('WEBROOT',dirname(__FILE__));
 define('ROOT',dirname(WEBROOT));
 define('DS',DIRECTORY_SEPARATOR);
 define('CORE',ROOT.DS.'core');
+define('LIB',ROOT.DS.'lib');
 define('BASE_URL',dirname(dirname($_SERVER['SCRIPT_NAME'])));
 
 //usefull functions
@@ -18,10 +19,13 @@ include CORE.'/functions.php';
 //Date time zone
 date_default_timezone_set('Europe/Paris');
 
+//
+header('Content-Type: text/html; charset=UTF-8');
+
 //Errors gestion
 include CORE.'/errors.php';
 function uncatchError($errno, $errstr, $errfile, $errline ) {
-	echo 'uncatchError';
+//	echo 'uncatchError '.$errstr.' n:'.$errno.' file:'.$errfile.' line:'.$errline;
     new zErrorException($errno, $errstr, $errfile, $errline);
 }
 function uncatchException($exception){
@@ -40,25 +44,22 @@ $loader = Autoloader::getInstance()
 ->addDirectory(ROOT.'/controller')
 ->addDirectory(ROOT.'/core')
 ->addDirectory(ROOT.'/model')
-->addEntireDirectory(ROOT.'/lib/SwiftMailer')
-->addEntireDirectory(ROOT.'/lib/Zend/I18n');
+->addEntireDirectory(ROOT.'/lib');
+
 
 //Librairy dependency
 require ROOT.'/lib/SwiftMailer/swift_required.php';//Swift mailer
 
 
-//require_once 'Zend/I18n/Translator/Translator.php';
-//Zend_I18n_Translate::setlocale('', '');
-//$translate = new Zend\I18n\Translator\Translator();
-
-//debug($translator);
-
 //define routes for the router
 new Routes();
 
-//launch the dispacher
-new Dispatcher(new Request());
+//get controller/action of the cron call
+$controller = (isset($argv[1]))? $argv[1] : 'events';
+$action = (isset($argv[2]))? $argv[2] : 'testcron';
 
+//launch the dispacher
+new Dispatcher(new Cron($controller,$action));
 
 ?>
 

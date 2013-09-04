@@ -12,7 +12,7 @@
                     if(true == $this->displayFormComment ): ?>
                     <form id="commentForm" action="<?php echo Router::url('comments/add'); ?>" method="POST">                                                  
 
-                        <img class="userAvatarCommentForm" src="<?php echo Router::url(Session::user()->getAvatar()); ?>" />
+                        <img class="userAvatarCommentForm" src="<?php echo Router::url($this->session->user()->getAvatar()); ?>" />
                         <div class="commentFormFields">
                             <?php 
                                 //Si c'est l'admin , il peut mettre un titre a son commentaire
@@ -117,7 +117,7 @@
                             </ul>
                         </div>  
                         <div class="btn-group pull-right">
-                            <a class="btn btn-mini bubble-bottom" title="Display new comments" >
+                            <a id="refresh_com" class="btn btn-mini bubble-bottom" title="Display new comments" >
                                 <i class="icon-repeat"></i>  Actualiser <span class="badge badge-inverse hide" id="badge"></span>
                             </a>
                             <span id="ajaxLoader" style="display:none"><img src="<?php echo Router::webroot('img/ajax-loader.gif');?>" alt="Loading" /></span>
@@ -148,11 +148,11 @@
 
                     <?php if($this->allowReply): ?>
                     <div id="hiddenFormReply">
-                         <?php if(Session::user()->isLog()):?>
+                         <?php if($this->session->user()->isLog()):?>
                          <div class="replies" id="formCommentReply" >
                             <form class="formCommentReply" action="<?php echo Router::url('comments/reply'); ?>" method="POST">                
-                                <img class="userAvatarCommentForm" src="<?php echo Router::url(Session::user()->getAvatar()); ?>" />
-                                <?php if(Session::user()->isLog()):?>
+                                <img class="userAvatarCommentForm" src="<?php echo Router::url($this->session->user()->getAvatar()); ?>" />
+                                <?php if($this->session->user()->isLog()):?>
                                 <textarea name="content" class="formComment" placeholder="Reply here"></textarea> 
                                 <input class="btn btn-small" type="submit" name="" value="Send">
                                 <?php else: ?>

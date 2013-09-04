@@ -50,7 +50,7 @@ class zHandlingErrors {
 		echo '</pre>';
 
 		echo '</div>';
-		// $controller = new Controller;
+		// $controller = new Controller();
 		// $controller->exception($error);
 
 

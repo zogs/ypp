@@ -20,7 +20,7 @@
  		}
  		
  		//Recupération de l'évironnement
-	 	$host = $_SERVER['HTTP_HOST'];
+	 	$host = Conf::getHost();
  		
  		//Si la connexion existe déja, return true
  		if(isset(Model::$connections[$host])){
@@ -176,7 +176,7 @@
  	//=======================================
  	// Execute une requete sql
  	public function query($sql,$values = array()){
- 		
+
  		$pre = $this->db->prepare($sql);
  		$pre->execute($values);
  		
@@ -507,7 +507,7 @@ public function validates($data, $rules = null, $field = null){
 							if(empty($data->$field)) $errors[$field] = $rule['message'];				
 						}
 						elseif($rule['rule']=='notNull'){
-	 						if($data->$field==0) $errors[$field] = $rule['message'];				
+	 						if($data->$field===0) $errors[$field] = $rule['message'];				
 	 					}
 	 					elseif($rule['rule']=='email'){
 
