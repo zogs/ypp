@@ -826,6 +826,8 @@ class UsersController extends Controller{
         {
             echo "Erreur lors de l'envoi du email à :";
             print_r($failures);
+            debug($data);
+            exit();
         }
         else return true;
     }
