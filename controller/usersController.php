@@ -770,7 +770,7 @@ class UsersController extends Controller{
     {
     	extract($data);
 
-		$lien = "http://localhost/ypp/users/recovery?c=".urlencode(base64_encode($code))."&u=".urlencode(base64_encode($user_id));
+		$lien = Conf::getSiteUrl()."/users/recovery?c=".urlencode(base64_encode($code))."&u=".urlencode(base64_encode($user_id));
 
         //Création d'une instance de swift mailer
         $mailer = Swift_Mailer::newInstance(Conf::getTransportSwiftMailer());
@@ -802,7 +802,7 @@ class UsersController extends Controller{
     {
     	extract($data);
 
-		$lien = "http://localhost/ypp/users/validate?c=".urlencode(base64_encode($codeactiv))."&u=".urlencode(base64_encode($user_id));
+		$lien = Conf::getSiteUrl()."/users/validate?c=".urlencode(base64_encode($codeactiv))."&u=".urlencode(base64_encode($user_id));
 
         //Création d'une instance de swift mailer
         $mailer = Swift_Mailer::newInstance(Conf::getTransportSwiftMailer());
