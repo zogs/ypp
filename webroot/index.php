@@ -40,8 +40,7 @@ $loader = Autoloader::getInstance()
 ->addDirectory(ROOT.'/controller')
 ->addDirectory(ROOT.'/core')
 ->addDirectory(ROOT.'/model')
-->addEntireDirectory(ROOT.'/lib/SwiftMailer')
-->addEntireDirectory(ROOT.'/lib/Zend/I18n');
+->addEntireDirectory(ROOT.'/lib');
 
 //Librairy dependency
 require ROOT.'/lib/SwiftMailer/swift_required.php';//Swift mailer
