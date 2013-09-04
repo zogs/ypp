@@ -81,8 +81,8 @@ class Conf {
 
 	    	//SMTP configuration
 	    	$transport = Swift_SmtpTransport::newInstance('mail.gandi.net',465,"ssl")
-				->setUsername('contact@we-sport.fr')
-				->setPassword('justdoit');
+				->setUsername('contact@zogs.org')
+				->setPassword('protestandresist...');
 
 			//PHP mail() function
 			//$transport = Swift_SendmailTransport::newInstance(); 
