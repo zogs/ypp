@@ -80,7 +80,7 @@ class Conf {
 	    public static function getTransportSwiftMailer(){
 
 	    	//SMTP configuration
-	    	$transport = Swift_SmtpTransport::newInstance('mail.gandi.net',25)
+	    	$transport = Swift_SmtpTransport::newInstance('mail.gandi.net',465,"ssl")
 				->setUsername('contact@zogs.org')
 				->setPassword('protestandresist...');
 
