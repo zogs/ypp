@@ -3,6 +3,8 @@ class UsersController extends Controller{
 
 
 	public $primaryKey = 'user_id'; //Nom de la clef primaire de la table
+	public $table = 'users';
+	public $table_recovery = 'users_mail_recovery';
 
 	public function login(){
 
@@ -515,7 +517,6 @@ class UsersController extends Controller{
 
     }
 
-
 	public function recovery(){
 
 		$this->loadModel('Users');
@@ -528,29 +529,29 @@ class UsersController extends Controller{
 			
 			//find that user 
 			$user_id = base64_decode(urldecode($this->request->get('u')));
-			$user = $this->Users->findFirst(array(
+			$user = $this->Users->findFirstUser(array(
 				'fields'=>array('user_id','salt'),
 				'conditions'=>array('user_id'=>$user_id)));
 			
 			//check the recovery code
 			$code = base64_decode(urldecode($this->request->get('c')));
 			$hash = md5($code.$user->salt);
-			$user = $this->Users->findFirst(array(
-				'table'=>T_USER_RECOVERY,
+			$user = $this->Users->findFirstUser(array(
+				'table'=>$this->table_recovery,
 				'fields'=>'user_id',
 				'conditions'=>'user_id='.$user_id.' AND code="'.$hash.'" AND date_limit >= "'.unixToMySQL(time()).'"'));
 
 			//if this is good
-			if(!empty($user)){
+			if($user->exist()){
 
 				//show password form
-				$this->session->setFlash('Enter your new password','success');
+				$this->session->setFlash('Entrer votre nouveau mot de passe','success');
 				$action = 'show_form_password';
 
 			}
 			else {
 				//else the link isnot good anymmore
-				$this->session->setFlash('Your link is not valid anymore. Please ask for a new password reset.','error');
+				$this->session->setFlash('Votre lien n\'est plus valide, veuillez demander une nouvelle réinitialisation de mot de passe','error');
 				$action = 'show_form_email';
 				
 			}
@@ -568,19 +569,19 @@ class UsersController extends Controller{
 			
 			//find that user
 			$user_id = $data->user;
-			$user = $this->Users->findFirst(array(
+			$user = $this->Users->findFirstUser(array(
 				'fields'=>array('user_id','salt'),
 				'conditions'=>array('user_id'=>$user_id)));
 
 			//check the recovery code
 			$code = md5($data->code.$user->salt);
-			$user = $this->Users->findFirst(array(
-				'table'=>T_USER_RECOVERY,
+			$user = $this->Users->findFirstUser(array(
+				'table'=>$this->table_recovery,
 				'fields'=>'user_id',
 				'conditions'=>'user_id='.$user_id.' AND code="'.$code.'" AND date_limit >= "'.unixToMySQL(time()).'"'));
 
 			//if the code is good
-			if(!empty($user)){
+			if($user->exist()){
 
 				unset($data->code);
 				unset($data->user);
@@ -590,26 +591,27 @@ class UsersController extends Controller{
 
 					//save new password
 					$new = new stdClass();
-					$new->salt = String::random(10);
+					$new->salt = randomString(10);
 					$new->hash = md5($new->salt.$data->password);
-					$new->user_id = $user->user_id;
+					$new->user_id = $user->user_id;					
+
 					if($this->Users->save($new)){
 
 						//find the recovery data 
-						$rec = $this->Users->findFirst(array(
-							'table'=>T_USER_RECOVERY,
+						$rec = $this->Users->findFirstUser(array(
+							'table'=>$this->table_recovery,
 							'fields'=>array('id'),
 							'conditions'=>array('user_id'=>$user_id,'code'=>$code)));
 
 						//supress recovery data
 						$del = new stdClass();
-						$del->table = T_USER_RECOVERY;
-						$del->key = K_USER_RECOVERY;
+						$del->table = $this->table_recovery;
+						$del->key = 'id';
 						$del->id = $rec->id;
 						$this->Users->delete($del);
 
 						//redirect to connexion page
-						$this->session->setFlash("Your password have been changed !","success");
+						$this->session->setFlash("Votre mot de passe a été changé !","success");
 						$this->redirect('users/login');
 					}
 					else {
@@ -619,14 +621,14 @@ class UsersController extends Controller{
 				}
 				else {
 					$action = 'show_form_password';
-					$this->session->setFlash("Please review your data","error");
+					$this->session->setFlash("Veuillez revoir vos données","error");
 				}
 
 			}
 			else
 			{
 				$action = 'show_form_email';
-				$this->session->setFlash("Error. Please ask for a new password reset.","error");
+				$this->session->setFlash("Veuillez demander une nouvelle réinitialisation de mot de passe","error");
 			}
 
 			$d['code'] = $code;
@@ -642,16 +644,16 @@ class UsersController extends Controller{
 			$action = 'show_form_email';
 
 			//check his email
-			$user = $this->Users->findFirst(array(
+			$user = $this->Users->findFirstUser(array(
 				'fields'=>array('user_id','email','login','salt'),
 				'conditions'=>array('email'=>$this->request->post('email')),				
 			));
 
-			if(!empty($user)){
+			if($user->exist()){
 
 				//check if existant recovery data
 				$recov = $this->Users->find(array(
-					'table'=>T_USER_RECOVERY,
+					'table'=>$this->table_recovery,
 					'fields'=>array('id'),
 					'conditions'=>array('user_id'=>$user->user_id)
 					));
@@ -660,21 +662,21 @@ class UsersController extends Controller{
 				if(!empty($recov)){
 
 					$del = new stdClass();
-					$del->table = T_USER_RECOVERY;
-					$del->key = K_USER_RECOVERY;
+					$del->table = $this->table_recovery;
+					$del->key = 'id';
 					$del->id = $recov[0]->id;
 					$this->Users->delete($del);
 				}
 
 				//create new recovery data
-				$code = String::random(100);
+				$code = randomString(100);
 
 				$rec = new stdClass();				
 				$rec->user_id = $user->user_id;
 				$rec->code = md5($code.$user->salt);
 				$rec->date_limit = unixToMySQL(time() + (2 * 24 * 60 * 60));
-				$rec->table = T_USER_RECOVERY;
-				$rec->key = K_USER_RECOVERY;
+				$rec->table = $this->table_recovery;
+				$rec->key = 'id';
 
 				//save it
 				if($this->Users->save($rec)){
@@ -682,8 +684,8 @@ class UsersController extends Controller{
 					//send email to user
 					if($this->sendRecoveryMail(array('dest'=>$user->email,'user'=>$user->login,'code' =>$code,'user_id'=>$user->user_id))){
 
-						$this->session->setFlash('An email have been send to you.','success');
-						$this->session->setFlash("Please tcheck the spam box if you can't find it.","warning");
+						$this->session->setFlash('Un email vous a été envoyé !','success');
+						$this->session->setFlash("Pensez à vérifier dans les indésirables ou spam !","warning");
 
 					}
 					else{
