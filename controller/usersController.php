@@ -775,7 +775,7 @@ class UsersController extends Controller{
 		$lien = Conf::getSiteUrl()."/users/recovery?c=".urlencode(base64_encode($code))."&u=".urlencode(base64_encode($user_id));
 
         //Création d'une instance de swift mailer
-        $mailer = Swift_Mailer::newInstance(Conf::getTransportSwiftMailer());
+        $mailer = Swift_Mailer::newInstance(Conf::getTransportSwiftMailer());        
        
         //Récupère le template et remplace les variables
         $body = file_get_contents('../view/email/recoveryPassword.html');
@@ -796,6 +796,7 @@ class UsersController extends Controller{
         {
             echo "Erreur lors de l'envoi du email à :";
             print_r($failures);
+
         }
         else return true;
     }

@@ -5,7 +5,7 @@ class Conf {
 
 	static $debug = 1;
 	static $adminPrefix = 'banane';
-	static $Website = 'YouProtest.net';
+	static $Website = 'ypp.zogs.org';
 	static $websiteURLs = array(
 		'localhost'=>'http://localhost/ypp',
 		'ypp.zogs.org'=>'http://ypp.zogs.org',		
@@ -81,11 +81,16 @@ class Conf {
 
 	    	//SMTP configuration
 	    	$transport = Swift_SmtpTransport::newInstance('mail.gandi.net',465,"ssl")
-				->setUsername('contact@we-sport.fr')
-				->setPassword('justdoit');
+				->setUsername('contact@zogs.org')
+				->setPassword('protestandresist...');
 
 			//PHP mail() function
 			//$transport = Swift_SendmailTransport::newInstance(); 
+
+			//To debug Sending Error, use the ArrayLogger
+				//$logger = new Swift_Plugins_Loggers_ArrayLogger();
+				//$mailer->registerPlugin(new Swift_Plugins_LoggerPlugin($logger));
+				//$logger->dump();
 
 	    	return $transport;
 	    }
