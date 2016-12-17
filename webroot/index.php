@@ -3,7 +3,6 @@
 error_reporting(E_ALL);
 ini_set('display_errors','1');
 
-
 //$debut = microtime(true);
 define('DEBUG',2);
 define('WEBROOT',dirname(__FILE__));

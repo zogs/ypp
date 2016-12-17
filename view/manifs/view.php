@@ -177,8 +177,8 @@
 <script type="text/javascript" src="<?php echo Router::webroot('js/jquery/jquery.slabtext.min.js');?>"></script>
 <script type="text/javascript" src="<?php echo Router::webroot('js/jqplot/jquery.jqplot.min.js');?>"></script>
 <script type="text/javascript" src="<?php echo Router::webroot('js/jqplot/plugins/jqplot.dateAxisRenderer.min.js');?>"></script>
-<script type="text/javascript" src="http://konami-js.googlecode.com/svn/trunk/konami.js"></script>
-<script type="text/javascript" src="http://ypnode.zogs.org/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="<?php echo Router::webroot('js/konami.js');?>"></script>
+<?php //<script type="text/javascript" src="http://ypnode.zogs.org/socket.io/socket.io.js"></script>?>
 <script type="text/javascript">
 
 
@@ -246,7 +246,8 @@ $(document).ready(function(){
 
 
     //LOL
-     hidden1 = new Konami();
+    <?php // /dance[ENTER] ?>
+    hidden1 = new Konami();
     hidden1.pattern = "191686578676913";
     hidden1.code = function() {                       
         document.getElementById('manifflash').HiddenCode1();
@@ -254,6 +255,7 @@ $(document).ready(function(){
     hidden1.load();
 
     hidden2 = new Konami();
+    <?php // /color[ENTER] ?>
     hidden2.pattern = "191677976798213";
     hidden2.code = function() {                       
         document.getElementById('manifflash').HiddenCode2();
@@ -261,6 +263,7 @@ $(document).ready(function(){
     hidden2.load();
 
     hidden3 = new Konami();
+    <?php // /army[ENTER] ?>
     hidden3.pattern = "1916582778913";          
     hidden3.code = function() {              
         document.getElementById('manifflash').HiddenCode3();
@@ -268,6 +271,7 @@ $(document).ready(function(){
     hidden3.load();
 
     hidden4 = new Konami();
+    <?php // /ola[ENTER] ?>
     hidden4.pattern = "19179766513";          
     hidden4.code = function() {           
         document.getElementById('manifflash').HiddenCode4();
@@ -275,6 +279,7 @@ $(document).ready(function(){
     hidden4.load();
 
     hidden5 = new Konami();
+    <?php // /wave[ENTER] ?>
     hidden5.pattern = "1918765866913";          
     hidden5.code = function() {              
         document.getElementById('manifflash').HiddenCode5();
@@ -282,13 +287,14 @@ $(document).ready(function(){
     hidden5.load();
 
     debug1 = new Konami();
+    <?php // /count[ENTER] ?>
     debug1.pattern = "191677985788413";         
     debug1.code = function() { 
         alert('Kcode');             
         document.getElementById('manifflash').debugBonhomCount();
         };
     debug1.load();
-
+    
 
 
 

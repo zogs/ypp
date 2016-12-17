@@ -17,11 +17,11 @@ class Conf {
 	//Database connexion
 	static $databases = array(
 			
-		'localhost'  => array(
+		'ypp.dev'  => array(
 			'host'     => 'localhost',
 			'database' => 'ypp',
-			'login'    => 'root',
-			'password' => ''
+			'login'    => 'ypp',
+			'password' => 'ypppw'
 			),
 		'ypp.zogs.org' =>array(
 			'host'     => 'localhost',
